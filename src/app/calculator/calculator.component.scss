@@ -1,0 +1,39 @@
+:host {
+  display: block;
+  padding: 30px 40px;
+}
+
+.divider {
+  height: 50%;
+  margin-top: 25%;
+}
+
+mat-card-header {
+  margin-bottom: 1.25em;
+
+  ::ng-deep .mat-card-header-text {
+    margin-left: 0;
+  }
+}
+
+.city-list {
+  width: 10em;
+}
+
+.summary {
+  display: flex;
+  flex-wrap: wrap;
+
+  .figure {
+    line-height: 1.25em;
+    font-size: 1.5em;
+  }
+}
+
+.summary mat-list-item {
+  flex-basis: 50%;
+}
+
+.mat-form-field-appearance-standard:first-child {
+  margin-left: 0.5rem;
+}

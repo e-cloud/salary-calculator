@@ -1,1 +1,27 @@
-/* You can add global styles to this file, and also import other style files */
+@import './app-theme';
+@import './styles/general';
+@import "~bootstrap/scss/bootstrap-grid";
+@import "~bootstrap/scss/mixins";
+@import "~bootstrap/scss/utilities/position";
+@import "~bootstrap/scss/utilities/text";
+@import "~bootstrap/scss/utilities/sizing";
+@import "~bootstrap/scss/utilities/visibility";
+
+// Include material core styles.
+@include mat-core();
+
+@include angular-material-theme($mat-theme);
+@include material-app-theme($mat-theme);
+
+.mat-accordion {
+  display: block;
+}
+
+//.ng-animating {
+//  border: red 1px solid;
+//}
+
+.ng-animating .mat-expansion-panel-content {
+  height: 0;
+  visibility: hidden;
+}
