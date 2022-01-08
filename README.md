@@ -25,3 +25,11 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+
+
+## NOTES
+
+本计算器目前只针对普通工薪阶层的收入计算有效，其他报酬类暂不支持。
+本计算器不能保证与个税app计算结果 100% 吻合，但保证计算规则绝大部分情况是正确的，计算结果只做参考。
+误差原因包括计算精度、公司申报汇缴参数错误等。
+如有疑问请联系作者。

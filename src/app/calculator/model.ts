@@ -1,4 +1,5 @@
 export interface MonthlyIncomeInfo {
+  id: string;
   /**
    * 税前收入/账面月薪
    */
@@ -16,6 +17,10 @@ export interface MonthlyIncomeInfo {
    */
   actualIncome: number;
   /**
+   * 累计税前收入
+   */
+  accumulatedSalary: number;
+  /**
    * 累计已缴纳税额
    */
   accumulatedTax: number;
@@ -23,6 +28,18 @@ export interface MonthlyIncomeInfo {
    * 预扣预缴应纳税所得额
    */
   accumulatedTaxQuota: number;
+  /**
+   * 累计扣除（指每月的免税额度 5000）
+   */
+  accumulatedDeduction: number;
+  /**
+   * 累计专项扣除（五险一金扣除）
+   */
+  accumulatedSpecialDeduction: number;
+  /**
+   * 累计专项附加扣除
+   */
+  accumulatedExtraDeduction: number;
   /**
    * 五险扣费
    */
@@ -45,14 +62,13 @@ export interface MonthlyIncomeInfo {
   };
   fullExtraDeduction: number;
   /**
-   * 1 - 12
+   * 计税月份 1 - 12，换工作会重置为 1
    */
   month: number;
   /**
-   * 是否属于新的计薪周期，每年1月都为 true
-   * 一般跳槽后第一月也是，因为新公司算税是从零开始的
+   * 实际月份
    */
-  newPayCycle: boolean;
+  actualMonth: number;
 }
 
 export interface MonthlyIncomeMeta {
@@ -68,6 +84,10 @@ export interface MonthlyIncomeMeta {
    * 社保缴纳基数
    */
   insuranceBase: number;
+  /**
+   * 缴纳基数是否基于上月，深圳是，其他城市存在基于当月，满一年基于去年月平均
+   */
+  insuranceBaseOnLastMonth: boolean;
   /**
    * 社保缴纳比例参数
    */
@@ -108,6 +128,27 @@ export interface MonthlyIncomeMeta {
    * 全年一次性奖金
    */
   annualBonus: number;
+
+  /**
+   * 社保缴纳基数上下限
+   */
+  insuranceBaseRange: {
+    endowment: [number, number];
+    health: [number, number];
+    unemployment: [number, number];
+    birth: [number, number];
+    occupationalInjury: [number, number];
+  };
+
+  /**
+   * 公积金缴纳基数上下限
+   */
+  housingFundBaseRange: [number, number];
+  /**
+   * 是否属于新的计薪周期，每年1月都为 true
+   * 一般跳槽后第一月也是，因为新公司算税是从零开始的
+   */
+  newPayCycle: boolean;
 }
 
 export interface FullYearIncomeInfo {
@@ -124,6 +165,10 @@ export interface FullYearIncomeInfo {
    */
   prepaidTax: number;
   /**
+   * 全年薪资收入理论税款
+   */
+  theoreticalTax: number;
+  /**
    * 全年公积金缴纳金额
    */
   fullHousingFund: number;
@@ -136,7 +181,7 @@ export interface FullYearIncomeInfo {
    */
   actualIncome: number;
   /**
-   * 全年综合实际收入(奖金单独计税版，2022.1.1废止)
+   * 全年综合实际收入(奖金单独计税版，2024.1.1废止)
    */
   actualIncomeDeprecated: number;
   /**
@@ -162,14 +207,13 @@ export interface CityRecipe {
   city: string;
   // 最低工资
   minimumWage: number;
+  // 平均工资
+  avgWage: number;
   // 雇员参数
   employee: {
     insuranceRate: {
-      // 养老保险
       endowment: number;
-      // 医疗保险
       health: number;
-      // 失业保险
       unemployment: number;
     };
   };
@@ -188,4 +232,16 @@ export interface CityRecipe {
       occupationalInjury: number;
     };
   };
+  // 社保基础参数范围
+  insuranceBaseRange: {
+    endowment: [number, number];
+    health: [number, number];
+    unemployment: [number, number];
+    birth: [number, number];
+    occupationalInjury: [number, number];
+  } | [ number, number];
+  housingFundBaseRange: [number, number];
+  insuranceBaseOnLastMonth: boolean;
+  // 各省市参考资料地址
+  references: string[];
 }

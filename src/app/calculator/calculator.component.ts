@@ -4,30 +4,39 @@ import {CityRecipe, FullYearIncomeInfo, MonthlyIncomeInfo, MonthlyIncomeMeta} fr
 import {IncomeCalculateService} from './income-calculate.service';
 import {last, mapValues, merge} from 'lodash-es';
 import {animate, query, stagger, style, transition, trigger} from '@angular/animations';
-import {BehaviorSubject, combineLatest, Observable, Subject, zip} from 'rxjs';
-import {filter, map, share, startWith, switchMap, tap} from 'rxjs/operators';
+import {BehaviorSubject, combineLatest, Observable, Subject} from 'rxjs';
+import {filter, map, share, startWith, switchMap, take, tap} from 'rxjs/operators';
+import {HttpClient} from '@angular/common/http';
 
 const shenzhenRecipe: CityRecipe = {
   id: 0,
-  label: '深圳',
+  label: '非深户一档',
   city: '深圳',
-  minimumWage: 6000,
+  minimumWage: 2200,
+  avgWage: 10646,
   employee: {
     insuranceRate: {
       endowment: 0.08,
       health: 0.02,
-      unemployment: 0.001,
+      unemployment: 0.003,
     }
   },
   employer: {
     insuranceRate: {
-      endowment: 0.13,
-      health: 0.08,
-      unemployment: 0.02,
-      birth: 0.1,
-      occupationalInjury: 0.005,
+      endowment: 0.14,
+      health: 0.052,
+      unemployment: 0.007,
+      birth: 0.0045,
+      occupationalInjury: 0.007,
     },
   },
+  insuranceBaseRange: [2200, 20268],
+  housingFundBaseRange: [2200, 31938],
+  insuranceBaseOnLastMonth: true,
+  references: [
+    'http://hrss.sz.gov.cn/szsi/sbjxxgk/tzgg/simtgg/content/post_8388699.html',
+    'http://gjj.sz.gov.cn/xxgk/zxtzgg/content/post_7827299.html'
+  ]
 };
 
 @Component({
@@ -63,8 +72,19 @@ export class CalculatorComponent implements OnInit {
   monthlyMetas$: Observable<MonthlyIncomeMeta[]>;
   monthlyIncomes$: Observable<MonthlyIncomeInfo[]>;
   summary$: Observable<FullYearIncomeInfo>;
+  recipes$: Observable<CityRecipe[]>;
 
-  constructor(private fb: FormBuilder, private incomeService: IncomeCalculateService) {
+  get insuranceTop() {
+    return Array.isArray(this.cityRecipe.insuranceBaseRange)
+      ? this.cityRecipe.insuranceBaseRange[1]
+      : this.cityRecipe.insuranceBaseRange.endowment[1];
+  }
+
+  get housingFundTop() {
+    return this.cityRecipe.housingFundBaseRange[1];
+  }
+
+  constructor(private fb: FormBuilder, private incomeService: IncomeCalculateService, private http: HttpClient) {
     this.baseForm = fb.group({
       monthSalary: [10000, Validators.required],
       annualBonus: [0, Validators.required],
@@ -88,16 +108,20 @@ export class CalculatorComponent implements OnInit {
 
     this.monthlyMetas$ = this.baseMeta$.pipe(
       filter(meta => meta != null),
-      map(meta => this.incomeService.buildEmptyIncomeList(meta)),
+      map(meta => this.incomeService.buildEmptyMetaList(meta)),
       switchMap(list => {
         return this.metaUpdate$.pipe(startWith(null))
           .pipe(map(update => {
             if (update) {
               list[update.index] = merge({}, list[update.index], update.meta);
             }
+
+            // 1 月强制新计费周期
+            list[0].newPayCycle = true;
             return list.slice();
           }));
-      })
+      }),
+      share(),
     );
 
     this.monthlyIncomes$ = this.monthlyMetas$.pipe(
@@ -121,9 +145,20 @@ export class CalculatorComponent implements OnInit {
     this.metaUpdate$.subscribe(() => {
       this.baseForm.disable();
     });
+
+    this.monthlyMetas$.pipe(take(1)).subscribe((metaList) => {
+      this.detailForms = this.buildDetailForms(metaList, this.cityRecipe);
+    });
+
+    this.recipes$ = this.http.get<CityRecipe[]>('/assets/city-recipes.json')
+      .pipe(tap(x => {
+        this.changeRecipe(x[0]);
+      }));
+
+    this.updateFromCache();
   }
 
-  trackIncome = (_: number, x: MonthlyIncomeInfo) => x.month;
+  trackIncome = (_: number, x: MonthlyIncomeInfo) => x.actualMonth;
 
   ngOnInit(): void {
   }
@@ -132,6 +167,17 @@ export class CalculatorComponent implements OnInit {
     if (src > 0) {
       form.get(controlName)?.setValue(0);
     }
+  }
+
+  changeRecipe(recipe: CityRecipe) {
+    this.cityRecipe = recipe;
+    this.baseForm.patchValue({
+      insuranceRate: {
+        endowment: this.cityRecipe.employee.insuranceRate.endowment * 100,
+        health: this.cityRecipe.employee.insuranceRate.health * 100,
+        unemployment: this.cityRecipe.employee.insuranceRate.unemployment * 100,
+      }
+    });
   }
 
   clearResult() {
@@ -148,12 +194,14 @@ export class CalculatorComponent implements OnInit {
         housingFundRate: value.housingFundRate / 100,
         insuranceRate: mapValues<MonthlyIncomeMeta['insuranceRate'], number>(value.insuranceRate, (v) => v / 100),
         extraDeduction: value.extraDeduction,
+        newPayCycle: value.newPayCycle,
       },
       index,
     });
   }
 
   calculate(data: any): void {
+    this.saveToCache();
     const rawMeta: MonthlyIncomeMeta = {
       salary: data.monthSalary,
       insuranceBase: data.insuranceBase,
@@ -163,15 +211,27 @@ export class CalculatorComponent implements OnInit {
       freeTaxQuota: 5000,
       extraDeduction: data.extraDeduction,
       annualBonus: data.annualBonus,
+      insuranceBaseRange: normalizeInsuranceBaseRange(this.cityRecipe),
+      housingFundBaseRange: this.cityRecipe.housingFundBaseRange,
+      insuranceBaseOnLastMonth: this.cityRecipe.insuranceBaseOnLastMonth,
+      newPayCycle: false
     };
-
-    if (this.clear || !this.detailForms.length) {
-      this.detailForms = this.buildDetailForms(rawMeta, this.cityRecipe);
-    }
 
     this.baseMeta$.next(rawMeta);
 
     this.clear = false;
+  }
+
+  private updateFromCache() {
+    const cache = JSON.parse(localStorage.getItem('incomeMeta') || null as any);
+
+    if (cache) {
+      this.baseForm.patchValue(cache);
+    }
+  }
+
+  private saveToCache() {
+    localStorage.setItem('incomeMeta', JSON.stringify(this.baseForm.value));
   }
 
   private calculateMonthlyIncomes(metaList: MonthlyIncomeMeta[]) {
@@ -184,10 +244,11 @@ export class CalculatorComponent implements OnInit {
     }, [] as MonthlyIncomeInfo[]);
   }
 
-  private buildDetailForms(meta: MonthlyIncomeMeta, cityRecipe: CityRecipe) {
-    const forms = new Array(12).fill(0).map(() => this.fb.group({
+  private buildDetailForms(metaList: MonthlyIncomeMeta[], cityRecipe: CityRecipe) {
+    const forms = metaList.map((meta) => this.fb.group({
       monthSalary: [meta.salary, Validators.required],
       monthlyBonus: [0, Validators.required],
+      newPayCycle: [meta.newPayCycle],
       insuranceBase: [meta.insuranceBase, Validators.required],
       insuranceRate: this.fb.group({
         endowment: [cityRecipe.employee.insuranceRate.endowment * 100, Validators.required],
@@ -208,4 +269,19 @@ export class CalculatorComponent implements OnInit {
 
     return forms;
   }
+}
+
+function normalizeInsuranceBaseRange(meta: CityRecipe) {
+  if (Array.isArray(meta.insuranceBaseRange)) {
+    const originRange = meta.insuranceBaseRange;
+    meta.insuranceBaseRange = {
+      endowment: originRange,
+      health: originRange,
+      unemployment: originRange,
+      birth: originRange,
+      occupationalInjury: originRange,
+    };
+  }
+
+  return meta.insuranceBaseRange;
 }
