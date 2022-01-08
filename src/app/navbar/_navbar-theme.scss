@@ -8,7 +8,8 @@
   app-navbar {
     color: mat-color($primary, default-contrast);
 
-    .navbar, .navbar-header {
+    .navbar,
+    .navbar-header {
       background: mat-color($primary);
     }
   }

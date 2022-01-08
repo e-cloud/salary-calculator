@@ -59,14 +59,13 @@
       }
     },
     "insuranceBaseRange": {
-  "endowment": [2200, 20268],
-  "health": [11620, 11620],
-  "unemployment": [2200, 2200]
-},
+      "endowment": [2200, 20268],
+      "health": [11620, 11620],
+      "unemployment": [2200, 2200]
+    },
     "housingFundBaseRange": [2200, 31938],
     "insuranceBaseOnLastMonth": true,
-    "references": [
-    ]
+    "references": []
   },
   {
     "id": 0,
@@ -97,8 +96,7 @@
     },
     "housingFundBaseRange": [2200, 31938],
     "insuranceBaseOnLastMonth": true,
-    "references": [
-    ]
+    "references": []
   },
   {
     "id": 0,
@@ -129,7 +127,6 @@
     },
     "housingFundBaseRange": [2200, 31938],
     "insuranceBaseOnLastMonth": true,
-    "references": [
-    ]
+    "references": []
   }
 ]

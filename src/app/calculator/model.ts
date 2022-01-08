@@ -233,13 +233,15 @@ export interface CityRecipe {
     };
   };
   // 社保基础参数范围
-  insuranceBaseRange: {
-    endowment: [number, number];
-    health: [number, number];
-    unemployment: [number, number];
-    birth: [number, number];
-    occupationalInjury: [number, number];
-  } | [ number, number];
+  insuranceBaseRange:
+    | {
+        endowment: [number, number];
+        health: [number, number];
+        unemployment: [number, number];
+        birth: [number, number];
+        occupationalInjury: [number, number];
+      }
+    | [number, number];
   housingFundBaseRange: [number, number];
   insuranceBaseOnLastMonth: boolean;
   // 各省市参考资料地址
