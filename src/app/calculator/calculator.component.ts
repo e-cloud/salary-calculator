@@ -194,7 +194,7 @@ export class CalculatorComponent implements OnInit {
     });
 
     this.recipes$ = this.http
-      .get<CityRecipe[]>('/assets/city-recipes.json')
+      .get<CityRecipe[]>('assets/city-recipes.json')
       .pipe(
         tap((x) => {
           this.changeRecipe(x[0]);
