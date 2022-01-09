@@ -1,3 +1,4 @@
+@use '~@angular/material' as mat;
 @import "./app-theme";
 @import "./styles/general";
 @import "~bootstrap/scss/bootstrap-grid";
@@ -8,9 +9,9 @@
 @import "~bootstrap/scss/utilities/visibility";
 
 // Include material core styles.
-@include mat-core();
+@include mat.core();
 
-@include angular-material-theme($mat-theme);
+@include mat.all-component-themes($mat-theme);
 @include material-app-theme($mat-theme);
 
 .mat-accordion {
