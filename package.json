@@ -1,6 +1,6 @@
 {
   "name": "salary-calculator",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -8,7 +8,9 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "prettier-all": "prettier --loglevel error --config-precedence file-override --write ./src/**/**.{ts,js,json,scss,css}"
+    "prettier-all": "prettier --loglevel error --config-precedence file-override --write ./src/**/**.{ts,js,json,scss,css}",
+    "release": "npm run build -- --prod --base-href /salary-calculator/",
+    "deploy": "gh-pages --dist dist/salary-calculator"
   },
   "private": true,
   "dependencies": {
@@ -22,9 +24,7 @@
     "@angular/platform-browser": "~11.2.6",
     "@angular/platform-browser-dynamic": "~11.2.6",
     "@angular/router": "~11.2.6",
-    "@covalent/echarts": "^3.1.0",
     "bootstrap": "^4.6.0",
-    "echarts": "^4.9.0",
     "lodash-es": "^4.17.21",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
@@ -38,6 +38,7 @@
     "@types/lodash-es": "^4.17.4",
     "@types/node": "^12.11.1",
     "codelyzer": "^6.0.0",
+    "gh-pages": "^3.2.3",
     "jasmine-core": "~3.6.0",
     "jasmine-spec-reporter": "~5.0.0",
     "karma": "~6.1.0",
