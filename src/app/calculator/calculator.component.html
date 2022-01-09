@@ -1,8 +1,8 @@
 <mat-card>
-  <mat-card-header class="d-flex justify-content-between align-items-center ml-0">
+  <mat-card-header class="d-flex justify-content-between align-items-center flex-wrap ml-0">
     <mat-card-title class="mb-0">基础信息</mat-card-title>
 
-    <div class="d-flex align-items-center">
+    <div class="d-flex align-items-center flex-wrap my-2 my-md-0">
       <mat-slide-toggle
         class="example-margin"
         color="primary"
@@ -11,7 +11,7 @@
         预定义社保缴纳参数
       </mat-slide-toggle>
 
-      <button class="ml-3" mat-button color="primary" [matMenuTriggerFor]="menu">{{ cityRecipe.label }}
+      <button class="ml-0 ml-sm-3 mt-1 mt-sm-0" mat-button color="primary" [matMenuTriggerFor]="menu">{{ cityRecipe.label }}
         <mat-icon>arrow_drop_down</mat-icon>
       </button>
       <mat-menu #menu="matMenu">
@@ -23,13 +23,13 @@
   <mat-card-content class="mb-0">
     <form class="form-basic-data" [formGroup]="baseForm">
       <div class="row">
-        <mat-form-field class="col-3" appearance="outline">
+        <mat-form-field class="col-12 col-md-3" appearance="outline">
           <mat-label>月薪</mat-label>
           <input matInput type="number" placeholder="10000" formControlName="monthSalary" min="0">
           <span matSuffix>元</span>
         </mat-form-field>
 
-        <mat-form-field class="col-3" appearance="outline">
+        <mat-form-field class="col-12 col-md-3" appearance="outline">
           <mat-label>年终奖</mat-label>
           <input matInput type="number" placeholder="0" formControlName="annualBonus" min="0">
           <span matSuffix>元</span>
@@ -55,7 +55,7 @@
           </mat-autocomplete>
         </mat-form-field>
 
-        <div class="ml-4">
+        <div class="ml-sm-3 ml-md-4">
           <mat-form-field appearance="standard">
             <mat-label>公积金缴纳基数</mat-label>
             <input matInput
@@ -82,7 +82,7 @@
           </mat-form-field>
         </div>
 
-        <div class="ml-4" formGroupName="extraDeduction">
+        <div class="ml-md-4" formGroupName="extraDeduction">
           <mat-form-field appearance="standard" style="width: 120px;">
             <mat-label>子女教育(当月)</mat-label>
             <input matInput
@@ -216,7 +216,7 @@
 </mat-card>
 
 <div class="row mt-5">
-  <div class="col-md-6 col-sm-12 mb-sm-4" *ngIf="!clear && (monthlyIncomes$ | async) as incomeList">
+  <div class="col-md-6 col-sm-12 mb-4 mb-md-0" *ngIf="!clear && (monthlyIncomes$ | async) as incomeList">
     <mat-accordion class="" [@listAnimation]="incomeList.length">
       <mat-expansion-panel *ngFor="let item of incomeList; let idx = index; trackBy: trackIncome" #panel>
         <mat-expansion-panel-header>
@@ -231,7 +231,7 @@
   </div>
 
   <div class="col-md-6">
-    <mat-card *ngIf="!clear && (summary$ | async) as sum">
+    <mat-card class="calc-result" *ngIf="!clear && (summary$ | async) as sum">
       <mat-list class="summary">
         <mat-list-item>
           <mat-icon mat-list-icon>note</mat-icon>
@@ -280,7 +280,7 @@
 
 <ng-template #detailForm let-form="form" let-income="income" let-idx="index">
   <form class="d-flex flex-column" [formGroup]="form">
-    <div class="ml-3">
+    <div class="ml-md-3 d-flex flex-wrap">
       <mat-form-field appearance="standard">
         <mat-label>月薪</mat-label>
         <input matInput type="number" placeholder="10000" formControlName="monthSalary" min="0">
@@ -296,7 +296,7 @@
       <mat-slide-toggle class="ml-3" formControlName="newPayCycle">入职新公司（新计费周期）？</mat-slide-toggle>
     </div>
 
-    <div class="ml-3 d-flex">
+    <div class="ml-md-3 d-flex flex-wrap">
       <mat-form-field appearance="standard">
         <mat-label>社保缴纳基数</mat-label>
         <input matInput type="number" placeholder="10000" formControlName="insuranceBase" min="0"
@@ -332,7 +332,7 @@
       </div>
     </div>
 
-    <div class="ml-3">
+    <div class="ml-md-3 d-flex flex-wrap">
       <mat-form-field appearance="standard">
         <mat-label>公积金缴纳基数</mat-label>
         <input matInput type="number" placeholder="10000" formControlName="housingFundBase" min="0"
@@ -355,7 +355,7 @@
       </mat-form-field>
     </div>
 
-    <div class="ml-3" formGroupName="extraDeduction">
+    <div class="ml-md-3 d-flex flex-wrap" formGroupName="extraDeduction">
       <mat-form-field appearance="standard" style="width: 120px;">
         <mat-label>子女教育(当月)</mat-label>
         <input matInput type="number" placeholder="0" formControlName="childEducation" min="0"
