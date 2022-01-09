@@ -71,7 +71,7 @@ const shenzhenRecipe: CityRecipe = {
           [
             style({ opacity: 0, transform: 'translateX(-20%)' }),
             stagger(100, [
-              animate(400, style({ opacity: 1, transform: 'translateX(0)' })),
+              animate(300, style({ opacity: 1, transform: 'translateX(0)' })),
             ]),
           ],
           { optional: true }
