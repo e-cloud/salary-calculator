@@ -15,7 +15,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
-import { MatDividerModule } from '@angular/material/divider';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSelectModule } from '@angular/material/select';
 import { MatMenuModule } from '@angular/material/menu';
@@ -44,7 +43,6 @@ registerLocaleData(zh);
     MatFormFieldModule,
     ReactiveFormsModule,
     MatInputModule,
-    MatDividerModule,
     MatSlideToggleModule,
     MatSelectModule,
     FormsModule,

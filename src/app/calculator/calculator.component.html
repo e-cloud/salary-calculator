@@ -211,13 +211,14 @@
     <button mat-raised-button color="primary" type="submit" [disabled]="baseForm.disabled || baseForm.invalid"
             (click)="calculate(baseForm.value)">计算
     </button>
-    <button mat-raised-button class="ml-3" (click)="clearResult()">clear</button>
+    <button mat-raised-button class="ml-3" [disabled]="baseForm.disabled" (click)="reset()">重置</button>
+    <button mat-raised-button class="ml-3" (click)="clearResult()">清空结果</button>
   </footer>
 </mat-card>
 
 <div class="row mt-5">
   <div class="col-md-6 col-sm-12 mb-4 mb-md-0" *ngIf="!clear && (monthlyIncomes$ | async) as incomeList">
-    <mat-accordion class="" [@listAnimation]="incomeList.length">
+    <mat-accordion class="" [@listAnimation]="incomeList.length" (animationend)="scrollToSummary()">
       <mat-expansion-panel *ngFor="let item of incomeList; let idx = index; trackBy: trackIncome" #panel>
         <mat-expansion-panel-header>
           {{ item.actualMonth - 1  | month }} 实收： {{ item.actualIncome | currency }}，公积金：{{ item.housingFund * 2 | currency }}
@@ -231,7 +232,7 @@
   </div>
 
   <div class="col-md-6">
-    <mat-card class="calc-result" *ngIf="!clear && (summary$ | async) as sum">
+    <mat-card class="calc-result" #summary *ngIf="!clear && (summary$ | async) as sum">
       <mat-list class="summary">
         <mat-list-item>
           <mat-icon mat-list-icon>note</mat-icon>
@@ -255,6 +256,16 @@
         </mat-list-item>
         <mat-list-item>
           <mat-icon mat-list-icon>note</mat-icon>
+          <div mat-line>全年个人综合所得税额（合并奖金计算）</div>
+          <div mat-line class="figure">{{ sum.jointTax | currency }}</div>
+        </mat-list-item>
+        <mat-list-item>
+          <mat-icon mat-list-icon>note</mat-icon>
+          <div mat-line>全年公积金缴纳金额</div>
+          <div mat-line class="figure">{{ sum.fullHousingFund | currency }}</div>
+        </mat-list-item>
+        <mat-list-item>
+          <mat-icon mat-list-icon>note</mat-icon>
           <div mat-line>全年个人综合所得</div>
           <div mat-line class="figure">{{ sum.actualIncome | currency }}</div>
         </mat-list-item>
@@ -262,16 +273,6 @@
           <mat-icon mat-list-icon>note</mat-icon>
           <div mat-line>全年个人综合所得（过渡 - 2024.1.1止）</div>
           <div mat-line class="figure">{{ sum.actualIncomeDeprecated | currency }}</div>
-        </mat-list-item>
-        <mat-list-item>
-          <mat-icon mat-list-icon>note</mat-icon>
-          <div mat-line>全年个人综合所得税额（合并计算）</div>
-          <div mat-line class="figure">{{ sum.jointTax | currency }}</div>
-        </mat-list-item>
-        <mat-list-item>
-          <mat-icon mat-list-icon>note</mat-icon>
-          <div mat-line>全年公积金缴纳金额</div>
-          <div mat-line class="figure">{{ sum.fullHousingFund | currency }}</div>
         </mat-list-item>
       </mat-list>
     </mat-card>

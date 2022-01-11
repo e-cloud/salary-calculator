@@ -1,32 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import {
-  CityRecipe,
-  FullYearIncomeInfo,
-  MonthlyIncomeInfo,
-  MonthlyIncomeMeta,
-} from './model';
-import { IncomeCalculateService } from './income-calculate.service';
-import { last, mapValues, merge } from 'lodash-es';
-import {
-  animate,
-  query,
-  stagger,
-  style,
-  transition,
-  trigger,
-} from '@angular/animations';
-import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
-import {
-  filter,
-  map,
-  share,
-  startWith,
-  switchMap,
-  take,
-  tap,
-} from 'rxjs/operators';
-import { HttpClient } from '@angular/common/http';
+/* tslint:disable:no-non-null-assertion */
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {CityRecipe, FullYearIncomeInfo, MonthlyIncomeInfo, MonthlyIncomeMeta,} from './model';
+import {IncomeCalculateService} from './income-calculate.service';
+import {last, mapValues, merge} from 'lodash-es';
+import {animate, query, stagger, style, transition, trigger,} from '@angular/animations';
+import {BehaviorSubject, combineLatest, Observable, Subject} from 'rxjs';
+import {filter, map, share, startWith, switchMap, take, tap,} from 'rxjs/operators';
+import {HttpClient} from '@angular/common/http';
 
 const shenzhenRecipe: CityRecipe = {
   id: 0,
@@ -69,12 +50,12 @@ const shenzhenRecipe: CityRecipe = {
         query(
           ':enter',
           [
-            style({ opacity: 0, transform: 'translateX(-20%)' }),
+            style({opacity: 0, transform: 'translateX(-20%)'}),
             stagger(100, [
-              animate(300, style({ opacity: 1, transform: 'translateX(0)' })),
+              animate(300, style({opacity: 1, transform: 'translateX(0)'})),
             ]),
           ],
-          { optional: true }
+          {optional: true}
         ),
       ]),
     ]),
@@ -98,15 +79,7 @@ export class CalculatorComponent implements OnInit {
   summary$: Observable<FullYearIncomeInfo>;
   recipes$: Observable<CityRecipe[]>;
 
-  get insuranceTop() {
-    return Array.isArray(this.cityRecipe.insuranceBaseRange)
-      ? this.cityRecipe.insuranceBaseRange[1]
-      : this.cityRecipe.insuranceBaseRange.endowment[1];
-  }
-
-  get housingFundTop() {
-    return this.cityRecipe.housingFundBaseRange[1];
-  }
+  @ViewChild('summary', { read: ElementRef }) summary: ElementRef | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -177,7 +150,6 @@ export class CalculatorComponent implements OnInit {
         ([list]) => !!list && list.length > 0
       ),
       map(([list, meta]) => {
-        // tslint:disable-next-line:no-non-null-assertion
         return this.incomeService.calculateFullYearIncome(
           list!,
           meta.annualBonus
@@ -204,9 +176,20 @@ export class CalculatorComponent implements OnInit {
     this.updateFromCache();
   }
 
+  get insuranceTop() {
+    return Array.isArray(this.cityRecipe.insuranceBaseRange)
+      ? this.cityRecipe.insuranceBaseRange[1]
+      : this.cityRecipe.insuranceBaseRange.endowment[1];
+  }
+
+  get housingFundTop() {
+    return this.cityRecipe.housingFundBaseRange[1];
+  }
+
   trackIncome = (_: number, x: MonthlyIncomeInfo) => x.actualMonth;
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+  }
 
   resetConflict(src: number, form: FormGroup, controlName: string) {
     if (src > 0) {
@@ -228,6 +211,37 @@ export class CalculatorComponent implements OnInit {
   clearResult() {
     this.clear = true;
     this.baseForm.enable();
+  }
+
+  reset() {
+    this.baseForm.patchValue({
+      monthSalary: 10000,
+      annualBonus: 0,
+      insuranceBase: 10000,
+      housingFundBase: 10000,
+      housingFundRate: 5,
+      extraDeduction: {
+        childEducation: 0,
+        continuingEducation: 0,
+        seriousMedicalExpense: 0,
+        housingLoanInterest: 0,
+        renting: 0,
+        elderlyCare: 0,
+      },
+      insuranceRate: {
+        endowment: this.cityRecipe.employee.insuranceRate.endowment * 100,
+        health: this.cityRecipe.employee.insuranceRate.health * 100,
+        unemployment: this.cityRecipe.employee.insuranceRate.unemployment * 100,
+      },
+    });
+  }
+
+  scrollToSummary() {
+    setTimeout(() => {
+      if (this.summary) {
+        (this.summary.nativeElement as HTMLElement).scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 1000);
   }
 
   updateMeta(value: any, index: number) {
