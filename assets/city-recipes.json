@@ -1,0 +1,132 @@
+[
+  {
+    "id": 0,
+    "label": "非深户一档(企业)",
+    "city": "深圳",
+    "minimumWage": 2200,
+    "avgWage": 10646,
+    "employee": {
+      "insuranceRate": {
+        "endowment": 0.08,
+        "health": 0.02,
+        "unemployment": 0.003
+      }
+    },
+    "employer": {
+      "insuranceRate": {
+        "endowment": 0.14,
+        "health": 0.052,
+        "unemployment": 0.007,
+        "birth": 0.0045,
+        "occupationalInjury": 0.007
+      }
+    },
+    "insuranceBaseRange": {
+      "endowment": [2200, 20268],
+      "health": [6972, 34860],
+      "unemployment": [2200, 2200]
+    },
+    "housingFundBaseRange": [2200, 31938],
+    "insuranceBaseOnLastMonth": true,
+    "references": [
+      "http://hrss.sz.gov.cn/szsi/sbjxxgk/tzgg/simtgg/content/post_8388699.html",
+      "http://gjj.sz.gov.cn/xxgk/zxtzgg/content/post_7827299.html",
+      "http://tjj.sz.gov.cn/zwgk/zfxxgkml/tjsj/tjgb/content/post_8844535.html",
+      "https://www.sznews.com/news/content/2021-06/28/content_24337815.htm",
+      "https://m.thepaper.cn/baijiahao_8248542"
+    ]
+  },
+  {
+    "id": 0,
+    "label": "非深户二档(企业)",
+    "city": "深圳",
+    "minimumWage": 2200,
+    "avgWage": 10646,
+    "employee": {
+      "insuranceRate": {
+        "endowment": 0.08,
+        "health": 0.002,
+        "unemployment": 0.003
+      }
+    },
+    "employer": {
+      "insuranceRate": {
+        "endowment": 0.14,
+        "health": 0.006,
+        "unemployment": 0.007,
+        "birth": 0.0045,
+        "occupationalInjury": 0.007
+      }
+    },
+    "insuranceBaseRange": {
+      "endowment": [2200, 20268],
+      "health": [11620, 11620],
+      "unemployment": [2200, 2200]
+    },
+    "housingFundBaseRange": [2200, 31938],
+    "insuranceBaseOnLastMonth": true,
+    "references": []
+  },
+  {
+    "id": 0,
+    "label": "深户一档(企业)",
+    "city": "深圳",
+    "minimumWage": 2200,
+    "avgWage": 10646,
+    "employee": {
+      "insuranceRate": {
+        "endowment": 0.08,
+        "health": 0.02,
+        "unemployment": 0.003
+      }
+    },
+    "employer": {
+      "insuranceRate": {
+        "endowment": 0.15,
+        "health": 0.052,
+        "unemployment": 0.007,
+        "birth": 0.0045,
+        "occupationalInjury": 0.007
+      }
+    },
+    "insuranceBaseRange": {
+      "endowment": [2200, 20268],
+      "health": [6972, 34860],
+      "unemployment": [2200, 2200]
+    },
+    "housingFundBaseRange": [2200, 31938],
+    "insuranceBaseOnLastMonth": true,
+    "references": []
+  },
+  {
+    "id": 0,
+    "label": "深户二档(企业)",
+    "city": "深圳",
+    "minimumWage": 2200,
+    "avgWage": 10646,
+    "employee": {
+      "insuranceRate": {
+        "endowment": 0.08,
+        "health": 0.002,
+        "unemployment": 0.003
+      }
+    },
+    "employer": {
+      "insuranceRate": {
+        "endowment": 0.15,
+        "health": 0.006,
+        "unemployment": 0.007,
+        "birth": 0.0045,
+        "occupationalInjury": 0.007
+      }
+    },
+    "insuranceBaseRange": {
+      "endowment": [2200, 20268],
+      "health": [11620, 11620],
+      "unemployment": [2200, 2200]
+    },
+    "housingFundBaseRange": [2200, 31938],
+    "insuranceBaseOnLastMonth": true,
+    "references": []
+  }
+]
