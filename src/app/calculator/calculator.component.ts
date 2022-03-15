@@ -161,7 +161,7 @@ export class CalculatorComponent implements OnInit {
       this.baseForm.disable();
     });
 
-    this.monthlyMetas$.pipe(take(1)).subscribe((metaList) => {
+    this.monthlyMetas$.subscribe((metaList) => {
       this.detailForms = this.buildDetailForms(metaList, this.cityRecipe);
     });
 
