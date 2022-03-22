@@ -114,6 +114,7 @@ export class CalculatorComponent implements OnInit {
           Validators.required,
         ],
       }),
+      insuranceBaseOnLastMonth: [this.cityRecipe.insuranceBaseOnLastMonth, Validators.required]
     });
 
     this.monthlyMetas$ = this.baseMeta$.pipe(
@@ -199,13 +200,13 @@ export class CalculatorComponent implements OnInit {
 
   changeRecipe(recipe: CityRecipe) {
     this.cityRecipe = recipe;
-    this.baseForm.patchValue({
-      insuranceRate: {
-        endowment: this.cityRecipe.employee.insuranceRate.endowment * 100,
-        health: this.cityRecipe.employee.insuranceRate.health * 100,
-        unemployment: this.cityRecipe.employee.insuranceRate.unemployment * 100,
-      },
-    });
+    this.patchFromRecipe();
+  }
+
+  changePredefineCondition(val: boolean) {
+    if (val) {
+      this.patchFromRecipe();
+    }
   }
 
   clearResult() {
@@ -233,6 +234,7 @@ export class CalculatorComponent implements OnInit {
         health: this.cityRecipe.employee.insuranceRate.health * 100,
         unemployment: this.cityRecipe.employee.insuranceRate.unemployment * 100,
       },
+      insuranceBaseOnLastMonth: this.cityRecipe.insuranceBaseOnLastMonth
     });
   }
 
@@ -257,6 +259,7 @@ export class CalculatorComponent implements OnInit {
         ),
         extraDeduction: value.extraDeduction,
         newPayCycle: value.newPayCycle,
+        insuranceBaseOnLastMonth: value.insuranceBaseOnLastMonth
       },
       index,
     });
@@ -278,13 +281,24 @@ export class CalculatorComponent implements OnInit {
       annualBonus: data.annualBonus,
       insuranceBaseRange: normalizeInsuranceBaseRange(this.cityRecipe),
       housingFundBaseRange: this.cityRecipe.housingFundBaseRange,
-      insuranceBaseOnLastMonth: this.cityRecipe.insuranceBaseOnLastMonth,
+      insuranceBaseOnLastMonth: data.insuranceBaseOnLastMonth,
       newPayCycle: false,
     };
 
     this.baseMeta$.next(rawMeta);
 
     this.clear = false;
+  }
+
+  private patchFromRecipe() {
+    this.baseForm.patchValue({
+      insuranceRate: {
+        endowment: this.cityRecipe.employee.insuranceRate.endowment * 100,
+        health: this.cityRecipe.employee.insuranceRate.health * 100,
+        unemployment: this.cityRecipe.employee.insuranceRate.unemployment * 100,
+      },
+      insuranceBaseOnLastMonth: this.cityRecipe.insuranceBaseOnLastMonth
+    });
   }
 
   private updateFromCache() {

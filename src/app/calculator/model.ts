@@ -196,6 +196,16 @@ export interface FullYearIncomeInfo {
    * 全年综合所得合并计税
    */
   jointTax: number;
+
+  employee: {
+    endowmentInsurance: number;
+    healthInsurance: number;
+  };
+
+  employer: {
+    endowmentInsurance: number;
+    healthInsurance: number;
+  };
 }
 
 /**

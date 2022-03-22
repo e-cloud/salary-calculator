@@ -7,7 +7,8 @@
         class="example-margin"
         color="primary"
         name="usePredefinedInsurancePercents"
-        [(ngModel)]="usePredefinedInsurancePercents">
+        [(ngModel)]="usePredefinedInsurancePercents"
+        (ngModelChange)="changePredefineCondition($event)">
         预定义社保缴纳参数
       </mat-slide-toggle>
 
@@ -203,6 +204,13 @@
             <span matSuffix>%</span>
           </mat-form-field>
         </div>
+
+        <mat-slide-toggle
+          class="ml-3 mb-2 mb-md-0"
+          color="primary"
+          formControlName="insuranceBaseOnLastMonth" style="align-self: center;">
+          按上月收入缴纳社保
+        </mat-slide-toggle>
       </div>
     </form>
   </mat-card-content>
@@ -264,15 +272,40 @@
           <div mat-line>全年公积金缴纳金额</div>
           <div mat-line class="figure">{{ sum.fullHousingFund | currency }}</div>
         </mat-list-item>
+
         <mat-list-item>
           <mat-icon mat-list-icon>note</mat-icon>
-          <div mat-line>全年个人综合所得</div>
+          <div mat-line>全年薪资奖金</div>
           <div mat-line class="figure">{{ sum.actualIncome | currency }}</div>
         </mat-list-item>
         <mat-list-item>
           <mat-icon mat-list-icon>note</mat-icon>
-          <div mat-line>全年个人综合所得（过渡 - 2024.1.1止）</div>
+          <div mat-line>全年薪资奖金（非合并 - 2024.1.1止）</div>
           <div mat-line class="figure">{{ sum.actualIncomeDeprecated | currency }}</div>
+        </mat-list-item>
+
+        <mat-list-item>
+          <mat-icon mat-list-icon>note</mat-icon>
+          <div mat-line>全年个人综合所得</div>
+          <div mat-line class="figure">{{ (sum.actualIncome + sum.fullHousingFund) | currency }}</div>
+        </mat-list-item>
+
+        <mat-list-item>
+          <mat-icon mat-list-icon>note</mat-icon>
+          <div mat-line>全年个人综合所得（非合并 - 2024.1.1止）</div>
+          <div mat-line class="figure">{{ (sum.actualIncomeDeprecated + sum.fullHousingFund) | currency }}</div>
+        </mat-list-item>
+
+        <mat-list-item>
+          <mat-icon mat-list-icon>note</mat-icon>
+          <div mat-line>养老保险缴纳总额</div>
+          <div mat-line class="figure">{{ sum.employee.endowmentInsurance | currency }}</div>
+        </mat-list-item>
+
+        <mat-list-item>
+          <mat-icon mat-list-icon>note</mat-icon>
+          <div mat-line>医保保缴纳总额</div>
+          <div mat-line class="figure">{{ sum.employee.healthInsurance | currency }}</div>
         </mat-list-item>
       </mat-list>
     </mat-card>

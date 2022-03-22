@@ -23,6 +23,14 @@ export class IncomeCalculateService {
       prepaidTax: sumBy(list, 'tax'),
       bonus: annualBonus,
       bonusTax: calculateBonusTax(annualBonus),
+      employee: {
+        endowmentInsurance:0,
+        healthInsurance: 0,
+      },
+      employer: {
+        endowmentInsurance: 0,
+        healthInsurance: 0,
+      }
     } as FullYearIncomeInfo;
 
     full.bookIncome = full.bookSalary + full.bonus;
@@ -47,6 +55,9 @@ export class IncomeCalculateService {
     full.fullHousingFund = sumBy(list, 'housingFund') * 2;
     full.actualIncomeDeprecated =
       full.bookIncome - full.theoreticalTax - full.bonusTax;
+
+    full.employee.endowmentInsurance = sumBy(list, 'insuranceCosts.endowment');
+    full.employee.healthInsurance = sumBy(list, 'insuranceCosts.health');
 
     return full;
   }
