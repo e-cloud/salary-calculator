@@ -1,13 +1,33 @@
 /* tslint:disable:no-non-null-assertion */
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {CityRecipe, FullYearIncomeInfo, MonthlyIncomeInfo, MonthlyIncomeMeta,} from './model';
-import {IncomeCalculateService} from './income-calculate.service';
-import {last, mapValues, merge} from 'lodash-es';
-import {animate, query, stagger, style, transition, trigger,} from '@angular/animations';
-import {BehaviorSubject, combineLatest, Observable, Subject} from 'rxjs';
-import {filter, map, share, startWith, switchMap, take, tap,} from 'rxjs/operators';
-import {HttpClient} from '@angular/common/http';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  CityRecipe,
+  FullYearIncomeInfo,
+  MonthlyIncomeInfo,
+  MonthlyIncomeMeta,
+} from './model';
+import { IncomeCalculateService } from './income-calculate.service';
+import { last, mapValues, merge } from 'lodash-es';
+import {
+  animate,
+  query,
+  stagger,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import {
+  filter,
+  map,
+  share,
+  startWith,
+  switchMap,
+  take,
+  tap,
+} from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
 
 const shenzhenRecipe: CityRecipe = {
   id: 0,
@@ -32,7 +52,7 @@ const shenzhenRecipe: CityRecipe = {
     },
   },
   insuranceBaseRange: [2200, 20268],
-  housingFundBaseRange: [2200, 31938],
+  housingFundBaseRange: [2200, 34860],
   insuranceBaseOnLastMonth: true,
   references: [
     'http://hrss.sz.gov.cn/szsi/sbjxxgk/tzgg/simtgg/content/post_8388699.html',
@@ -50,12 +70,12 @@ const shenzhenRecipe: CityRecipe = {
         query(
           ':enter',
           [
-            style({opacity: 0, transform: 'translateX(-20%)'}),
+            style({ opacity: 0, transform: 'translateX(-20%)' }),
             stagger(100, [
-              animate(300, style({opacity: 1, transform: 'translateX(0)'})),
+              animate(300, style({ opacity: 1, transform: 'translateX(0)' })),
             ]),
           ],
-          {optional: true}
+          { optional: true }
         ),
       ]),
     ]),
@@ -99,6 +119,9 @@ export class CalculatorComponent implements OnInit {
         housingLoanInterest: [0, Validators.required],
         renting: [0, Validators.required],
         elderlyCare: [0, Validators.required],
+        enterprisePension: [0, Validators.required],
+        enterprisePensionTwo: [0, Validators.required],
+        other: [0, Validators.required],
       }),
       insuranceRate: this.fb.group({
         endowment: [
@@ -114,7 +137,10 @@ export class CalculatorComponent implements OnInit {
           Validators.required,
         ],
       }),
-      insuranceBaseOnLastMonth: [this.cityRecipe.insuranceBaseOnLastMonth, Validators.required]
+      insuranceBaseOnLastMonth: [
+        this.cityRecipe.insuranceBaseOnLastMonth,
+        Validators.required,
+      ],
     });
 
     this.monthlyMetas$ = this.baseMeta$.pipe(
@@ -189,8 +215,7 @@ export class CalculatorComponent implements OnInit {
 
   trackIncome = (_: number, x: MonthlyIncomeInfo) => x.actualMonth;
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   resetConflict(src: number, form: FormGroup, controlName: string) {
     if (src > 0) {
@@ -228,20 +253,25 @@ export class CalculatorComponent implements OnInit {
         housingLoanInterest: 0,
         renting: 0,
         elderlyCare: 0,
+        enterprisePension: 0,
+        enterprisePensionTwo: 0,
+        other: 0,
       },
       insuranceRate: {
         endowment: this.cityRecipe.employee.insuranceRate.endowment * 100,
         health: this.cityRecipe.employee.insuranceRate.health * 100,
         unemployment: this.cityRecipe.employee.insuranceRate.unemployment * 100,
       },
-      insuranceBaseOnLastMonth: this.cityRecipe.insuranceBaseOnLastMonth
+      insuranceBaseOnLastMonth: this.cityRecipe.insuranceBaseOnLastMonth,
     });
   }
 
   scrollToSummary() {
     setTimeout(() => {
       if (this.summary) {
-        (this.summary.nativeElement as HTMLElement).scrollIntoView({ behavior: 'smooth' });
+        (this.summary.nativeElement as HTMLElement).scrollIntoView({
+          behavior: 'smooth',
+        });
       }
     }, 1000);
   }
@@ -259,7 +289,7 @@ export class CalculatorComponent implements OnInit {
         ),
         extraDeduction: value.extraDeduction,
         newPayCycle: value.newPayCycle,
-        insuranceBaseOnLastMonth: value.insuranceBaseOnLastMonth
+        insuranceBaseOnLastMonth: value.insuranceBaseOnLastMonth,
       },
       index,
     });
@@ -283,6 +313,7 @@ export class CalculatorComponent implements OnInit {
       housingFundBaseRange: this.cityRecipe.housingFundBaseRange,
       insuranceBaseOnLastMonth: data.insuranceBaseOnLastMonth,
       newPayCycle: false,
+      employer: this.cityRecipe.employer,
     };
 
     this.baseMeta$.next(rawMeta);
@@ -297,14 +328,16 @@ export class CalculatorComponent implements OnInit {
         health: this.cityRecipe.employee.insuranceRate.health * 100,
         unemployment: this.cityRecipe.employee.insuranceRate.unemployment * 100,
       },
-      insuranceBaseOnLastMonth: this.cityRecipe.insuranceBaseOnLastMonth
+      insuranceBaseOnLastMonth: this.cityRecipe.insuranceBaseOnLastMonth,
     });
   }
 
   private updateFromCache() {
-    const cache = JSON.parse(
-      localStorage.getItem('incomeMeta') || (null as any)
-    );
+    let cache = JSON.parse(localStorage.getItem('incomeMeta')!);
+
+    if (sessionStorage.getItem('incomeMeta')) {
+      cache = JSON.parse(sessionStorage.getItem('incomeMeta')!);
+    }
 
     if (cache) {
       this.baseForm.patchValue(cache);
@@ -313,6 +346,7 @@ export class CalculatorComponent implements OnInit {
 
   private saveToCache() {
     localStorage.setItem('incomeMeta', JSON.stringify(this.baseForm.value));
+    sessionStorage.setItem('incomeMeta', JSON.stringify(this.baseForm.value));
   }
 
   private calculateMonthlyIncomes(metaList: MonthlyIncomeMeta[]) {
@@ -373,6 +407,15 @@ export class CalculatorComponent implements OnInit {
           ],
           renting: [meta.extraDeduction.renting, Validators.required],
           elderlyCare: [meta.extraDeduction.elderlyCare, Validators.required],
+          enterprisePension: [
+            meta.extraDeduction.enterprisePension,
+            Validators.required,
+          ],
+          enterprisePensionTwo: [
+            meta.extraDeduction.enterprisePensionTwo,
+            Validators.required,
+          ],
+          other: [meta.extraDeduction.other, Validators.required],
         }),
       })
     );

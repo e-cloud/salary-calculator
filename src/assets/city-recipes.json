@@ -3,7 +3,7 @@
     "id": 0,
     "label": "非深户一档(企业)",
     "city": "深圳",
-    "minimumWage": 2200,
+    "minimumWage": 2360,
     "avgWage": 10646,
     "employee": {
       "insuranceRate": {
@@ -22,25 +22,25 @@
       }
     },
     "insuranceBaseRange": {
-      "endowment": [2200, 20268],
+      "endowment": [2360, 22941],
       "health": [6972, 34860],
-      "unemployment": [2200, 2200]
+      "birth": [2360, 34860],
+      "unemployment": [2360, 2360],
+      "occupationalInjury": [2360, 2360]
     },
-    "housingFundBaseRange": [2200, 31938],
+    "housingFundBaseRange": [2360, 34860],
     "insuranceBaseOnLastMonth": true,
     "references": [
-      "http://hrss.sz.gov.cn/szsi/sbjxxgk/tzgg/simtgg/content/post_8388699.html",
-      "http://gjj.sz.gov.cn/xxgk/zxtzgg/content/post_7827299.html",
-      "http://tjj.sz.gov.cn/zwgk/zfxxgkml/tjsj/tjgb/content/post_8844535.html",
-      "https://www.sznews.com/news/content/2021-06/28/content_24337815.htm",
-      "https://m.thepaper.cn/baijiahao_8248542"
+      "https://m12333.cn/policy/wadd.html",
+      "http://hrss.sz.gov.cn/szsi/zxbs/zdyw/sbyqfk/xwbd/content/post_9027429.html",
+      "http://bsy.sz.bendibao.com/bsyDetail/608251.html"
     ]
   },
   {
     "id": 0,
     "label": "非深户二档(企业)",
     "city": "深圳",
-    "minimumWage": 2200,
+    "minimumWage": 2360,
     "avgWage": 10646,
     "employee": {
       "insuranceRate": {
@@ -59,11 +59,13 @@
       }
     },
     "insuranceBaseRange": {
-      "endowment": [2200, 20268],
-      "health": [11620, 11620],
-      "unemployment": [2200, 2200]
+      "endowment": [2360, 22941],
+      "health": [6972, 34860],
+      "birth": [2360, 34860],
+      "unemployment": [2360, 2360],
+      "occupationalInjury": [2360, 2360]
     },
-    "housingFundBaseRange": [2200, 31938],
+    "housingFundBaseRange": [2360, 34860],
     "insuranceBaseOnLastMonth": true,
     "references": []
   },
@@ -71,7 +73,7 @@
     "id": 0,
     "label": "深户一档(企业)",
     "city": "深圳",
-    "minimumWage": 2200,
+    "minimumWage": 2360,
     "avgWage": 10646,
     "employee": {
       "insuranceRate": {
@@ -90,11 +92,13 @@
       }
     },
     "insuranceBaseRange": {
-      "endowment": [2200, 20268],
+      "endowment": [2360, 22941],
       "health": [6972, 34860],
-      "unemployment": [2200, 2200]
+      "birth": [2360, 34860],
+      "unemployment": [2360, 2360],
+      "occupationalInjury": [2360, 2360]
     },
-    "housingFundBaseRange": [2200, 31938],
+    "housingFundBaseRange": [2360, 34860],
     "insuranceBaseOnLastMonth": true,
     "references": []
   },
@@ -102,7 +106,7 @@
     "id": 0,
     "label": "深户二档(企业)",
     "city": "深圳",
-    "minimumWage": 2200,
+    "minimumWage": 2360,
     "avgWage": 10646,
     "employee": {
       "insuranceRate": {
@@ -121,11 +125,13 @@
       }
     },
     "insuranceBaseRange": {
-      "endowment": [2200, 20268],
-      "health": [11620, 11620],
-      "unemployment": [2200, 2200]
+      "endowment": [2360, 22941],
+      "health": [6972, 34860],
+      "birth": [2360, 34860],
+      "unemployment": [2360, 2360],
+      "occupationalInjury": [2360, 2360]
     },
-    "housingFundBaseRange": [2200, 31938],
+    "housingFundBaseRange": [2360, 34860],
     "insuranceBaseOnLastMonth": true,
     "references": []
   }

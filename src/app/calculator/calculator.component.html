@@ -181,6 +181,28 @@
               <mat-option [value]="400">五个子女，均摊扣除：400元</mat-option>
             </mat-autocomplete>
           </mat-form-field>
+
+          <mat-form-field class="ml-3" appearance="standard" style="width: 120px;">
+            <mat-label>企业年金个人缴纳金额</mat-label>
+            <input matInput type="number" placeholder="0" formControlName="enterprisePension" min="0">
+            <span matSuffix>元</span>
+          </mat-form-field>
+
+          <mat-form-field class="ml-3" appearance="standard" style="width: 120px;">
+            <mat-label>企业年金公司缴纳金额</mat-label>
+            <input matInput type="number" placeholder="0" formControlName="enterprisePensionTwo" min="0">
+            <span matSuffix>元</span>
+          </mat-form-field>
+
+          <mat-form-field class="ml-3" appearance="standard" style="width: 120px;">
+            <mat-label>其他扣除项</mat-label>
+            <input matInput
+                   type="number"
+                   placeholder="0"
+                   formControlName="other"
+                   min="0">
+            <span matSuffix>元</span>
+          </mat-form-field>
         </div>
       </div>
 
@@ -229,8 +251,8 @@
     <mat-accordion class="" [@listAnimation]="incomeList.length" (animationend)="scrollToSummary()">
       <mat-expansion-panel *ngFor="let item of incomeList; let idx = index; trackBy: trackIncome" #panel>
         <mat-expansion-panel-header>
-          {{ item.actualMonth - 1  | month }} 实收： {{ item.actualIncome | currency }}，公积金：{{ item.housingFund * 2 | currency }}
-          ，个税：{{ item.tax | currency }}
+          {{ item.actualMonth - 1  | month }} 实收： {{ item.cashIncome | currency }}，公积金：{{ item.housingFund * 2 | currency }}
+          ，个税：{{ item.tax | currency }}，公司成本：{{ item.employerCosts.full | currency }}
         </mat-expansion-panel-header>
 
         <ng-container [ngTemplateOutlet]="detailForm"
@@ -249,8 +271,13 @@
         </mat-list-item>
         <mat-list-item>
           <mat-icon mat-list-icon>note</mat-icon>
-          <div mat-line>全年一次性奖金收入</div>
-          <div mat-line class="figure">{{ sum.bonus | currency }}</div>
+          <div mat-line>全年一次性奖金收入(单独计税)</div>
+          <div mat-line class="figure">{{ sum.bonus | currency }} ({{ sum.bonusTax | currency }})</div>
+        </mat-list-item>
+        <mat-list-item>
+          <mat-icon mat-list-icon>note</mat-icon>
+          <div mat-line>全年公积金缴纳金额</div>
+          <div mat-line class="figure">{{ sum.fullHousingFund | currency }}</div>
         </mat-list-item>
         <mat-list-item>
           <mat-icon mat-list-icon>note</mat-icon>
@@ -259,53 +286,66 @@
         </mat-list-item>
         <mat-list-item>
           <mat-icon mat-list-icon>note</mat-icon>
-          <div mat-line>全年一次性奖金收入单独计算税额</div>
-          <div mat-line class="figure">{{ sum.bonusTax | currency }}</div>
+          <div mat-line>全年个人综合所得税额</div>
+          <div mat-line class="figure">{{ sum.theoreticalTax | currency }}</div>
         </mat-list-item>
         <mat-list-item>
           <mat-icon mat-list-icon>note</mat-icon>
-          <div mat-line>全年个人综合所得税额（合并奖金计算）</div>
-          <div mat-line class="figure">{{ sum.jointTax | currency }}</div>
-        </mat-list-item>
-        <mat-list-item>
-          <mat-icon mat-list-icon>note</mat-icon>
-          <div mat-line>全年公积金缴纳金额</div>
-          <div mat-line class="figure">{{ sum.fullHousingFund | currency }}</div>
+          <div mat-line>全年个人综合所得税额（单独计算）</div>
+          <div mat-line class="figure">{{ sum.totalSeparatedTax | currency }}</div>
         </mat-list-item>
 
         <mat-list-item>
           <mat-icon mat-list-icon>note</mat-icon>
-          <div mat-line>全年薪资奖金</div>
-          <div mat-line class="figure">{{ sum.actualIncome | currency }}</div>
+          <div mat-line>全年税后收入</div>
+          <div mat-line class="figure">{{ sum.taxedIncome | currency }}</div>
         </mat-list-item>
         <mat-list-item>
           <mat-icon mat-list-icon>note</mat-icon>
-          <div mat-line>全年薪资奖金（非合并 - 2024.1.1止）</div>
-          <div mat-line class="figure">{{ sum.actualIncomeDeprecated | currency }}</div>
-        </mat-list-item>
-
-        <mat-list-item>
-          <mat-icon mat-list-icon>note</mat-icon>
-          <div mat-line>全年个人综合所得</div>
-          <div mat-line class="figure">{{ (sum.actualIncome + sum.fullHousingFund) | currency }}</div>
+          <div mat-line>全年税后收入（非合并 - 2024.1.1止）</div>
+          <div mat-line class="figure">{{ sum.taxedIncomeDeprecated | currency }}</div>
         </mat-list-item>
 
         <mat-list-item>
           <mat-icon mat-list-icon>note</mat-icon>
-          <div mat-line>全年个人综合所得（非合并 - 2024.1.1止）</div>
-          <div mat-line class="figure">{{ (sum.actualIncomeDeprecated + sum.fullHousingFund) | currency }}</div>
+          <div mat-line>全年现金收入</div>
+          <div mat-line class="figure">{{ sum.cashIncome | currency }}</div>
         </mat-list-item>
 
         <mat-list-item>
           <mat-icon mat-list-icon>note</mat-icon>
-          <div mat-line>养老保险缴纳总额</div>
+          <div mat-line>全年现金收入（非合并 - 2024.1.1止）</div>
+          <div mat-line class="figure">{{ sum.cashIncomeDeprecated | currency }}</div>
+        </mat-list-item>
+
+        <mat-list-item>
+          <mat-icon mat-list-icon>note</mat-icon>
+          <div mat-line>全年综合货币收入</div>
+          <div mat-line class="figure">{{ (sum.cashIncome + sum.fullHousingFund) | currency }}</div>
+        </mat-list-item>
+
+        <mat-list-item>
+          <mat-icon mat-list-icon>note</mat-icon>
+          <div mat-line>全年综合货币收入（非合并 - 2024.1.1止）</div>
+          <div mat-line class="figure">{{ (sum.cashIncomeDeprecated + sum.fullHousingFund) | currency }}</div>
+        </mat-list-item>
+
+        <mat-list-item>
+          <mat-icon mat-list-icon>note</mat-icon>
+          <div mat-line>个人养老保险缴纳总额</div>
           <div mat-line class="figure">{{ sum.employee.endowmentInsurance | currency }}</div>
         </mat-list-item>
 
         <mat-list-item>
           <mat-icon mat-list-icon>note</mat-icon>
-          <div mat-line>医保保缴纳总额</div>
+          <div mat-line>个人医保缴纳总额</div>
           <div mat-line class="figure">{{ sum.employee.healthInsurance | currency }}</div>
+        </mat-list-item>
+
+        <mat-list-item>
+          <mat-icon mat-list-icon>note</mat-icon>
+          <div mat-line>公司成本</div>
+          <div mat-line class="figure">{{ sum.employerCosts.full | currency }}</div>
         </mat-list-item>
       </mat-list>
     </mat-card>
@@ -441,8 +481,31 @@
         <span matSuffix>元</span>
       </mat-form-field>
 
-      <p>个人三险总费：{{ income.insuranceFullCost | number: '0.0-3' }}， 社保：{{ income.insuranceCosts.endowment | number: '0.0-3' }}, 医保：{{ income.insuranceCosts.health | number: '0.0-3' }}， 失业：{{ income.insuranceCosts.unemployment | number: '0.0-3' }}</p>
+      <mat-form-field class="ml-3" appearance="standard" style="width: 120px;">
+        <mat-label>企业年金个人缴纳金额</mat-label>
+        <input matInput type="number" placeholder="0" formControlName="enterprisePension" min="0">
+        <span matSuffix>元</span>
+      </mat-form-field>
+
+      <mat-form-field class="ml-3" appearance="standard" style="width: 120px;">
+        <mat-label>企业年金公司缴纳金额</mat-label>
+        <input matInput type="number" placeholder="0" formControlName="enterprisePensionTwo" min="0">
+        <span matSuffix>元</span>
+      </mat-form-field>
+
+      <mat-form-field class="ml-3" appearance="standard" style="width: 120px;">
+        <mat-label>其他扣除项</mat-label>
+        <input matInput
+               type="number"
+               placeholder="0"
+               formControlName="other"
+               min="0">
+        <span matSuffix>元</span>
+      </mat-form-field>
     </div>
+
+    <p>个人三险总费：{{ income.insuranceFullCost | number: '0.0-3' }}， 社保：{{ income.insuranceCosts.endowment | number: '0.0-3' }}， 医保：{{ income.insuranceCosts.health | number: '0.0-3' }}， 失业：{{ income.insuranceCosts.unemployment | number: '0.0-3' }}</p>
+    <p>公司五险总费：{{ income.employerCosts.insuranceFull | number: '0.0-3' }}， 社保：{{ income.employerCosts.insurance.endowment | number: '0.0-3' }}， 医保：{{ income.employerCosts.insurance.health | number: '0.0-3' }}， 失业：{{ income.employerCosts.insurance.unemployment | number: '0.0-3' }}， 工伤：{{ income.employerCosts.insurance.occupationalInjury | number: '0.0-3' }}， 生育：{{ income.employerCosts.insurance.birth | number: '0.0-3' }}</p>
 
     <div class="mr-3 d-flex justify-content-end">
       <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid"

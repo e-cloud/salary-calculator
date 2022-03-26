@@ -35,6 +35,8 @@ mat-card-header {
 
 .summary mat-list-item {
   flex-basis: 50%;
+  flex-shrink: 0;
+  flex-grow: 0;
 }
 
 .mat-form-field-appearance-standard:first-child {
@@ -44,5 +46,19 @@ mat-card-header {
 @include media-breakpoint-down(sm) {
   .calc-result {
     padding: 0;
+  }
+
+  .summary mat-list-item {
+    flex-basis: 100%;
+  }
+}
+
+@include media-breakpoint-down(md) {
+  .mat-expansion-panel .mat-expansion-panel-header{
+    transition: 150ms ease-in-out;
+  }
+
+  .mat-expansion-panel:not(.mat-expanded) .mat-expansion-panel-header{
+    font-size: 0.8em;
   }
 }

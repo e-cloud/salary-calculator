@@ -15,7 +15,11 @@ export interface MonthlyIncomeInfo {
   /**
    * 税后收入
    */
-  actualIncome: number;
+  taxedIncome: number;
+  /**
+   * 现金收入
+   */
+  cashIncome: number;
   /**
    * 累计税前收入
    */
@@ -59,6 +63,9 @@ export interface MonthlyIncomeInfo {
     housingLoanInterest: number;
     renting: number;
     elderlyCare: number;
+    enterprisePension: number;
+    enterprisePensionTwo: number;
+    other: number;
   };
   fullExtraDeduction: number;
   /**
@@ -69,6 +76,22 @@ export interface MonthlyIncomeInfo {
    * 实际月份
    */
   actualMonth: number;
+
+  /**
+   * 雇主成本
+   */
+  employerCosts: {
+    full: number;
+    insuranceFull: number;
+    insurance: {
+      endowment: number;
+      health: number;
+      unemployment: number;
+      birth: number;
+      occupationalInjury: number;
+    };
+    enterprisePension: number;
+  };
 }
 
 export interface MonthlyIncomeMeta {
@@ -123,6 +146,12 @@ export interface MonthlyIncomeMeta {
     renting: number;
     // 赡养老人
     elderlyCare: number;
+    // 企业年金（个人）
+    enterprisePension: number;
+    // 企业年金（企业）
+    enterprisePensionTwo: number;
+    // 其他扣除
+    other: number;
   };
   /**
    * 全年一次性奖金
@@ -149,6 +178,8 @@ export interface MonthlyIncomeMeta {
    * 一般跳槽后第一月也是，因为新公司算税是从零开始的
    */
   newPayCycle: boolean;
+
+  employer: CityRecipe['employer'];
 }
 
 export interface FullYearIncomeInfo {
@@ -177,13 +208,21 @@ export interface FullYearIncomeInfo {
    */
   bookIncome: number;
   /**
-   * 全年综合实际收入
+   * 全年税后收入
    */
-  actualIncome: number;
+  taxedIncome: number;
   /**
-   * 全年综合实际收入(奖金单独计税版，2024.1.1废止)
+   * 全年税后实际收入(奖金单独计税版，2024.1.1废止)
    */
-  actualIncomeDeprecated: number;
+  taxedIncomeDeprecated: number;
+  /**
+   * 全年现金收入
+   */
+  cashIncome: number;
+  /**
+   * 全年现金收入(奖金单独计税版，2024.1.1废止)
+   */
+  cashIncomeDeprecated: number;
   /**
    * 全年一次性奖金收入
    */
@@ -193,18 +232,28 @@ export interface FullYearIncomeInfo {
    */
   bonusTax: number;
   /**
-   * 全年综合所得合并计税
+   * 全年薪酬所得税+一次性奖金所得税
    */
-  jointTax: number;
+  totalSeparatedTax: number;
 
   employee: {
     endowmentInsurance: number;
     healthInsurance: number;
   };
 
-  employer: {
-    endowmentInsurance: number;
-    healthInsurance: number;
+  /**
+   * 雇主成本
+   */
+   employerCosts: {
+    full: number;
+    insurance: {
+      endowment: number;
+      health: number;
+      unemployment: number;
+      birth: number;
+      occupationalInjury: number;
+    };
+    enterprisePension: number;
   };
 }
 
