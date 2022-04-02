@@ -59,11 +59,13 @@ export class IncomeCalculateService {
     full.cashIncome =
       full.taxedIncome -
       sumBy(list, 'insuranceFullCost') -
-      sumBy(list, 'housingFund');
+      sumBy(list, 'housingFund') -
+      sumBy(list, 'extraDeduction.enterprisePension');
     full.cashIncomeDeprecated =
       full.taxedIncomeDeprecated -
       sumBy(list, 'insuranceFullCost') -
-      sumBy(list, 'housingFund');
+      sumBy(list, 'housingFund') -
+      sumBy(list, 'extraDeduction.enterprisePension');
 
     full.employee.endowmentInsurance = sumBy(list, 'insuranceCosts.endowment');
     full.employee.healthInsurance = sumBy(list, 'insuranceCosts.health');
