@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "salary-calculator": {
+    "ng-calculator": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -20,7 +20,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/salary-calculator",
+            "outputPath": "dist/ng-calculator",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -72,10 +72,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "salary-calculator:build:production"
+              "browserTarget": "ng-calculator:build:production"
             },
             "development": {
-              "browserTarget": "salary-calculator:build:development"
+              "browserTarget": "ng-calculator:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -83,7 +83,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "salary-calculator:build"
+            "browserTarget": "ng-calculator:build"
           }
         },
         "test": {
@@ -122,16 +122,16 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "salary-calculator:serve"
+            "devServerTarget": "ng-calculator:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "salary-calculator:serve:production"
+              "devServerTarget": "ng-calculator:serve:production"
             }
           }
         }
       }
     }
   },
-  "defaultProject": "salary-calculator"
+  "defaultProject": "ng-calculator"
 }
