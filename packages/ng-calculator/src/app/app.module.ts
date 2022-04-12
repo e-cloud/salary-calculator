@@ -22,7 +22,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatListModule } from '@angular/material/list';
 import { MonthPipe } from './calculator/month.pipe';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import {MatDialogModule} from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 import { HelpInfoComponent } from './help-info/help-info.component';
 
 zh[14] = ['#,###0.###', '#,##0%', '¤#,###0.00', '#E0'];
@@ -30,7 +30,13 @@ zh[14] = ['#,###0.###', '#,##0%', '¤#,###0.00', '#E0'];
 registerLocaleData(zh);
 
 @NgModule({
-  declarations: [AppComponent, NavbarComponent, CalculatorComponent, MonthPipe, HelpInfoComponent],
+  declarations: [
+    AppComponent,
+    NavbarComponent,
+    CalculatorComponent,
+    MonthPipe,
+    HelpInfoComponent,
+  ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,

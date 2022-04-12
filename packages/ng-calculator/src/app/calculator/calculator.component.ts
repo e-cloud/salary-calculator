@@ -1,5 +1,5 @@
-/* tslint:disable:no-non-null-assertion */
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {
   CityRecipe,
@@ -18,15 +18,7 @@ import {
   trigger,
 } from '@angular/animations';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
-import {
-  filter,
-  map,
-  share,
-  startWith,
-  switchMap,
-  take,
-  tap,
-} from 'rxjs/operators';
+import { filter, map, share, startWith, switchMap, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 
 const shenzhenRecipe: CityRecipe = {
@@ -81,7 +73,7 @@ const shenzhenRecipe: CityRecipe = {
     ]),
   ],
 })
-export class CalculatorComponent implements OnInit {
+export class CalculatorComponent {
   baseForm: FormGroup;
   detailForms: FormGroup[] = [];
   usePredefinedInsurancePercents = true;
@@ -214,8 +206,6 @@ export class CalculatorComponent implements OnInit {
   }
 
   trackIncome = (_: number, x: MonthlyIncomeInfo) => x.actualMonth;
-
-  ngOnInit(): void {}
 
   resetConflict(src: number, form: FormGroup, controlName: string) {
     if (src > 0) {

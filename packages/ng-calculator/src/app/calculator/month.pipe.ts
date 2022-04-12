@@ -4,7 +4,7 @@ import { DatePipe } from '@angular/common';
 @Pipe({
   name: 'month',
 })
-export class MonthPipe extends DatePipe {
+export class MonthPipe extends DatePipe implements PipeTransform {
   transform(value: any, format?: any, timezone?: any, locale?: any): any {
     const date = new Date();
     date.setMonth(value);

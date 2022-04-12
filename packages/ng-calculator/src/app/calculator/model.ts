@@ -244,7 +244,7 @@ export interface FullYearIncomeInfo {
   /**
    * 雇主成本
    */
-   employerCosts: {
+  employerCosts: {
     full: number;
     insurance: {
       endowment: number;

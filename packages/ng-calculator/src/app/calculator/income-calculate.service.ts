@@ -1,4 +1,4 @@
-/* tslint:disable:no-non-null-assertion */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 
 import { Injectable } from '@angular/core';
 import { cloneDeep, omit, sum, sumBy, values } from 'lodash-es';
@@ -54,7 +54,7 @@ export class IncomeCalculateService {
       calculateTax(full.bookSalary - totalDeduction) + full.bonusTax;
 
     full.taxedIncome = full.bookIncome - full.theoreticalTax;
-    full.taxedIncomeDeprecated =  full.bookIncome - full.totalSeparatedTax;
+    full.taxedIncomeDeprecated = full.bookIncome - full.totalSeparatedTax;
     full.fullHousingFund = sumBy(list, 'housingFund') * 2;
     full.cashIncome =
       full.taxedIncome -
@@ -205,7 +205,8 @@ export class IncomeCalculateService {
       tax + (newPayCycle ? 0 : lastMonth!.accumulatedTax);
 
     // 雇主成本
-    newMonthInfo.employerCosts.enterprisePension = current.extraDeduction.enterprisePensionTwo;
+    newMonthInfo.employerCosts.enterprisePension =
+      current.extraDeduction.enterprisePensionTwo;
     newMonthInfo.employerCosts.insurance = insuranceCostsForEmployer(
       newPayCycle || !current.insuranceBaseOnLastMonth
         ? current.insuranceBase
