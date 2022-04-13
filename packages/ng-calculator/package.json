@@ -25,6 +25,7 @@
     "@angular/platform-browser-dynamic": "^13.3.2",
     "@angular/router": "^13.3.2",
     "bootstrap": "^4.6.1",
+    "calculator-core": "workspace:*",
     "lodash-es": "^4.17.21",
     "rxjs": "~6.6.7",
     "tslib": "^2.3.1",

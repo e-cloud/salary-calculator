@@ -10,6 +10,9 @@
     "src/polyfills.ts"
   ],
   "include": [
-    "src/**/*.d.ts"
+    "src/**/*.d.ts",
+    /* NOTE: for typescript module, we must include its source file explicitly */
+    "node_modules/calculator-core/index.ts",
+    "node_modules/calculator-core/src"
   ]
 }

@@ -1,14 +1,4 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { Component, ElementRef, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import {
-  CityRecipe,
-  FullYearIncomeInfo,
-  MonthlyIncomeInfo,
-  MonthlyIncomeMeta,
-} from './model';
-import { IncomeCalculateService } from './income-calculate.service';
-import { last, mapValues, merge } from 'lodash-es';
 import {
   animate,
   query,
@@ -17,9 +7,21 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
+import { HttpClient } from '@angular/common/http';
+import { Component, ElementRef, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  buildEmptyMetaList,
+  calculateFullYearIncome,
+  calculateMonthIncome,
+  CityRecipe,
+  FullYearIncomeInfo,
+  MonthlyIncomeInfo,
+  MonthlyIncomeMeta,
+} from 'calculator-core';
+import { last, mapValues, merge } from 'lodash-es';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { filter, map, share, startWith, switchMap, tap } from 'rxjs/operators';
-import { HttpClient } from '@angular/common/http';
 
 const shenzhenRecipe: CityRecipe = {
   id: 0,
@@ -93,11 +95,7 @@ export class CalculatorComponent {
 
   @ViewChild('summary', { read: ElementRef }) summary: ElementRef | null = null;
 
-  constructor(
-    private fb: FormBuilder,
-    private incomeService: IncomeCalculateService,
-    private http: HttpClient
-  ) {
+  constructor(private fb: FormBuilder, private http: HttpClient) {
     this.baseForm = fb.group({
       monthSalary: [10000, Validators.required],
       annualBonus: [0, Validators.required],
@@ -137,7 +135,7 @@ export class CalculatorComponent {
 
     this.monthlyMetas$ = this.baseMeta$.pipe(
       filter((meta) => meta != null),
-      map((meta) => this.incomeService.buildEmptyMetaList(meta)),
+      map((meta) => buildEmptyMetaList(meta)),
       switchMap((list) => {
         return this.metaUpdate$.pipe(startWith(null)).pipe(
           map((update) => {
@@ -169,10 +167,7 @@ export class CalculatorComponent {
         ([list]) => !!list && list.length > 0
       ),
       map(([list, meta]) => {
-        return this.incomeService.calculateFullYearIncome(
-          list!,
-          meta.annualBonus
-        );
+        return calculateFullYearIncome(list!, meta.annualBonus);
       })
     );
 
@@ -341,10 +336,7 @@ export class CalculatorComponent {
 
   private calculateMonthlyIncomes(metaList: MonthlyIncomeMeta[]) {
     return metaList.reduce((incomeList, meta) => {
-      const current = this.incomeService.calculateMonthIncome(
-        meta,
-        last(incomeList)
-      );
+      const current = calculateMonthIncome(meta, last(incomeList));
 
       incomeList.push(current);
 
