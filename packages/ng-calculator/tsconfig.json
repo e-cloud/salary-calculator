@@ -2,7 +2,7 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "baseUrl": "./",
+    "baseUrl": "."
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
