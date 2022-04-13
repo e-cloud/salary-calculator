@@ -8,7 +8,8 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "prettier-all": "prettier --loglevel error --config-precedence file-override --write ./src/**/**.{ts,js,json,scss,css}",
+    "format": "prettier --config-precedence file-override --write",
+    "format:all": "prettier --loglevel error --config-precedence file-override --write ./src/**/**.{ts,js,json,scss,css}",
     "release": "npm run build -- --configuration production --base-href /salary-calculator/",
     "deploy": "gh-pages --dist dist/salary-calculator"
   },

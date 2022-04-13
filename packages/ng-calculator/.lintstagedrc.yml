@@ -1,0 +1,11 @@
+---
+"*.ts":
+  - ng lint --fix --force
+  - npm run format
+  - ng lint
+"*.{scss,less,css}":
+  - stylelint --fix
+  - npm run format
+  - stylelint
+'*.json':
+  - npm run format

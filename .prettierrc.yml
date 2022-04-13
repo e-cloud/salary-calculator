@@ -1,7 +1,25 @@
+---
+printWidth: 120
+tabWidth: 2
+singleQuote: true
+semi: true
+trailingComma: all
+arrowParens: avoid
 overrides:
-  - files: '*.html'
+  - files: '*.{ts,tsx}'
     options:
-      parser: 'html'
-  - files: '*.component.html'
+      parser: typescript
+  - files: '*.{js,jsx}'
     options:
-      parser: 'angular'
+      parser: babel
+  - files: '*.vue'
+    options:
+      parser: vue
+  - files: '*.json'
+    options:
+      parser: json
+  - files:
+      - '.prettierrc'
+      - '.lintstagedrc.yml'
+    options:
+      parser: yaml

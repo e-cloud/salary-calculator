@@ -1,7 +1,27 @@
 {
   "name": "salary-calculator",
   "version": "0.1.0",
+  "description": "a monorepo for salary calculator with various frontend solutions",
   "scripts": {
+    "format": "prettier --config-precedence file-override --write",
+    "format:all": "prettier --loglevel error --config-precedence file-override --write ./**/*.{ts,tsx,js,json,jsx,vue,scss,css}",
+    "release": "standard-version -a",
+    "postinstall": "husky install"
   },
-  "private": true
+  "private": true,
+  "devDependencies": {
+    "@commitlint/cli": "^16.2.3",
+    "@commitlint/config-conventional": "^16.2.1",
+    "commitizen": "^4.2.4",
+    "cz-conventional-changelog": "^3.3.0",
+    "husky": "^7.0.4",
+    "lint-staged": "^12.3.7",
+    "prettier": "^2.6.2",
+    "standard-version": "^9.3.2"
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
+  }
 }
