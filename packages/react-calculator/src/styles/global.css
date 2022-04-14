@@ -9,7 +9,6 @@ a:hover {
 }
 
 @tailwind components;
-
 @tailwind utilities;
 
 .content p {
