@@ -5,14 +5,6 @@
     "outDir": "./out-tsc/app",
     "types": []
   },
-  "files": [
-    "src/main.ts",
-    "src/polyfills.ts"
-  ],
-  "include": [
-    "src/**/*.d.ts",
-    /* NOTE: for typescript module, we must include its source file explicitly */
-    "node_modules/calculator-core/index.ts",
-    "node_modules/calculator-core/src"
-  ]
+  "files": ["src/main.ts", "src/polyfills.ts"],
+  "include": ["src/**/*.d.ts"]
 }
