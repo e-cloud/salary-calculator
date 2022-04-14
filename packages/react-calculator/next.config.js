@@ -1,9 +1,13 @@
+// @ts-check
 /* eslint-disable import/no-extraneous-dependencies,no-param-reassign */
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 });
 
-module.exports = withBundleAnalyzer({
+/**
+ * @type {import('next').NextConfig}
+ */
+const nextConfig = {
   eslint: {
     dirs: ['.'],
   },
@@ -18,4 +22,5 @@ module.exports = withBundleAnalyzer({
     config.resolve.symlinks = false;
     return config;
   },
-});
+};
+module.exports = withBundleAnalyzer(nextConfig);

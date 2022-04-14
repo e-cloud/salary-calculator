@@ -2,9 +2,9 @@
 '*.{js,jsx,ts,tsx}':
   - eslint --fix
   - eslint
-#"*.{scss,less,css}":
-#  - stylelint --fix
-#  - npm run format
-#  - stylelint
+"*.{scss,less,css}":
+  - stylelint --fix
+  - npm run format
+  - stylelint
 '*.json':
   - npm run format
