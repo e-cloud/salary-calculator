@@ -1,13 +1,21 @@
 /* To learn more about this file see: https://angular.io/config/tsconfig. */
 {
-  "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "baseUrl": ".",
-    "outDir": "./dist",
+    "rootDir": "src",
+    "outDir": "lib",
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
     "removeComments": false,
     "preserveConstEnums": true,
     "declaration": true,
-    "composite": true
+    "composite": true,
+    "skipLibCheck": false,
+    "moduleResolution": "node",
+    "target": "es2015",
+    "module": "es2020",
+    "lib": ["es2018"]
   },
-  "include": ["./src", "index.ts"]
+  "include": ["src/"]
 }
