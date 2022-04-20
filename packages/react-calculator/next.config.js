@@ -19,7 +19,7 @@ const nextConfig = {
   // You can remove `basePath` if you don't need it.
   reactStrictMode: true,
   webpack: config => {
-    config.resolve.symlinks = false;
+    // config.resolve.symlinks = false;
     return config;
   },
 };
