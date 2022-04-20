@@ -8,7 +8,7 @@ export type DatePickerElementProps<TDate = unknown> = Omit<DatePickerProps, 'val
   required?: boolean
   isDate?: boolean
   parseError?: (error: FieldError) => string
-  onChange?: (value?: TDate) => void
+  onChange?: (value?: string) => void
   validation?: ControllerProps['rules']
   parseDate?: (date: TDate) => string
   control?: Control<any>
@@ -16,7 +16,7 @@ export type DatePickerElementProps<TDate = unknown> = Omit<DatePickerProps, 'val
   helperText?: TextFieldProps['helperText']
 }
 
-export default function DatePickerElement({
+export default function DatePickerElement<T>({
   isDate,
   parseError,
   name,
@@ -26,7 +26,7 @@ export default function DatePickerElement({
   inputProps,
   control,
   ...rest
-}: DatePickerElementProps): JSX.Element {
+}: DatePickerElementProps<T>): JSX.Element {
 
   if (required) {
     validation.required = 'This field is required'
@@ -41,7 +41,7 @@ export default function DatePickerElement({
         <DatePicker
           {...rest}
           value={value || ''}
-          onChange={(date, selectionState) => {
+          onChange={(date: any, selectionState: any) => {
             let parsedDate = ''
             if (selectionState) {
               if (typeof parseDate === 'function') {
@@ -59,7 +59,7 @@ export default function DatePickerElement({
             }
           }}
           renderInput={
-            (params) =>
+            (params: TextFieldProps) =>
               <TextField
                 {...params}
                 {...inputProps}

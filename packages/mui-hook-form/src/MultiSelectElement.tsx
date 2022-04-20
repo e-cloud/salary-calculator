@@ -10,8 +10,9 @@ import {
   ListItemText,
   MenuItem,
   Select,
-  SelectProps
-} from '@mui/material'
+  SelectProps,
+  Theme,
+} from '@mui/material';
 
 export type MultiSelectElementProps = Omit<SelectProps, 'value'> & {
   menuItems: any[]
@@ -127,7 +128,7 @@ export default function MultiSelectElement({
                     key={val}
                     value={val}
                     sx={{
-                      fontWeight: (theme) => isChecked ? theme.typography.fontWeightBold : theme.typography.fontWeightRegular
+                      fontWeight: (theme: Theme) => isChecked ? theme.typography.fontWeightBold : theme.typography.fontWeightRegular
                     }}
                   >
                     {showCheckbox && <Checkbox checked={isChecked} />}

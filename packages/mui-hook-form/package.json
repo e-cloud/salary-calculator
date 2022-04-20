@@ -10,7 +10,7 @@
     "react-hook-form"
   ],
   "private": true,
-  "name": "react-hook-form-mui",
+  "name": "mui-hook-form",
   "author": "Dominic Garms",
   "source": "src/index.ts",
   "main": "dist/react-form-hook-mui.js",
@@ -24,7 +24,6 @@
     "node": ">=14"
   },
   "scripts": {
-    "prepare": "npm run build",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
     "check-types": "tsc --noemit",
@@ -72,6 +71,7 @@
     "react-dom": "^17.0.2",
     "react-hook-form": "^7.27.1",
     "react-is": "^17.0.2",
+    "rimraf": "^3.0.2",
     "ts-loader": "^9.2.6",
     "tslib": "^2.3.1",
     "typescript": "^4.5.5",
