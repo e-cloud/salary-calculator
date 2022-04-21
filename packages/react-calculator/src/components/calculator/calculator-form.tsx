@@ -6,7 +6,7 @@ import {
   Switch,
   TextField,
 } from '@mui/material';
-import { Fragment } from 'react';
+import { FormContainer } from 'mui-hook-form';
 
 function makeSuffixElement(suffix: string) {
   return <InputAdornment position="end">{suffix}</InputAdornment>;
@@ -22,7 +22,7 @@ export const percentageSuffix = {
 
 export function CalculatorForm() {
   return (
-    <Fragment>
+    <FormContainer>
       <div className="grid gap-8 md:grid-cols-4">
         <div className="w-full">
           <TextField
@@ -242,6 +242,6 @@ export function CalculatorForm() {
           清空结果
         </Button>
       </Box>
-    </Fragment>
+    </FormContainer>
   );
 }

@@ -97,41 +97,6 @@ importers:
       typescript: 4.6.3
       webpack: 5.70.0
 
-  packages/mui-hook-form/example:
-    specifiers:
-      '@emotion/cache': latest
-      '@emotion/react': latest
-      '@emotion/server': latest
-      '@emotion/styled': latest
-      '@mui/material': ^5.6.0
-      '@next/bundle-analyzer': ^12.1.4
-      '@types/react': ^17.0.43
-      '@types/react-dom': ^17.0.14
-      cross-env: ^7.0.3
-      next: ^12.1.4
-      react: ^17.0.2
-      react-dom: ^17.0.2
-      react-hook-form: ^7.29.0
-      react-hook-form-mui: file:..
-      typescript: ^4.6.3
-    dependencies:
-      '@emotion/cache': 11.7.1
-      '@emotion/react': 11.9.0_c8e45b4eb687790dba17b4e1c4b4273f
-      '@emotion/server': 11.4.0
-      '@emotion/styled': 11.8.1_d4665d83ebbc6647a0f96304ff31b411
-      '@mui/material': 5.6.1_1a397cabda4e9f6398e9deafd8c60d27
-      next: 12.1.5_react-dom@17.0.2+react@17.0.2
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
-      react-hook-form: 7.30.0_react@17.0.2
-      react-hook-form-mui: link:..
-    devDependencies:
-      '@next/bundle-analyzer': 12.1.5
-      '@types/react': 17.0.44
-      '@types/react-dom': 17.0.15
-      cross-env: 7.0.3
-      typescript: 4.6.3
-
   packages/ng-calculator:
     specifiers:
       '@angular-devkit/build-angular': ^13.3.2
@@ -272,6 +237,7 @@ importers:
       eslint-plugin-simple-import-sort: ^7.0.0
       eslint-plugin-tailwindcss: ^3.5.0
       eslint-plugin-unused-imports: ^2.0.0
+      mui-hook-form: workspace:*
       next: ^12.1.4
       next-seo: ^5.4.0
       npm-run-all: ^4.1.5
@@ -298,6 +264,7 @@ importers:
       '@emotion/styled': 11.8.1_d4665d83ebbc6647a0f96304ff31b411
       '@mui/material': 5.6.1_1a397cabda4e9f6398e9deafd8c60d27
       calculator-core: link:../calculator-core
+      mui-hook-form: link:../mui-hook-form
       next: 12.1.5_react-dom@17.0.2+react@17.0.2
       next-seo: 5.4.0_7711af82ee0d60a5c39f3f11da715b4c
       react: 17.0.2

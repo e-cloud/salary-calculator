@@ -8,21 +8,32 @@ import {
   Icon,
   Menu,
   MenuItem,
+  Skeleton,
   Switch,
+  Typography,
 } from '@mui/material';
-import React, { Fragment } from 'react';
+import { CityRecipe } from 'calculator-core';
+import React, { Fragment, useContext } from 'react';
 
 import { CalculatorForm } from '@/components/calculator/calculator-form';
+import { RecipesService } from '@/components/calculator/recipes-service';
 
-export type CalculatorFormProps = {
+export type CalculatorCardProps = {
   className?: string;
+  recipes?: CityRecipe[];
 };
 
-function ReceiptMenu() {
+function RecipesMenu() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const { recipe, recipes, updateRecipe } = useContext(RecipesService);
+
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
+  };
+  const handleSelect = (item: CityRecipe) => {
+    setAnchorEl(null);
+    updateRecipe(item);
   };
   const handleClose = () => {
     setAnchorEl(null);
@@ -38,7 +49,7 @@ function ReceiptMenu() {
         onClick={handleClick}
         endIcon={<Icon>arrow_drop_down</Icon>}
       >
-        Dashboard
+        {recipe.label}
       </Button>
 
       <Menu
@@ -50,9 +61,11 @@ function ReceiptMenu() {
           'aria-labelledby': 'basic-button',
         }}
       >
-        <MenuItem onClick={handleClose}>Profile</MenuItem>
-        <MenuItem onClick={handleClose}>My account</MenuItem>
-        <MenuItem onClick={handleClose}>Logout</MenuItem>
+        {recipes.map(item => (
+          <MenuItem key={item.id} onClick={() => handleSelect(item)}>
+            {item.label}
+          </MenuItem>
+        ))}
       </Menu>
     </Fragment>
   );
@@ -74,14 +87,44 @@ function CardTitle() {
           label="预定义社保缴纳参数"
         />
 
-        <ReceiptMenu />
+        <RecipesMenu />
       </div>
     </div>
   );
 }
 
-function CalculatorCard(_: CalculatorFormProps) {
+function CalculatorFormSkeleton() {
   return (
+    <CardContent>
+      <Typography variant="h3">
+        <Skeleton animation="wave" />
+      </Typography>
+      <Typography variant="h2">
+        <Skeleton animation="wave" />
+      </Typography>
+      <Typography variant="h3">
+        <Skeleton animation="wave" />
+      </Typography>
+      <Typography variant="h3">
+        <Skeleton animation="wave" />
+      </Typography>
+      <Typography variant="h3">
+        <Skeleton animation="wave" />
+      </Typography>
+      <Typography variant="h3">
+        <Skeleton animation="wave" />
+      </Typography>
+    </CardContent>
+  );
+}
+
+function CalculatorCard(_: CalculatorCardProps) {
+  const { loading } = useContext(RecipesService);
+  return loading ? (
+    <Card>
+      <CalculatorFormSkeleton />
+    </Card>
+  ) : (
     <Card>
       <CardHeader title={<CardTitle />} />
       <CardContent>
