@@ -1,3 +1,4 @@
+import { useStore } from '@/store';
 import {
   Card,
   CardContent,
@@ -11,6 +12,7 @@ import {
 import { FullYearIncomeInfo } from 'calculator-core';
 
 import { currency } from '@/utils/pipes';
+import { useEffect, useRef } from 'react';
 
 const makeDollarText = (text: string) => (
   <Typography
@@ -30,9 +32,21 @@ export interface SummaryCardProps {
 }
 
 export default function SummaryCard(props: SummaryCardProps) {
+  const ref = useRef<HTMLDivElement | null>(null);
+  const baseMeta = useStore(state => state.baseMeta);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      ref.current?.scrollIntoView({ behavior: 'smooth' });
+    }, 500);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [baseMeta]);
+
   const { model } = props;
   return (
-    <Card>
+    <Card ref={ref}>
       <CardContent>
         <List
           sx={{

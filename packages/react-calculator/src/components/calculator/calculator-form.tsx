@@ -1,9 +1,9 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Box, Button } from '@mui/material';
+import { Autocomplete, Box, Button } from '@mui/material';
 import { buildBaseMeta, CityRecipe } from 'calculator-core';
 import { merge } from 'lodash-es';
-import { FormContainer, SwitchElement, TextFieldElement } from 'mui-hook-form';
-import { useState } from 'react';
+import { FormContainer, SwitchElement, TextFieldElement, AutocompleteElement } from 'mui-hook-form';
+import { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
@@ -96,12 +96,50 @@ export interface FormProps {
   usePredefinedInsurancePercents: boolean;
 }
 
+function insuranceTop(cityRecipe: CityRecipe) {
+  return Array.isArray(cityRecipe.insuranceBaseRange)
+    ? cityRecipe.insuranceBaseRange[1]
+    : cityRecipe.insuranceBaseRange.endowment[1];
+}
+
+function housingFundTop(cityRecipe: CityRecipe) {
+  return cityRecipe.housingFundBaseRange[1];
+}
+
+function makeInsuranceOptions(salary: number, recipe: CityRecipe) {
+  return [
+    {
+      label: `全额缴纳：${salary}元(不超上限${insuranceTop(recipe)}元)`,
+      value: salary,
+    },
+    {
+      label: `最低工资标准：${recipe.minimumWage}元`,
+      value: recipe.minimumWage,
+    },
+    { label: '不缴纳：0元', value: 0 },
+  ];
+}
+
+function makeHousingFundOptions(salary: number, recipe: CityRecipe) {
+  return [
+    {
+      label: `全额缴纳：${salary}元(不超上限${housingFundTop(recipe)}元)`,
+      value: salary,
+    },
+    {
+      label: `最低工资标准：${recipe.minimumWage}元`,
+      value: recipe.minimumWage,
+    },
+    { label: '不缴纳：0元', value: 0 },
+  ];
+}
+
 export function CalculatorForm({ usePredefinedInsurancePercents }: FormProps) {
   const recipe = useStore(x => x.recipe);
   const updateBaseMeta = useStore(x => x.updateBaseMeta);
   const monthlyMetasChanged = useStore(x => x.monthlyMetasChanged);
   const storeReset = useStore(x => x.reset);
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState<FormModel>({} as any);
   const formContext = useForm<FormModel>({
     defaultValues: merge({}, makeDefaultFormData(recipe), formData),
     resolver: yupResolver(schema),
@@ -153,6 +191,14 @@ export function CalculatorForm({ usePredefinedInsurancePercents }: FormProps) {
     storeReset();
   };
 
+  const insuranceOptions = useMemo(() => {
+    return makeInsuranceOptions(formData.monthSalary, recipe);
+  }, [formData, recipe]);
+
+  const housingFundOption = useMemo(() => {
+    return makeHousingFundOptions(formData.monthSalary, recipe);
+  }, [formData, recipe]);
+
   return (
     <FormContainer formContext={formContext} onSuccess={handleSuccess}>
       <div className="grid gap-8 md:grid-cols-4">
@@ -184,29 +230,62 @@ export function CalculatorForm({ usePredefinedInsurancePercents }: FormProps) {
       <Box
         className="flex flex-row flex-wrap"
         sx={{
-          '& .MuiTextField-root': { m: 1 },
+          '& .MuiAutocomplete-root': { m: 1 },
         }}
       >
-        <TextFieldElement
-          name="insuranceBase"
-          label="社保缴纳基数"
-          variant="standard"
-          type="number"
-          required
-          InputProps={{ ...yuanSuffix }}
+        <Autocomplete
+          options={insuranceOptions}
+          sx={{ width: 300 }}
+          disableClearable
+          forcePopupIcon={false}
+          getOptionLabel={x => x.value?.toString() || ''}
+          renderOption={(props, option) => (
+            <Box {...props} component="li" key={option.label}>
+              {option.label}
+            </Box>
+          )}
+          renderInput={params => (
+            <TextFieldElement
+              {...params}
+              name="insuranceBase"
+              label="社保缴纳基数"
+              variant="standard"
+              type="number"
+              required
+              InputProps={{ ...params.InputProps, ...yuanSuffix }}
+            />
+          )}
         />
 
         <Box>
-          <TextFieldElement
-            name="housingFundBase"
-            label="公积金缴纳基数"
-            variant="standard"
-            type="number"
-            required
-            InputProps={{ ...yuanSuffix }}
+          <AutocompleteElement
+            options={insuranceOptions}
+            sx={{ width: 300, display: 'inline-flex' }}
+            disableClearable
+            forcePopupIcon={false}
+            getOptionLabel={x => x.value?.toString() || ''}
+            renderOption={(props, option) => (
+              <Box {...props} component="li" key={option.label}>
+                {option.label}
+              </Box>
+            )}
+            renderInput={params => (
+              <TextFieldElement
+                {...params}
+                name="housingFundBase"
+                label="公积金缴纳基数"
+                variant="standard"
+                type="number"
+                required
+                InputProps={{ ...params.InputProps, ...yuanSuffix }}
+              />
+            )}
           />
 
           <TextFieldElement
+            sx={{
+              m: 1
+            }}
             name="housingFundRate"
             label="公积金个人缴纳比例"
             variant="standard"
