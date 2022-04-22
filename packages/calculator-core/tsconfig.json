@@ -11,7 +11,7 @@
     "preserveConstEnums": true,
     "declaration": true,
     "composite": true,
-    "skipLibCheck": false,
+    "skipLibCheck": true,
     "moduleResolution": "node",
     "target": "es2015",
     "module": "es2020",
