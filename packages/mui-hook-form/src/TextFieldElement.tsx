@@ -1,5 +1,5 @@
 import { TextField, TextFieldProps } from '@mui/material'
-import { Control, Controller, ControllerProps, FieldError } from 'react-hook-form'
+import { Control, Controller, ControllerProps, FieldError, useFormContext } from 'react-hook-form';
 import React from 'react'
 
 export type TextFieldElementProps = Omit<TextFieldProps,
@@ -16,31 +16,17 @@ export default function TextFieldElement({
   type,
   required,
   name,
-  control,
   ...rest
 }: TextFieldElementProps): JSX.Element {
-  if (required) {
-    validation.required = 'This field is required'
-  }
-  if (type === 'email') {
-    validation.pattern = {
-      // eslint-disable-next-line no-useless-escape
-      value: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-      message: 'Please enter a valid email address'
-    }
-  }
+  const { control } = useFormContext();
   return (
     <Controller
       name={name}
       control={control}
-      rules={validation}
-      render={({ field: { value, onChange, onBlur }, fieldState: { invalid, error } }) =>
+      render={({ field, fieldState: { invalid, error } }) =>
         <TextField
           {...rest}
-          name={name}
-          value={value || ''}
-          onChange={onChange}
-          onBlur={onBlur}
+          {...field}
           required={required}
           type={type}
           error={invalid}

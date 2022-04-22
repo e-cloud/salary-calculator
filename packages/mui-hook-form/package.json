@@ -27,7 +27,7 @@
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
     "check-types": "tsc --noemit",
-    "build": "rimraf dist && microbundle -f modern,esm,cjs --jsx React.createElement"
+    "build": "rimraf dist && microbundle -f modern,esm --jsx React.createElement"
   },
   "peerDependencies": {
     "@mui/icons-material": ">= 5.x <6",

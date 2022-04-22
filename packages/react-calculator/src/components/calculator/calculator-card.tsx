@@ -13,10 +13,10 @@ import {
   Typography,
 } from '@mui/material';
 import { CityRecipe } from 'calculator-core';
-import React, { Fragment, useContext } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 
 import { CalculatorForm } from '@/components/calculator/calculator-form';
-import { RecipesService } from '@/components/calculator/recipes-service';
+import { useStore } from '@/store';
 
 export type CalculatorCardProps = {
   className?: string;
@@ -25,7 +25,9 @@ export type CalculatorCardProps = {
 
 function RecipesMenu() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const { recipe, recipes, updateRecipe } = useContext(RecipesService);
+  const recipe = useStore(x => x.recipe);
+  const recipes = useStore(x => x.recipes);
+  const updateRecipe = useStore(x => x.updateRecipe);
 
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -71,7 +73,17 @@ function RecipesMenu() {
   );
 }
 
-function CardTitle() {
+function CardTitle(props: { handlePredefinedChange: (val: boolean) => void }) {
+  const [checked, setChecked] = useState(true);
+
+  useEffect(() => {
+    props.handlePredefinedChange(checked);
+  }, [checked]);
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setChecked(event.target.checked);
+  };
+
   return (
     <div
       css={css`
@@ -83,7 +95,7 @@ function CardTitle() {
 
       <div>
         <FormControlLabel
-          control={<Switch defaultChecked />}
+          control={<Switch checked={checked} onChange={handleChange} />}
           label="预定义社保缴纳参数"
         />
 
@@ -119,16 +131,32 @@ function CalculatorFormSkeleton() {
 }
 
 function CalculatorCard(_: CalculatorCardProps) {
-  const { loading } = useContext(RecipesService);
+  const [usePredefinedInsurancePercents, updateUsePredefinedInsurancePercents] =
+    useState(true);
+  const loading = useStore(state => state.recipesLoading);
+  const fetchRecipes = useStore(state => state.fetchRecipes);
+
+  useEffect(() => {
+    fetchRecipes();
+  }, []);
+
+  const handlePredefinedChange = (val: boolean) => {
+    updateUsePredefinedInsurancePercents(val);
+  };
+
   return loading ? (
     <Card>
       <CalculatorFormSkeleton />
     </Card>
   ) : (
     <Card>
-      <CardHeader title={<CardTitle />} />
+      <CardHeader
+        title={<CardTitle handlePredefinedChange={handlePredefinedChange} />}
+      />
       <CardContent>
-        <CalculatorForm />
+        <CalculatorForm
+          usePredefinedInsurancePercents={usePredefinedInsurancePercents}
+        />
       </CardContent>
     </Card>
   );

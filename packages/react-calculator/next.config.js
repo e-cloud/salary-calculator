@@ -18,6 +18,10 @@ const nextConfig = {
   // So, the source code is "basePath-ready".
   // You can remove `basePath` if you don't need it.
   reactStrictMode: true,
+  compiler: {
+    // Enables the styled-components SWC transform
+    styledComponents: true,
+  },
   webpack: config => {
     // config.resolve.symlinks = false;
     return config;

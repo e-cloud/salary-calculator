@@ -1,4 +1,4 @@
-import { Control, Controller } from 'react-hook-form'
+import { Control, Controller, useFormContext } from 'react-hook-form';
 import { FormControlLabel, FormControlLabelProps, Switch } from '@mui/material'
 import React from 'react'
 // ----------------------------------------------------------------------
@@ -10,7 +10,8 @@ export type SwitchElementProps = IProps & {
   control?: Control<any>
 }
 
-export default function SwitchElement({ name, control, ...other }: SwitchElementProps) {
+export default function SwitchElement({ name, ...other }: SwitchElementProps) {
+  const { control } = useFormContext()
   return (
     <FormControlLabel
       control={
@@ -18,7 +19,7 @@ export default function SwitchElement({ name, control, ...other }: SwitchElement
           name={name}
           control={control}
           render={({ field }) => <Switch {...field} checked={field.value} />}
-        />
+        /> as any
       }
       {...other}
     />
