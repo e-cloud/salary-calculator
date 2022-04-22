@@ -11,15 +11,16 @@ import { HttpClient } from '@angular/common/http';
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {
+  buildBaseMeta,
   buildEmptyMetaList,
   calculateFullYearIncome,
-  calculateMonthIncome,
+  calculateMonthlyIncomes,
   CityRecipe,
   FullYearIncomeInfo,
   MonthlyIncomeInfo,
   MonthlyIncomeMeta,
 } from 'calculator-core';
-import { last, mapValues, merge } from 'lodash-es';
+import { mapValues, merge } from 'lodash-es';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { filter, map, share, startWith, switchMap, tap } from 'rxjs/operators';
 
@@ -154,14 +155,11 @@ export class CalculatorComponent {
 
     this.monthlyIncomes$ = this.monthlyMetas$.pipe(
       filter((list) => list.length > 0),
-      map((list) => this.calculateMonthlyIncomes(list)),
+      map((list) => calculateMonthlyIncomes(list)),
       share()
     );
 
     this.summary$ = combineLatest([this.monthlyIncomes$, this.baseMeta$]).pipe(
-      tap((data) => {
-        console.log(data);
-      }),
       filter(([_, meta]) => meta != null),
       filter<[MonthlyIncomeInfo[] | null, MonthlyIncomeMeta]>(
         ([list]) => !!list && list.length > 0
@@ -270,7 +268,7 @@ export class CalculatorComponent {
         housingFundRate: value.housingFundRate / 100,
         insuranceRate: mapValues<MonthlyIncomeMeta['insuranceRate'], number>(
           value.insuranceRate,
-          (v) => v / 100
+          (v: number) => v / 100
         ),
         extraDeduction: value.extraDeduction,
         newPayCycle: value.newPayCycle,
@@ -282,26 +280,8 @@ export class CalculatorComponent {
 
   calculate(data: any): void {
     this.saveToCache();
-    const rawMeta: MonthlyIncomeMeta = {
-      salary: data.monthSalary,
-      insuranceBase: data.insuranceBase,
-      housingFundBase: data.housingFundBase,
-      housingFundRate: data.housingFundRate / 100,
-      insuranceRate: mapValues<MonthlyIncomeMeta['insuranceRate'], number>(
-        data.insuranceRate,
-        (v) => v / 100
-      ),
-      freeTaxQuota: 5000,
-      extraDeduction: data.extraDeduction,
-      annualBonus: data.annualBonus,
-      insuranceBaseRange: normalizeInsuranceBaseRange(this.cityRecipe),
-      housingFundBaseRange: this.cityRecipe.housingFundBaseRange,
-      insuranceBaseOnLastMonth: data.insuranceBaseOnLastMonth,
-      newPayCycle: false,
-      employer: this.cityRecipe.employer,
-    };
 
-    this.baseMeta$.next(rawMeta);
+    this.baseMeta$.next(buildBaseMeta(data, this.cityRecipe));
 
     this.clear = false;
   }
@@ -332,16 +312,6 @@ export class CalculatorComponent {
   private saveToCache() {
     localStorage.setItem('incomeMeta', JSON.stringify(this.baseForm.value));
     sessionStorage.setItem('incomeMeta', JSON.stringify(this.baseForm.value));
-  }
-
-  private calculateMonthlyIncomes(metaList: MonthlyIncomeMeta[]) {
-    return metaList.reduce((incomeList, meta) => {
-      const current = calculateMonthIncome(meta, last(incomeList));
-
-      incomeList.push(current);
-
-      return incomeList;
-    }, [] as MonthlyIncomeInfo[]);
   }
 
   private buildDetailForms(

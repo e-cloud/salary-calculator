@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
-import { cloneDeep, omit, sum, sumBy, values } from "lodash-es";
+import { cloneDeep, last, mapValues, omit, sum, sumBy, values } from 'lodash-es';
 import { TaxRateModel, TaxRateTable, TaxRateTableForBonus } from "./consts";
-import { CityRecipe, FullYearIncomeInfo, MonthlyIncomeInfo, MonthlyIncomeMeta } from "./model";
+import { CityRecipe, FullYearIncomeInfo, MonthlyIncomeInfo, MonthlyIncomeMeta, RawMeta } from './model';
 
 export function calculateFullYearIncome(
   list: MonthlyIncomeInfo[],
@@ -216,8 +216,58 @@ export function calculateMonthIncome(
   return newMonthInfo;
 }
 
+export function calculateMonthlyIncomes(metaList: MonthlyIncomeMeta[]) {
+  return metaList.reduce((incomeList, meta) => {
+    const current = calculateMonthIncome(meta, last(incomeList));
+
+    incomeList.push(current);
+
+    return incomeList;
+  }, [] as MonthlyIncomeInfo[]);
+}
+
 export function buildEmptyMetaList(meta: MonthlyIncomeMeta): MonthlyIncomeMeta[] {
   return new Array(12).fill(0).map(() => cloneDeep(meta));
+}
+
+export function buildBaseMeta(
+  data: RawMeta,
+  recipe: CityRecipe,
+): MonthlyIncomeMeta {
+  return {
+    salary: data.monthSalary,
+    insuranceBase: data.insuranceBase,
+    housingFundBase: data.housingFundBase,
+    housingFundRate: data.housingFundRate / 100,
+    insuranceRate: mapValues<MonthlyIncomeMeta['insuranceRate'], number>(
+      data.insuranceRate,
+      v => v / 100,
+    ),
+    freeTaxQuota: 5000,
+    extraDeduction: data.extraDeduction,
+    annualBonus: data.annualBonus,
+    insuranceBaseRange: normalizeInsuranceBaseRange(recipe),
+    housingFundBaseRange: recipe.housingFundBaseRange,
+    insuranceBaseOnLastMonth: data.insuranceBaseOnLastMonth,
+    newPayCycle: false,
+    employer: recipe.employer,
+  };
+}
+
+export function normalizeInsuranceBaseRange(meta: CityRecipe) {
+  let { insuranceBaseRange } = meta;
+  if (Array.isArray(insuranceBaseRange)) {
+    // eslint-disable-next-line no-param-reassign
+    insuranceBaseRange = {
+      endowment: insuranceBaseRange,
+      health: insuranceBaseRange,
+      unemployment: insuranceBaseRange,
+      birth: insuranceBaseRange,
+      occupationalInjury: insuranceBaseRange,
+    };
+  }
+
+  return insuranceBaseRange;
 }
 
 function calculateTax(num: number): number {

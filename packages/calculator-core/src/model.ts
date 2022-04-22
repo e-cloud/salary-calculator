@@ -306,3 +306,28 @@ export interface CityRecipe {
   // 各省市参考资料地址
   references: string[];
 }
+
+export interface RawMeta {
+  monthSalary: number;
+  annualBonus: number;
+  insuranceBase: number;
+  housingFundBase: number;
+  housingFundRate: number;
+  extraDeduction: {
+    childEducation: number;
+    continuingEducation: number;
+    seriousMedicalExpense: number;
+    housingLoanInterest: number;
+    renting: number;
+    elderlyCare: number;
+    enterprisePension: number;
+    enterprisePensionTwo: number;
+    other: number;
+  };
+  insuranceRate: {
+    endowment: number;
+    health: number;
+    unemployment: number;
+  };
+  insuranceBaseOnLastMonth: boolean;
+}

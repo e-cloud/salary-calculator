@@ -1,8 +1,8 @@
 ---
 "*.ts":
-  - ng lint --fix --force
+  - ng-lint-staged lint --fix --force --
   - npm run format
-  - ng lint
+  - ng-lint-staged lint --
 "*.{scss,less,css}":
   - stylelint --fix
   - npm run format
