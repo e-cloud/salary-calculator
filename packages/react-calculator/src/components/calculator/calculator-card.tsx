@@ -85,13 +85,8 @@ function CardTitle(props: { handlePredefinedChange: (val: boolean) => void }) {
   };
 
   return (
-    <div
-      css={css`
-        display: flex;
-        justify-content: space-between;
-      `}
-    >
-      <span>基础信息</span>
+    <div className="flex justify-between">
+      <span className="text-nowrap flex-grow">基础信息</span>
 
       <div>
         <FormControlLabel

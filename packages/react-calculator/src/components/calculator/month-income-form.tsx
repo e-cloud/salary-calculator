@@ -1,8 +1,14 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Box, Button, Typography } from '@mui/material';
-import { MonthlyIncomeInfo, MonthlyIncomeMeta } from 'calculator-core';
+import {
+  childEducationDeductionOptions,
+  continuousEducationDeductionOptions, elderlyCareDeductionOptions,
+  housingLoanInterestDeductionOptions,
+  MonthlyIncomeInfo,
+  MonthlyIncomeMeta, rentingDeductionOptions
+} from 'calculator-core';
 import { mapValues } from 'lodash-es';
-import { FormContainer, SwitchElement, TextFieldElement } from 'mui-hook-form';
+import { FormContainer, SwitchElement, TextFieldElement } from '@/modules/react-hook-form-mui';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
@@ -13,6 +19,7 @@ import {
 } from '@/components/calculator/form-utils';
 import { useStore } from '@/store';
 import { numberFormat } from '@/utils/pipes';
+import {SimpleYuanAutoComplete} from '@/components/simpleYuanAutoComplete.tsx';
 
 export interface DetailFormModel {
   monthSalary: number;
@@ -221,24 +228,19 @@ export function MonthIncomeForm(props: MonthIncomeFormProps) {
         }}
         mb={2}
       >
-        <TextFieldElement
+
+        <SimpleYuanAutoComplete
           name="extraDeduction.childEducation"
           label="子女教育(当月)"
-          variant="standard"
-          type="number"
-          required
-          InputProps={{ ...yuanSuffix }}
-          sx={{ width: 120 }}
+          options={childEducationDeductionOptions}
+          width={150}
         />
 
-        <TextFieldElement
+        <SimpleYuanAutoComplete
           name="extraDeduction.continuingEducation"
           label="继续教育(当月)"
-          variant="standard"
-          type="number"
-          required
-          InputProps={{ ...yuanSuffix }}
-          sx={{ width: 120 }}
+          options={continuousEducationDeductionOptions}
+          width={150}
         />
 
         <TextFieldElement
@@ -248,37 +250,28 @@ export function MonthIncomeForm(props: MonthIncomeFormProps) {
           type="number"
           required
           InputProps={{ ...yuanSuffix }}
-          sx={{ width: 120 }}
+          sx={{ width: 150 }}
         />
 
-        <TextFieldElement
+        <SimpleYuanAutoComplete
           name="extraDeduction.housingLoanInterest"
           label="住房贷款利息(当月)"
-          variant="standard"
-          type="number"
-          required
-          InputProps={{ ...yuanSuffix }}
-          sx={{ width: 120 }}
+          options={housingLoanInterestDeductionOptions}
+          width={180}
         />
 
-        <TextFieldElement
+        <SimpleYuanAutoComplete
           name="extraDeduction.renting"
           label="住房租金(当月)"
-          variant="standard"
-          type="number"
-          required
-          InputProps={{ ...yuanSuffix }}
-          sx={{ width: 120 }}
+          options={rentingDeductionOptions}
+          width={150}
         />
 
-        <TextFieldElement
+        <SimpleYuanAutoComplete
           name="extraDeduction.elderlyCare"
           label="赡养老人(当月)"
-          variant="standard"
-          type="number"
-          required
-          InputProps={{ ...yuanSuffix }}
-          sx={{ width: 120 }}
+          options={elderlyCareDeductionOptions}
+          width={150}
         />
 
         <TextFieldElement
@@ -288,7 +281,7 @@ export function MonthIncomeForm(props: MonthIncomeFormProps) {
           type="number"
           required
           InputProps={{ ...yuanSuffix }}
-          sx={{ width: 120 }}
+          sx={{ width: 200 }}
         />
 
         <TextFieldElement
@@ -298,7 +291,7 @@ export function MonthIncomeForm(props: MonthIncomeFormProps) {
           type="number"
           required
           InputProps={{ ...yuanSuffix }}
-          sx={{ width: 120 }}
+          sx={{ width: 200 }}
         />
 
         <TextFieldElement
@@ -308,7 +301,7 @@ export function MonthIncomeForm(props: MonthIncomeFormProps) {
           type="number"
           required
           InputProps={{ ...yuanSuffix }}
-          sx={{ width: 120 }}
+          sx={{ width: 150 }}
         />
       </Box>
 

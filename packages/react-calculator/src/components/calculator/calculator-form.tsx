@@ -1,10 +1,21 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Box, Button } from '@mui/material';
-import { buildBaseMeta, CityRecipe } from 'calculator-core';
+import { Autocomplete, Box, Button } from '@mui/material';
+import {
+  buildBaseMeta,
+  childEducationDeductionOptions,
+  CityRecipe,
+  continuousEducationDeductionOptions, elderlyCareDeductionOptions,
+  housingLoanInterestDeductionOptions, rentingDeductionOptions
+} from 'calculator-core';
 import { merge } from 'lodash-es';
-import { FormContainer, SwitchElement, TextFieldElement } from 'mui-hook-form';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import {
+  AutocompleteElement,
+  FormContainer,
+  SwitchElement,
+  TextFieldElement,
+} from '@/modules/react-hook-form-mui';
 import * as yup from 'yup';
 
 import {
@@ -14,6 +25,7 @@ import {
 } from '@/components/calculator/form-utils';
 import { useStore } from '@/store';
 import useFormPersist from '@/utils/persist';
+import {SimpleYuanAutoComplete} from '@/components/simpleYuanAutoComplete.tsx';
 
 const schema = yup.object().shape({
   monthSalary: numberRule,
@@ -96,12 +108,50 @@ export interface FormProps {
   usePredefinedInsurancePercents: boolean;
 }
 
+function insuranceTop(cityRecipe: CityRecipe) {
+  return Array.isArray(cityRecipe.insuranceBaseRange)
+    ? cityRecipe.insuranceBaseRange[1]
+    : cityRecipe.insuranceBaseRange.endowment[1];
+}
+
+function housingFundTop(cityRecipe: CityRecipe) {
+  return cityRecipe.housingFundBaseRange[1];
+}
+
+function makeInsuranceOptions(salary: number, recipe: CityRecipe) {
+  return [
+    {
+      label: `全额缴纳：${salary}元(不超上限${insuranceTop(recipe)}元)`,
+      value: salary,
+    },
+    {
+      label: `最低工资标准：${recipe.minimumWage}元`,
+      value: recipe.minimumWage,
+    },
+    { label: '不缴纳：0元', value: 0 },
+  ];
+}
+
+function makeHousingFundOptions(salary: number, recipe: CityRecipe) {
+  return [
+    {
+      label: `全额缴纳：${salary}元(不超上限${housingFundTop(recipe)}元)`,
+      value: salary,
+    },
+    {
+      label: `最低工资标准：${recipe.minimumWage}元`,
+      value: recipe.minimumWage,
+    },
+    { label: '不缴纳：0元', value: 0 },
+  ];
+}
+
 export function CalculatorForm({ usePredefinedInsurancePercents }: FormProps) {
   const recipe = useStore(x => x.recipe);
   const updateBaseMeta = useStore(x => x.updateBaseMeta);
   const monthlyMetasChanged = useStore(x => x.monthlyMetasChanged);
   const storeReset = useStore(x => x.reset);
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState<FormModel>({} as FormModel);
   const formContext = useForm<FormModel>({
     defaultValues: merge({}, makeDefaultFormData(recipe), formData),
     resolver: yupResolver(schema),
@@ -121,7 +171,7 @@ export function CalculatorForm({ usePredefinedInsurancePercents }: FormProps) {
     },
   );
 
-  const handleSuccess = (data: any) => {
+  const handleSuccess = (data: FormModel) => {
     setFormData(data);
     updateBaseMeta(buildBaseMeta(data, recipe));
   };
@@ -153,9 +203,19 @@ export function CalculatorForm({ usePredefinedInsurancePercents }: FormProps) {
     storeReset();
   };
 
+  const currentMonthlySalary = formContext.watch('monthSalary');
+
+  const insuranceOptions = useMemo(() => {
+    return makeInsuranceOptions(currentMonthlySalary, recipe);
+  }, [currentMonthlySalary, recipe]);
+
+  const housingFundOptions = useMemo(() => {
+    return makeHousingFundOptions(currentMonthlySalary, recipe);
+  }, [currentMonthlySalary, recipe]);
+
   return (
     <FormContainer formContext={formContext} onSuccess={handleSuccess}>
-      <div className="grid gap-8 md:grid-cols-4">
+      <div className="grid gap-8 md:grid-cols-4 mb-4">
         <div className="w-full">
           <TextFieldElement
             className="w-full"
@@ -184,29 +244,27 @@ export function CalculatorForm({ usePredefinedInsurancePercents }: FormProps) {
       <Box
         className="flex flex-row flex-wrap"
         sx={{
-          '& .MuiTextField-root': { m: 1 },
+          '& .MuiAutocomplete-root': { m: 1 },
         }}
       >
-        <TextFieldElement
+
+        <SimpleYuanAutoComplete
           name="insuranceBase"
           label="社保缴纳基数"
-          variant="standard"
-          type="number"
-          required
-          InputProps={{ ...yuanSuffix }}
+          options={insuranceOptions}
         />
 
         <Box>
-          <TextFieldElement
+          <SimpleYuanAutoComplete
             name="housingFundBase"
             label="公积金缴纳基数"
-            variant="standard"
-            type="number"
-            required
-            InputProps={{ ...yuanSuffix }}
+            options={housingFundOptions}
           />
 
           <TextFieldElement
+            sx={{
+              m: 1,
+            }}
             name="housingFundRate"
             label="公积金个人缴纳比例"
             variant="standard"
@@ -225,24 +283,19 @@ export function CalculatorForm({ usePredefinedInsurancePercents }: FormProps) {
           '& .MuiTextField-root': { m: 1 },
         }}
       >
-        <TextFieldElement
+
+        <SimpleYuanAutoComplete
           name="extraDeduction.childEducation"
           label="子女教育(当月)"
-          variant="standard"
-          type="number"
-          required
-          InputProps={{ ...yuanSuffix }}
-          sx={{ width: 120 }}
+          options={childEducationDeductionOptions}
+          width={150}
         />
 
-        <TextFieldElement
+        <SimpleYuanAutoComplete
           name="extraDeduction.continuingEducation"
           label="继续教育(当月)"
-          variant="standard"
-          type="number"
-          required
-          InputProps={{ ...yuanSuffix }}
-          sx={{ width: 120 }}
+          options={continuousEducationDeductionOptions}
+          width={150}
         />
 
         <TextFieldElement
@@ -252,37 +305,28 @@ export function CalculatorForm({ usePredefinedInsurancePercents }: FormProps) {
           type="number"
           required
           InputProps={{ ...yuanSuffix }}
-          sx={{ width: 120 }}
+          sx={{ width: 150 }}
         />
 
-        <TextFieldElement
+        <SimpleYuanAutoComplete
           name="extraDeduction.housingLoanInterest"
           label="住房贷款利息(当月)"
-          variant="standard"
-          type="number"
-          required
-          InputProps={{ ...yuanSuffix }}
-          sx={{ width: 120 }}
+          options={housingLoanInterestDeductionOptions}
+          width={180}
         />
 
-        <TextFieldElement
+        <SimpleYuanAutoComplete
           name="extraDeduction.renting"
           label="住房租金(当月)"
-          variant="standard"
-          type="number"
-          required
-          InputProps={{ ...yuanSuffix }}
-          sx={{ width: 120 }}
+          options={rentingDeductionOptions}
+          width={150}
         />
 
-        <TextFieldElement
+        <SimpleYuanAutoComplete
           name="extraDeduction.elderlyCare"
           label="赡养老人(当月)"
-          variant="standard"
-          type="number"
-          required
-          InputProps={{ ...yuanSuffix }}
-          sx={{ width: 120 }}
+          options={elderlyCareDeductionOptions}
+          width={150}
         />
 
         <TextFieldElement
@@ -292,7 +336,7 @@ export function CalculatorForm({ usePredefinedInsurancePercents }: FormProps) {
           type="number"
           required
           InputProps={{ ...yuanSuffix }}
-          sx={{ width: 120 }}
+          sx={{ width: 200 }}
         />
 
         <TextFieldElement
@@ -302,7 +346,7 @@ export function CalculatorForm({ usePredefinedInsurancePercents }: FormProps) {
           type="number"
           required
           InputProps={{ ...yuanSuffix }}
-          sx={{ width: 120 }}
+          sx={{ width: 200 }}
         />
 
         <TextFieldElement
@@ -312,7 +356,7 @@ export function CalculatorForm({ usePredefinedInsurancePercents }: FormProps) {
           type="number"
           required
           InputProps={{ ...yuanSuffix }}
-          sx={{ width: 120 }}
+          sx={{ width: 150 }}
         />
       </Box>
 
@@ -375,7 +419,7 @@ export function CalculatorForm({ usePredefinedInsurancePercents }: FormProps) {
 
         <Button
           disabled={monthlyMetasChanged}
-          className="ml-3"
+          className="!ml-3"
           variant="outlined"
           size="large"
           onClick={handleReset}
@@ -384,7 +428,7 @@ export function CalculatorForm({ usePredefinedInsurancePercents }: FormProps) {
         </Button>
 
         <Button
-          className="ml-3"
+          className="!ml-3"
           variant="outlined"
           size="large"
           onClick={handleClear}

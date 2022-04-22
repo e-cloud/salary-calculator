@@ -153,18 +153,14 @@
               #childEducation="matAutocomplete"
               panelWidth="200"
             >
-              <mat-option [value]="0">不符合：0元</mat-option>
-              <mat-option [value]="500"
-                >一个孩子，夫妻双方各自扣除：500元</mat-option
-              >
-              <mat-option [value]="1000"
-                >一个孩子，仅有一方扣除：1000元</mat-option
-              >
-              <mat-option [value]="1000"
-                >两个个孩子，夫妻双方各自扣除：1000元</mat-option
-              >
-              <mat-option [value]="2000"
-                >两个孩子，仅有一方扣除：2000元</mat-option
+              <mat-option
+                *ngFor="
+                  let item of childEducationDeductionOptions;
+                  let idx = index;
+                  trackBy: trackByValue
+                "
+                [value]="item.value"
+                >{{ item.label }}</mat-option
               >
             </mat-autocomplete>
           </mat-form-field>
@@ -189,8 +185,14 @@
               #continuingEducation="matAutocomplete"
               panelWidth="200"
             >
-              <mat-option [value]="0">不符合：0元</mat-option>
-              <mat-option [value]="400">接受学历教育中，扣除：400元</mat-option>
+              <mat-option
+                *ngFor="
+                  let item of continuousEducationDeductionOptions;
+                  let idx = index;
+                  trackBy: trackByValue
+                "
+                [value]="item.value"
+              >{{ item.label }}</mat-option>
             </mat-autocomplete>
           </mat-form-field>
 
@@ -233,9 +235,14 @@
               #housingLoanInterest="matAutocomplete"
               panelWidth="200"
             >
-              <mat-option [value]="0">不符合：0元</mat-option>
-              <mat-option [value]="500">夫妻双方各自扣除：500元</mat-option>
-              <mat-option [value]="1000">仅有一方扣除：1000元</mat-option>
+              <mat-option
+                *ngFor="
+                  let item of housingLoanInterestDeductionOptions;
+                  let idx = index;
+                  trackBy: trackByValue
+                "
+                [value]="item.value"
+              >{{ item.label }}</mat-option>
             </mat-autocomplete>
           </mat-form-field>
 
@@ -263,16 +270,14 @@
             <span matSuffix>元</span>
 
             <mat-autocomplete #renting="matAutocomplete" panelWidth="200">
-              <mat-option [value]="0">不符合：0元</mat-option>
-              <mat-option [value]="800"
-                >人口少于100万城市，扣除：800元</mat-option
-              >
-              <mat-option [value]="1100"
-                >人口大于100万城市，扣除：1100元</mat-option
-              >
-              <mat-option [value]="1500"
-                >省会，直辖市等，扣除：1500元</mat-option
-              >
+              <mat-option
+                *ngFor="
+                  let item of rentingDeductionOptions;
+                  let idx = index;
+                  trackBy: trackByValue
+                "
+                [value]="item.value"
+              >{{ item.label }}</mat-option>
             </mat-autocomplete>
           </mat-form-field>
 
@@ -293,14 +298,14 @@
             <span matSuffix>元</span>
 
             <mat-autocomplete #elderlyCare="matAutocomplete" panelWidth="200">
-              <mat-option [value]="0">不符合：0元</mat-option>
-              <mat-option [value]="2000">独生子女，扣除：2000元</mat-option>
-              <mat-option [value]="1000">两个子女，均摊扣除：1000元</mat-option>
-              <mat-option [value]="666.7"
-                >三个子女，均摊扣除：666.7元</mat-option
-              >
-              <mat-option [value]="500">四个子女，均摊扣除：500元</mat-option>
-              <mat-option [value]="400">五个子女，均摊扣除：400元</mat-option>
+              <mat-option
+                *ngFor="
+                  let item of elderlyCareDeductionOptions;
+                  let idx = index;
+                  trackBy: trackByValue
+                "
+                [value]="item.value"
+              >{{ item.label }}</mat-option>
             </mat-autocomplete>
           </mat-form-field>
 
@@ -442,11 +447,7 @@
     class="col-md-6 col-sm-12 mb-4 mb-md-0"
     *ngIf="!clear && (monthlyIncomes$ | async) as incomeList"
   >
-    <mat-accordion
-      class=""
-      [@listAnimation]="incomeList.length"
-      (animationend)="scrollToSummary()"
-    >
+    <mat-accordion (animationend)="scrollToSummary()">
       <mat-expansion-panel
         *ngFor="let item of incomeList; let idx = index; trackBy: trackIncome"
         #panel

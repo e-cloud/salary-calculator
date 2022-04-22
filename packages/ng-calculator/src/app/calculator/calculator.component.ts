@@ -15,10 +15,15 @@ import {
   buildEmptyMetaList,
   calculateFullYearIncome,
   calculateMonthlyIncomes,
+  childEducationDeductionOptions,
   CityRecipe,
+  continuousEducationDeductionOptions,
+  elderlyCareDeductionOptions,
   FullYearIncomeInfo,
+  housingLoanInterestDeductionOptions,
   MonthlyIncomeInfo,
   MonthlyIncomeMeta,
+  rentingDeductionOptions,
 } from 'calculator-core';
 import { mapValues, merge } from 'lodash-es';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
@@ -199,6 +204,7 @@ export class CalculatorComponent {
   }
 
   trackIncome = (_: number, x: MonthlyIncomeInfo) => x.actualMonth;
+  trackByValue = (_: number, x: any) => x.value;
 
   resetConflict(src: number, form: FormGroup, controlName: string) {
     if (src > 0) {
@@ -256,7 +262,7 @@ export class CalculatorComponent {
           behavior: 'smooth',
         });
       }
-    }, 1000);
+    }, 500);
   }
 
   updateMeta(value: any, index: number) {
@@ -374,6 +380,14 @@ export class CalculatorComponent {
 
     return forms;
   }
+
+  readonly childEducationDeductionOptions = childEducationDeductionOptions;
+  readonly continuousEducationDeductionOptions =
+    continuousEducationDeductionOptions;
+  readonly housingLoanInterestDeductionOptions =
+    housingLoanInterestDeductionOptions;
+  readonly rentingDeductionOptions = rentingDeductionOptions;
+  readonly elderlyCareDeductionOptions = elderlyCareDeductionOptions;
 }
 
 function normalizeInsuranceBaseRange(meta: CityRecipe) {
