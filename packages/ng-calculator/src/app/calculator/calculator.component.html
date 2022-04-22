@@ -442,11 +442,7 @@
     class="col-md-6 col-sm-12 mb-4 mb-md-0"
     *ngIf="!clear && (monthlyIncomes$ | async) as incomeList"
   >
-    <mat-accordion
-      class=""
-      [@listAnimation]="incomeList.length"
-      (animationend)="scrollToSummary()"
-    >
+    <mat-accordion (animationend)="scrollToSummary()">
       <mat-expansion-panel
         *ngFor="let item of incomeList; let idx = index; trackBy: trackIncome"
         #panel

@@ -256,7 +256,7 @@ export class CalculatorComponent {
           behavior: 'smooth',
         });
       }
-    }, 1000);
+    }, 500);
   }
 
   updateMeta(value: any, index: number) {
