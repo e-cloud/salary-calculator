@@ -1,0 +1,72 @@
+[
+  {
+    "id": 0,
+    "label": "一档(企业)",
+    "city": "深圳",
+    "minimumWage": 2360,
+    "avgWage": 8807,
+    "employee": {
+      "insuranceRate": {
+        "endowment": 0.08,
+        "health": 0.02,
+        "unemployment": 0.003
+      }
+    },
+    "employer": {
+      "insuranceRate": {
+        "endowment": 0.14,
+        "health": 0.06,
+        "unemployment": 0.007,
+        "birth": 0.005,
+        "occupationalInjury": 0.007
+      }
+    },
+    "insuranceBaseRange": {
+      "endowment": [2360, 26421],
+      "health": [6123, 30615],
+      "birth": [6123, 30615],
+      "unemployment": [2360, 2360],
+      "occupationalInjury": [2360, 2360]
+    },
+    "housingFundBaseRange": [2360, 41190],
+    "insuranceBaseOnLastMonth": true,
+    "references": [
+      "https://m12333.cn/policy/wadd.html",
+      "http://bsy.sz.bendibao.com/bsyDetail/3352.html",
+      "http://hsa.sz.gov.cn/zwgk/qt/tzgg/content/post_10863152.html"
+    ]
+  },
+  {
+    "id": 0,
+    "label": "二档(企业)",
+    "city": "深圳",
+    "minimumWage": 2360,
+    "avgWage": 10646,
+    "employee": {
+      "insuranceRate": {
+        "endowment": 0.08,
+        "health": 0.005,
+        "unemployment": 0.003
+      }
+    },
+    "employer": {
+      "insuranceRate": {
+        "endowment": 0.14,
+        "health": 0.015,
+        "unemployment": 0.007,
+        "birth": 0.005,
+        "occupationalInjury": 0.007
+      }
+    },
+    "insuranceBaseRange": {
+      "endowment": [2360, 26421],
+      "health": [6123, 30615],
+      "birth": [6123, 30615],
+      "unemployment": [2360, 2360],
+      "occupationalInjury": [2360, 2360]
+    },
+    "housingFundBaseRange": [2360, 41190],
+    "insuranceBaseOnLastMonth": true,
+    "references": []
+  }
+]
