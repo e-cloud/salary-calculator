@@ -16,7 +16,7 @@ jobs:
       - name: Install and Build 🔧
         run: |
           npm install --force
-          npm run build
+          npm run build -- --configuration production --base-href /salary-calculator/
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
