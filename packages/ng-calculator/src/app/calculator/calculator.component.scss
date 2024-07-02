@@ -1,0 +1,63 @@
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/mixins";
+@import "~bootstrap/scss/variables";
+
+:host {
+  display: block;
+}
+
+.divider {
+  height: 50%;
+  margin-top: 25%;
+}
+
+mat-card-header {
+  margin-bottom: 1.25em;
+
+  ::ng-deep .mat-card-header-text {
+    margin-left: 0;
+  }
+}
+
+.city-list {
+  width: 10em;
+}
+
+.summary {
+  display: flex;
+  flex-wrap: wrap;
+
+  .figure {
+    font-size: 1.5em;
+    line-height: 1.25em;
+  }
+}
+
+.summary mat-list-item {
+  overflow: hidden;
+  flex: 50% 0 0;
+}
+
+.mat-form-field-appearance-standard:first-child {
+  margin-left: 0.5rem;
+}
+
+@include media-breakpoint-down(sm) {
+  .calc-result {
+    padding: 0;
+  }
+
+  .summary mat-list-item {
+    flex-basis: 100%;
+  }
+}
+
+@include media-breakpoint-down(md) {
+  .mat-expansion-panel .mat-expansion-panel-header {
+    transition: 150ms ease-in-out;
+  }
+
+  .mat-expansion-panel:not(.mat-expanded) .mat-expansion-panel-header {
+    font-size: 0.8em;
+  }
+}

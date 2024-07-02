@@ -1,0 +1,6 @@
+---
+'*.yml':
+  - npm run format
+'*.json':
+  - npm run format
+# NOTE: lint-staged find the closest config file to perform operations, but would not inherit from parent.

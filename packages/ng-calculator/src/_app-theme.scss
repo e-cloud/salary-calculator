@@ -1,0 +1,23 @@
+@use "@angular/material" as mat;
+@use "sass:map";
+
+@import "app/navbar/navbar-theme";
+@import "app/calculator/calculator-theme";
+
+// Styles for the docs app that are based on the current theme.
+@mixin material-app-theme($theme) {
+  $primary: map.get($theme, primary);
+  $accent: map.get($theme, accent);
+  $warn: map.get($theme, warn);
+  $background: map.get($theme, background);
+  $foreground: map.get($theme, foreground);
+  $next-theme: mat.define-palette(mat.$red-palette);
+
+  @include nav-bar-theme($theme);
+  @include calculator-theme($theme);
+}
+
+// Define the light theme.
+$mat-primary: mat.define-palette(mat.$indigo-palette);
+$mat-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
+$mat-theme: mat.define-light-theme($mat-primary, $mat-accent);

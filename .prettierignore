@@ -1,8 +1,9 @@
-package-lock.json
-package.json
 .vscode
 .idea
 .git
-generated/
+.history
+node_modules
+public
+!public/*.js
 dist
-src/conf/dynamic-conf.js
+package.json
