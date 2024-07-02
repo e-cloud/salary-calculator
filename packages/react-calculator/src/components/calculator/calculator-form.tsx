@@ -285,21 +285,21 @@ export function CalculatorForm({ usePredefinedInsurancePercents }: FormProps) {
       >
         <SimpleYuanAutoComplete
           name="extraDeduction.childEducation"
-          label="子女教育(当月)"
+          label="子女教育"
           options={childEducationDeductionOptions}
           width={150}
         />
 
         <SimpleYuanAutoComplete
           name="extraDeduction.continuingEducation"
-          label="继续教育(当月)"
+          label="继续教育"
           options={continuousEducationDeductionOptions}
           width={150}
         />
 
         <TextFieldElement
           name="extraDeduction.seriousMedicalExpense"
-          label="大病医疗(当月)"
+          label="大病医疗"
           variant="standard"
           type="number"
           required
@@ -309,21 +309,21 @@ export function CalculatorForm({ usePredefinedInsurancePercents }: FormProps) {
 
         <SimpleYuanAutoComplete
           name="extraDeduction.housingLoanInterest"
-          label="住房贷款利息(当月)"
+          label="住房贷款利息"
           options={housingLoanInterestDeductionOptions}
           width={180}
         />
 
         <SimpleYuanAutoComplete
           name="extraDeduction.renting"
-          label="住房租金(当月)"
+          label="住房租金"
           options={rentingDeductionOptions}
           width={150}
         />
 
         <SimpleYuanAutoComplete
           name="extraDeduction.elderlyCare"
-          label="赡养老人(当月)"
+          label="赡养老人"
           options={elderlyCareDeductionOptions}
           width={150}
         />
