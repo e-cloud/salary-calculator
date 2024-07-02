@@ -15,10 +15,15 @@ jobs:
 
       - name: Install and Build 🔧
         run: |
-          npm install --force
-          npm run build -- --configuration production --base-href /salary-calculator/
+          npm install pnpm -g
+          pnpm install
+          cd packages/calculator-core
+          npm run build
+          cd -
+          cd packages/ng-calculator
+          pnpm release
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: dist/salary-calculator
+          folder: packages/ng-calculator/dist/ng-calculator
