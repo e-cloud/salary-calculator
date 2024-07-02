@@ -1,9 +1,9 @@
 import {
-  Control,
   FieldPath,
   FieldValues,
   PathValue,
-  useController, useFormContext,
+  useController,
+  useFormContext,
 } from 'react-hook-form';
 import {
   FormControlLabel,
@@ -11,25 +11,25 @@ import {
   Switch,
   SwitchProps,
   useForkRef,
-} from '@mui/material'
-import {ChangeEvent, forwardRef, Ref, RefAttributes} from 'react'
-import {useTransform} from './useTransform'
+} from '@mui/material';
+import { ChangeEvent, forwardRef, Ref, RefAttributes } from 'react';
+import { useTransform } from './useTransform';
 
 export type SwitchElementProps<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
   TValue = unknown,
 > = Omit<FormControlLabelProps, 'control'> & {
-  name: TName
-  switchProps?: SwitchProps
+  name: TName;
+  switchProps?: SwitchProps;
   transform?: {
-    input?: (value: PathValue<TFieldValues, TName>) => TValue
+    input?: (value: PathValue<TFieldValues, TName>) => TValue;
     output?: (
       event: ChangeEvent<HTMLInputElement>,
-      checked: boolean
-    ) => PathValue<TFieldValues, TName>
-  }
-}
+      checked: boolean,
+    ) => PathValue<TFieldValues, TName>;
+  };
+};
 
 type SwitchElementComponent = <
   TFieldValues extends FieldValues = FieldValues,
@@ -37,8 +37,8 @@ type SwitchElementComponent = <
   TValue = unknown,
 >(
   props: SwitchElementProps<TFieldValues, TName, TValue> &
-    RefAttributes<HTMLLabelElement>
-) => JSX.Element
+    RefAttributes<HTMLLabelElement>,
+) => JSX.Element;
 
 const SwitchElement = forwardRef(function SwitchElement<
   TFieldValues extends FieldValues = FieldValues,
@@ -46,20 +46,19 @@ const SwitchElement = forwardRef(function SwitchElement<
   TValue = unknown,
 >(
   props: SwitchElementProps<TFieldValues, TName, TValue>,
-  ref: Ref<HTMLLabelElement>
+  ref: Ref<HTMLLabelElement>,
 ) {
-  const {name, switchProps, transform, ...rest} = props
-
+  const { name, switchProps, transform, ...rest } = props;
 
   const { control } = useFormContext();
 
-  const {field} = useController({
+  const { field } = useController({
     name,
     control,
     disabled: rest.disabled,
-  })
+  });
 
-  const {value, onChange} = useTransform<TFieldValues, TName, TValue>({
+  const { value, onChange } = useTransform<TFieldValues, TName, TValue>({
     value: field.value,
     onChange: field.onChange,
     transform: {
@@ -68,12 +67,12 @@ const SwitchElement = forwardRef(function SwitchElement<
         typeof transform?.output === 'function'
           ? transform.output
           : (_event: ChangeEvent<HTMLInputElement>, checked: boolean) => {
-              return checked as PathValue<TFieldValues, TName>
+              return checked as PathValue<TFieldValues, TName>;
             },
     },
-  })
+  });
 
-  const handleSwitchRef = useForkRef(field.ref, switchProps?.ref)
+  const handleSwitchRef = useForkRef(field.ref, switchProps?.ref);
 
   return (
     <FormControlLabel
@@ -84,15 +83,15 @@ const SwitchElement = forwardRef(function SwitchElement<
           name={field.name}
           value={value}
           onChange={(event, checked) => {
-            onChange(event, checked)
+            onChange(event, checked);
             if (typeof switchProps?.onChange === 'function') {
-              switchProps.onChange(event, checked)
+              switchProps.onChange(event, checked);
             }
           }}
-          onBlur={(event) => {
-            field.onBlur()
+          onBlur={event => {
+            field.onBlur();
             if (typeof switchProps?.onBlur === 'function') {
-              switchProps?.onBlur(event)
+              switchProps?.onBlur(event);
             }
           }}
           ref={handleSwitchRef}
@@ -101,7 +100,7 @@ const SwitchElement = forwardRef(function SwitchElement<
       }
       {...rest}
     />
-  )
-})
-SwitchElement.displayName = 'SwitchElement'
-export default SwitchElement as SwitchElementComponent
+  );
+});
+SwitchElement.displayName = 'SwitchElement';
+export default SwitchElement as SwitchElementComponent;

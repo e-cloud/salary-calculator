@@ -43,25 +43,25 @@ export const childEducationDeductionOptions = [
   { value: 1000, label: '一个孩子，仅有一方扣除：1000元' },
   { value: 1000, label: '两个个孩子，夫妻双方各自扣除：1000元' },
   { value: 2000, label: '两个孩子，仅有一方扣除：2000元' },
-]
+];
 
 export const continuousEducationDeductionOptions = [
   { value: 0, label: '不符合：0元' },
   { value: 400, label: '接受学历教育中，扣除：400元' },
-]
+];
 
 export const housingLoanInterestDeductionOptions = [
   { value: 0, label: '不符合：0元' },
   { value: 500, label: '夫妻双方各自扣除：500元' },
   { value: 1000, label: '仅有一方扣除：1000元' },
-]
+];
 
 export const rentingDeductionOptions = [
   { value: 0, label: '不符合：0元' },
   { value: 800, label: '人口少于100万城市，扣除：800元' },
   { value: 1100, label: '人口大于100万城市，扣除：1100元' },
   { value: 1500, label: '省会，直辖市等，扣除：1500元' },
-]
+];
 
 export const elderlyCareDeductionOptions = [
   { value: 0, label: '不符合：0元' },
@@ -70,4 +70,4 @@ export const elderlyCareDeductionOptions = [
   { value: 666.7, label: '三个子女，均摊扣除：666.7元' },
   { value: 500, label: '四个子女，均摊扣除：500元' },
   { value: 400, label: '五个子女，均摊扣除：400元' },
-]
+];

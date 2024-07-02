@@ -6,7 +6,7 @@ import {
   PathValue,
   useController,
   UseControllerProps,
-} from 'react-hook-form'
+} from 'react-hook-form';
 import {
   FormControl,
   FormControlProps,
@@ -14,40 +14,41 @@ import {
   FormLabel,
   Slider,
   SliderProps,
-} from '@mui/material'
-import {useFormError} from './FormErrorProvider'
-import {forwardRef, ReactNode, Ref, RefAttributes} from 'react'
-import {useTransform} from './useTransform'
+} from '@mui/material';
+import { useFormError } from './FormErrorProvider';
+import { forwardRef, ReactNode, Ref, RefAttributes } from 'react';
+import { useTransform } from './useTransform';
 
 export type SliderElementProps<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 > = Omit<SliderProps, 'control'> & {
-  name: TName
-  control?: Control<TFieldValues>
-  label?: string
-  rules?: UseControllerProps<TFieldValues, TName>['rules']
-  parseError?: (error: FieldError) => ReactNode
-  required?: boolean
-  formControlProps?: FormControlProps
+  name: TName;
+  control?: Control<TFieldValues>;
+  label?: string;
+  rules?: UseControllerProps<TFieldValues, TName>['rules'];
+  parseError?: (error: FieldError) => ReactNode;
+  required?: boolean;
+  formControlProps?: FormControlProps;
   transform?: {
     input?: (
-      value: PathValue<TFieldValues, TName>
-    ) => number | number[] | undefined
+      value: PathValue<TFieldValues, TName>,
+    ) => number | number[] | undefined;
     output?: (
       event: Event,
       value: number | number[] | undefined,
-      activeThumb: number
-    ) => PathValue<TFieldValues, TName>
-  }
-}
+      activeThumb: number,
+    ) => PathValue<TFieldValues, TName>;
+  };
+};
 
 type SliderElementComponent = <
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 >(
-  props: SliderElementProps<TFieldValues, TName> & RefAttributes<HTMLDivElement>
-) => JSX.Element
+  props: SliderElementProps<TFieldValues, TName> &
+    RefAttributes<HTMLDivElement>,
+) => JSX.Element;
 
 const SliderElement = forwardRef(function SliderElement<
   TFieldValues extends FieldValues = FieldValues,
@@ -63,10 +64,10 @@ const SliderElement = forwardRef(function SliderElement<
     formControlProps,
     transform,
     ...other
-  } = props
+  } = props;
 
-  const errorMsgFn = useFormError()
-  const customErrorFn = parseError || errorMsgFn
+  const errorMsgFn = useFormError();
+  const customErrorFn = parseError || errorMsgFn;
 
   const validationRules = {
     ...rules,
@@ -74,19 +75,19 @@ const SliderElement = forwardRef(function SliderElement<
       !rules.required && {
         required: 'This field is required',
       }),
-  }
+  };
 
   const {
     field,
-    fieldState: {error, invalid},
+    fieldState: { error, invalid },
   } = useController({
     name,
     control,
     disabled: other.disabled,
     rules: validationRules,
-  })
+  });
 
-  const {value, onChange} = useTransform<
+  const { value, onChange } = useTransform<
     TFieldValues,
     TName,
     number | number[] | undefined
@@ -94,13 +95,13 @@ const SliderElement = forwardRef(function SliderElement<
     value: field.value,
     onChange: field.onChange,
     transform,
-  })
+  });
 
   const parsedHelperText = error
     ? typeof customErrorFn === 'function'
       ? customErrorFn(error)
       : error.message
-    : null
+    : null;
 
   return (
     <FormControl
@@ -125,7 +126,7 @@ const SliderElement = forwardRef(function SliderElement<
         <FormHelperText error={invalid}>{parsedHelperText}</FormHelperText>
       )}
     </FormControl>
-  )
-})
-SliderElement.displayName = 'SliderElement'
-export default SliderElement as SliderElementComponent
+  );
+});
+SliderElement.displayName = 'SliderElement';
+export default SliderElement as SliderElementComponent;

@@ -1,17 +1,18 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Autocomplete, Box, Button } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import {
   buildBaseMeta,
   childEducationDeductionOptions,
   CityRecipe,
-  continuousEducationDeductionOptions, elderlyCareDeductionOptions,
-  housingLoanInterestDeductionOptions, rentingDeductionOptions
+  continuousEducationDeductionOptions,
+  elderlyCareDeductionOptions,
+  housingLoanInterestDeductionOptions,
+  rentingDeductionOptions,
 } from 'calculator-core';
 import { merge } from 'lodash-es';
 import { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import {
-  AutocompleteElement,
   FormContainer,
   SwitchElement,
   TextFieldElement,
@@ -25,7 +26,7 @@ import {
 } from '@/components/calculator/form-utils';
 import { useStore } from '@/store';
 import useFormPersist from '@/utils/persist';
-import {SimpleYuanAutoComplete} from '@/components/simpleYuanAutoComplete.tsx';
+import { SimpleYuanAutoComplete } from '@/components/simpleYuanAutoComplete.tsx';
 
 const schema = yup.object().shape({
   monthSalary: numberRule,
@@ -247,7 +248,6 @@ export function CalculatorForm({ usePredefinedInsurancePercents }: FormProps) {
           '& .MuiAutocomplete-root': { m: 1 },
         }}
       >
-
         <SimpleYuanAutoComplete
           name="insuranceBase"
           label="社保缴纳基数"
@@ -283,7 +283,6 @@ export function CalculatorForm({ usePredefinedInsurancePercents }: FormProps) {
           '& .MuiTextField-root': { m: 1 },
         }}
       >
-
         <SimpleYuanAutoComplete
           name="extraDeduction.childEducation"
           label="子女教育(当月)"

@@ -1,4 +1,3 @@
-import { css } from '@emotion/react';
 import {
   Button,
   Card,
@@ -17,11 +16,6 @@ import React, { Fragment, useEffect, useState } from 'react';
 
 import { CalculatorForm } from '@/components/calculator/calculator-form';
 import { useStore } from '@/store';
-
-export type CalculatorCardProps = {
-  className?: string;
-  recipes?: CityRecipe[];
-};
 
 function RecipesMenu() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -125,7 +119,7 @@ function CalculatorFormSkeleton() {
   );
 }
 
-function CalculatorCard(_: CalculatorCardProps) {
+function CalculatorCard() {
   const [usePredefinedInsurancePercents, updateUsePredefinedInsurancePercents] =
     useState(true);
   const loading = useStore(state => state.recipesLoading);

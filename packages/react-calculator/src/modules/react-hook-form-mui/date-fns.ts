@@ -1,2 +1,2 @@
-export {DateFnsProvider} from './DateFnsProvider'
-export type {DateFnsProviderProps} from './DateFnsProvider'
+export { DateFnsProvider } from './DateFnsProvider';
+export type { DateFnsProviderProps } from './DateFnsProvider';

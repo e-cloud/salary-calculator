@@ -1,4 +1,4 @@
-import CloseIcon from '@mui/icons-material/Cancel'
+import CloseIcon from '@mui/icons-material/Cancel';
 import {
   Control,
   FieldError,
@@ -7,7 +7,7 @@ import {
   PathValue,
   useController,
   UseControllerProps,
-} from 'react-hook-form'
+} from 'react-hook-form';
 import {
   Checkbox,
   Chip,
@@ -22,44 +22,44 @@ import {
   SelectChangeEvent,
   SelectProps,
   useForkRef,
-} from '@mui/material'
-import {useFormError} from './FormErrorProvider'
-import {forwardRef, ReactNode, Ref, RefAttributes} from 'react'
-import {useTransform} from './useTransform'
-import {propertyExists} from './utils'
+} from '@mui/material';
+import { useFormError } from './FormErrorProvider';
+import { forwardRef, ReactNode, Ref, RefAttributes } from 'react';
+import { useTransform } from './useTransform';
+import { propertyExists } from './utils';
 
 export type MultiSelectElementProps<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
   TValue = unknown,
 > = Omit<SelectProps, 'value'> & {
-  options: TValue[]
-  label?: string
-  itemKey?: string
-  itemValue?: string
-  itemLabel?: string
-  required?: boolean
-  rules?: UseControllerProps<TFieldValues, TName>['rules']
-  name: TName
-  parseError?: (error: FieldError) => ReactNode
-  minWidth?: number
-  menuMaxHeight?: number
-  menuMaxWidth?: number
-  helperText?: ReactNode
-  showChips?: boolean
-  preserveOrder?: boolean
-  control?: Control<TFieldValues>
-  showCheckbox?: boolean
-  formControlProps?: Omit<FormControlProps, 'fullWidth' | 'variant'>
+  options: TValue[];
+  label?: string;
+  itemKey?: string;
+  itemValue?: string;
+  itemLabel?: string;
+  required?: boolean;
+  rules?: UseControllerProps<TFieldValues, TName>['rules'];
+  name: TName;
+  parseError?: (error: FieldError) => ReactNode;
+  minWidth?: number;
+  menuMaxHeight?: number;
+  menuMaxWidth?: number;
+  helperText?: ReactNode;
+  showChips?: boolean;
+  preserveOrder?: boolean;
+  control?: Control<TFieldValues>;
+  showCheckbox?: boolean;
+  formControlProps?: Omit<FormControlProps, 'fullWidth' | 'variant'>;
   transform?: {
-    input?: (value: PathValue<TFieldValues, TName>) => TValue[]
+    input?: (value: PathValue<TFieldValues, TName>) => TValue[];
     output?: (
       event: SelectChangeEvent<unknown>,
-      child: ReactNode
-    ) => PathValue<TFieldValues, TName>
-  }
-  inputLabelProps?: Omit<InputLabelProps, 'htmlFor' | 'required'>
-}
+      child: ReactNode,
+    ) => PathValue<TFieldValues, TName>;
+  };
+  inputLabelProps?: Omit<InputLabelProps, 'htmlFor' | 'required'>;
+};
 
 type MultiSelectElementComponent = <
   TFieldValues extends FieldValues = FieldValues,
@@ -67,11 +67,11 @@ type MultiSelectElementComponent = <
   TValue = unknown,
 >(
   props: MultiSelectElementProps<TFieldValues, TName, TValue> &
-    RefAttributes<HTMLDivElement>
-) => JSX.Element
+    RefAttributes<HTMLDivElement>,
+) => JSX.Element;
 
-const ITEM_HEIGHT = 48
-const ITEM_PADDING_TOP = 8
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
 
 const MultiSelectElement = forwardRef(function MultiSelectElement<
   TFieldValues extends FieldValues = FieldValues,
@@ -79,7 +79,7 @@ const MultiSelectElement = forwardRef(function MultiSelectElement<
   TValue = unknown,
 >(
   props: MultiSelectElementProps<TFieldValues, TName, TValue>,
-  ref: Ref<HTMLDivElement>
+  ref: Ref<HTMLDivElement>,
 ) {
   const {
     options,
@@ -104,16 +104,16 @@ const MultiSelectElement = forwardRef(function MultiSelectElement<
     transform,
     inputLabelProps,
     ...rest
-  } = props
+  } = props;
 
-  const errorMsgFn = useFormError()
-  const customErrorFn = parseError || errorMsgFn
+  const errorMsgFn = useFormError();
+  const customErrorFn = parseError || errorMsgFn;
 
-  const renderLabel = (item: any) =>
-    options.find((op) => {
-      const optionVal = op[itemValue || itemKey] ?? op
-      return optionVal === item
-    })?.[itemLabel] ?? item
+  const renderLabel = (item: never) =>
+    options.find(op => {
+      const optionVal = op[itemValue || itemKey] ?? op;
+      return optionVal === item;
+    })?.[itemLabel] ?? item;
 
   const rulesTmp = {
     ...rules,
@@ -121,41 +121,41 @@ const MultiSelectElement = forwardRef(function MultiSelectElement<
       !rules.required && {
         required: 'This field is required',
       }),
-  }
+  };
 
   const {
     field,
-    fieldState: {error},
+    fieldState: { error },
   } = useController({
     name,
     rules: rulesTmp,
     disabled: rest.disabled,
     control,
-  })
+  });
 
-  const {value, onChange} = useTransform<TFieldValues, TName, TValue[]>({
+  const { value, onChange } = useTransform<TFieldValues, TName, TValue[]>({
     value: field.value,
     onChange: field.onChange,
     transform: {
       input:
         typeof transform?.input === 'function'
           ? transform.input
-          : (value) => {
+          : value => {
               return Array.isArray(value)
                 ? value
-                : ([] as PathValue<TFieldValues, TName>)
+                : ([] as PathValue<TFieldValues, TName>);
             },
       output: transform?.output,
     },
-  })
+  });
 
-  const handleInputRef = useForkRef(field.ref, inputRef)
+  const handleInputRef = useForkRef(field.ref, inputRef);
 
   const renderHelperText = error
     ? typeof customErrorFn === 'function'
       ? customErrorFn(error)
       : error.message
-    : helperText
+    : helperText;
 
   return (
     <FormControl
@@ -202,7 +202,7 @@ const MultiSelectElement = forwardRef(function MultiSelectElement<
                   width: menuMaxWidth,
                   ...(propertyExists(
                     rest.MenuProps?.slotProps?.paper,
-                    'style'
+                    'style',
                   ) &&
                     typeof rest.MenuProps.slotProps.paper.style ===
                       'object' && {
@@ -217,54 +217,54 @@ const MultiSelectElement = forwardRef(function MultiSelectElement<
           typeof rest.renderValue === 'function'
             ? rest.renderValue
             : showChips
-              ? (selected) => (
-                  <div style={{display: 'flex', flexWrap: 'wrap'}}>
-                    {(preserveOrder
-                      ? options.filter((option) =>
-                          (selected as any[]).includes(option)
-                        )
-                      : (selected as any[]) || []
-                    ).map((selectedValue) => (
-                      <Chip
-                        key={selectedValue}
-                        label={renderLabel(selectedValue)}
-                        style={{display: 'flex', flexWrap: 'wrap'}}
-                        onDelete={() => {
-                          onChange(
-                            (Array.isArray(value) ? value : []).filter(
-                              (i: any) => i !== selectedValue
-                            )
-                          )
-                        }}
-                        deleteIcon={
-                          <CloseIcon
-                            onMouseDown={(ev) => {
-                              ev.stopPropagation()
-                            }}
-                          />
-                        }
-                      />
-                    ))}
-                  </div>
-                )
-              : (selected) =>
-                  Array.isArray(selected)
-                    ? selected.map(renderLabel).join(', ')
-                    : ''
+            ? selected => (
+                <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                  {(preserveOrder
+                    ? options.filter(option =>
+                        (selected as any[]).includes(option),
+                      )
+                    : (selected as any[]) || []
+                  ).map(selectedValue => (
+                    <Chip
+                      key={selectedValue}
+                      label={renderLabel(selectedValue)}
+                      style={{ display: 'flex', flexWrap: 'wrap' }}
+                      onDelete={() => {
+                        onChange(
+                          (Array.isArray(value) ? value : []).filter(
+                            (i: any) => i !== selectedValue,
+                          ),
+                        );
+                      }}
+                      deleteIcon={
+                        <CloseIcon
+                          onMouseDown={ev => {
+                            ev.stopPropagation();
+                          }}
+                        />
+                      }
+                    />
+                  ))}
+                </div>
+              )
+            : selected =>
+                Array.isArray(selected)
+                  ? selected.map(renderLabel).join(', ')
+                  : ''
         }
         inputRef={handleInputRef}
       >
-        {options.map((item) => {
-          const val: string | number = item[itemValue || itemKey] || item
+        {options.map(item => {
+          const val: string | number = item[itemValue || itemKey] || item;
           const isChecked = Array.isArray(value)
-            ? value.some((v) => v === val)
-            : false
+            ? value.some(v => v === val)
+            : false;
           return (
             <MenuItem
               key={val}
               value={val}
               sx={{
-                fontWeight: (theme) =>
+                fontWeight: theme =>
                   isChecked
                     ? theme.typography.fontWeightBold
                     : theme.typography.fontWeightRegular,
@@ -273,14 +273,14 @@ const MultiSelectElement = forwardRef(function MultiSelectElement<
               {showCheckbox && <Checkbox checked={isChecked} />}
               <ListItemText primary={item[itemLabel] || item} />
             </MenuItem>
-          )
+          );
         })}
       </Select>
       {renderHelperText && (
         <FormHelperText error={!!error}>{renderHelperText}</FormHelperText>
       )}
     </FormControl>
-  )
-})
-MultiSelectElement.displayName = 'MultiSelectElement'
-export default MultiSelectElement as MultiSelectElementComponent
+  );
+});
+MultiSelectElement.displayName = 'MultiSelectElement';
+export default MultiSelectElement as MultiSelectElementComponent;

@@ -1,21 +1,35 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
-import { cloneDeep, last, mapValues, omit, sum, sumBy, values } from 'lodash-es';
-import { TaxRateModel, TaxRateTable, TaxRateTableForBonus } from "./consts";
-import { CityRecipe, FullYearIncomeInfo, MonthlyIncomeInfo, MonthlyIncomeMeta, RawMeta } from './model';
+import {
+  cloneDeep,
+  last,
+  mapValues,
+  omit,
+  sum,
+  sumBy,
+  values,
+} from 'lodash-es';
+import { TaxRateModel, TaxRateTable, TaxRateTableForBonus } from './consts';
+import {
+  CityRecipe,
+  FullYearIncomeInfo,
+  MonthlyIncomeInfo,
+  MonthlyIncomeMeta,
+  RawMeta,
+} from './model';
 
 export function calculateFullYearIncome(
   list: MonthlyIncomeInfo[],
-  annualBonus: number
+  annualBonus: number,
 ): FullYearIncomeInfo {
   const full = {
-    bookSalary: sumBy(list, "salary"),
-    prepaidTax: sumBy(list, "tax"),
+    bookSalary: sumBy(list, 'salary'),
+    prepaidTax: sumBy(list, 'tax'),
     bonus: annualBonus,
     bonusTax: calculateBonusTax(annualBonus),
     employee: {
       endowmentInsurance: 0,
-      healthInsurance: 0
+      healthInsurance: 0,
     },
     employerCosts: {
       full: 0,
@@ -24,10 +38,10 @@ export function calculateFullYearIncome(
         health: 0,
         unemployment: 0,
         birth: 0,
-        occupationalInjury: 0
+        occupationalInjury: 0,
       },
-      enterprisePension: 0
-    }
+      enterprisePension: 0,
+    },
   } as FullYearIncomeInfo;
 
   full.bookIncome = full.bookSalary + full.bonus;
@@ -36,7 +50,7 @@ export function calculateFullYearIncome(
     5000 * 12 +
     sumBy(
       list,
-      (x) => x.fullExtraDeduction + x.insuranceFullCost + x.housingFund
+      x => x.fullExtraDeduction + x.insuranceFullCost + x.housingFund,
     );
 
   full.theoreticalTax = calculateTax(full.bookIncome - totalDeduction);
@@ -45,34 +59,34 @@ export function calculateFullYearIncome(
 
   full.taxedIncome = full.bookIncome - full.theoreticalTax;
   full.taxedIncomeDeprecated = full.bookIncome - full.totalSeparatedTax;
-  full.fullHousingFund = sumBy(list, "housingFund") * 2;
+  full.fullHousingFund = sumBy(list, 'housingFund') * 2;
   full.cashIncome =
     full.taxedIncome -
-    sumBy(list, "insuranceFullCost") -
-    sumBy(list, "housingFund") -
-    sumBy(list, "extraDeduction.enterprisePension");
+    sumBy(list, 'insuranceFullCost') -
+    sumBy(list, 'housingFund') -
+    sumBy(list, 'extraDeduction.enterprisePension');
   full.cashIncomeDeprecated =
     full.taxedIncomeDeprecated -
-    sumBy(list, "insuranceFullCost") -
-    sumBy(list, "housingFund") -
-    sumBy(list, "extraDeduction.enterprisePension");
+    sumBy(list, 'insuranceFullCost') -
+    sumBy(list, 'housingFund') -
+    sumBy(list, 'extraDeduction.enterprisePension');
 
-  full.employee.endowmentInsurance = sumBy(list, "insuranceCosts.endowment");
-  full.employee.healthInsurance = sumBy(list, "insuranceCosts.health");
+  full.employee.endowmentInsurance = sumBy(list, 'insuranceCosts.endowment');
+  full.employee.healthInsurance = sumBy(list, 'insuranceCosts.health');
 
-  full.employerCosts.full = sumBy(list, "employerCosts.full") + full.bonus;
+  full.employerCosts.full = sumBy(list, 'employerCosts.full') + full.bonus;
   full.employerCosts.enterprisePension = sumBy(
     list,
-    "employerCosts.enterprisePension"
+    'employerCosts.enterprisePension',
   );
   full.employerCosts.insurance = {
-    endowment: sumBy(list, "employerCosts.insurance.endowment") + full.bonus,
-    health: sumBy(list, "employerCosts.health.endowment") + full.bonus,
+    endowment: sumBy(list, 'employerCosts.insurance.endowment') + full.bonus,
+    health: sumBy(list, 'employerCosts.health.endowment') + full.bonus,
     unemployment:
-      sumBy(list, "employerCosts.unemployment.endowment") + full.bonus,
-    birth: sumBy(list, "employerCosts.birth.endowment") + full.bonus,
+      sumBy(list, 'employerCosts.unemployment.endowment') + full.bonus,
+    birth: sumBy(list, 'employerCosts.birth.endowment') + full.bonus,
     occupationalInjury:
-      sumBy(list, "employerCosts.occupationalInjury.endowment") + full.bonus
+      sumBy(list, 'employerCosts.occupationalInjury.endowment') + full.bonus,
   };
 
   return full;
@@ -80,7 +94,7 @@ export function calculateFullYearIncome(
 
 export function calculateMonthIncome(
   current: MonthlyIncomeMeta,
-  lastMonth: MonthlyIncomeInfo | undefined
+  lastMonth: MonthlyIncomeInfo | undefined,
 ): MonthlyIncomeInfo {
   const newMonthInfo: MonthlyIncomeInfo = {
     salary: current.salary,
@@ -97,7 +111,7 @@ export function calculateMonthIncome(
     insuranceCosts: {
       endowment: 0,
       health: 0,
-      unemployment: 0
+      unemployment: 0,
     },
     insuranceFullCost: 0,
     extraDeduction: current.extraDeduction,
@@ -112,11 +126,11 @@ export function calculateMonthIncome(
         health: 0,
         unemployment: 0,
         birth: 0,
-        occupationalInjury: 0
+        occupationalInjury: 0,
       },
-      enterprisePension: 0
+      enterprisePension: 0,
     },
-    id: Math.random().toString()
+    id: Math.random().toString(),
   };
 
   if (current.newPayCycle || !lastMonth) {
@@ -139,7 +153,7 @@ export function calculateMonthIncome(
       ? current.insuranceBase
       : lastMonth!.salary,
     current.insuranceBaseRange,
-    current.insuranceRate
+    current.insuranceRate,
   );
   // 社保缴纳额
   const insuranceFullCost = sum(values(insuranceDeducted));
@@ -150,8 +164,7 @@ export function calculateMonthIncome(
   const extraDeducted =
     extraDeduction(current.extraDeduction) + enterprisePension;
 
-  const accumulatedDeduction =
-    newMonthInfo.actualMonth * current.freeTaxQuota;
+  const accumulatedDeduction = newMonthInfo.actualMonth * current.freeTaxQuota;
   const specialDeduction = insuranceFullCost + personalHousingFund;
   const accumulatedSpecialDeduction =
     (newPayCycle ? 0 : lastMonth!.accumulatedSpecialDeduction) +
@@ -163,10 +176,10 @@ export function calculateMonthIncome(
   // 预扣预缴应纳税所得额
   const accumulatedTaxQuota = Math.max(
     accumulatedSalary -
-    (accumulatedDeduction +
-      accumulatedSpecialDeduction +
-      accumulatedExtraDeduction),
-    0
+      (accumulatedDeduction +
+        accumulatedSpecialDeduction +
+        accumulatedExtraDeduction),
+    0,
   );
 
   // 当月缴税额
@@ -202,10 +215,10 @@ export function calculateMonthIncome(
       ? current.insuranceBase
       : lastMonth!.salary,
     current.insuranceBaseRange,
-    current.employer.insuranceRate
+    current.employer.insuranceRate,
   );
   newMonthInfo.employerCosts.insuranceFull = sum(
-    Object.values(newMonthInfo.employerCosts.insurance)
+    Object.values(newMonthInfo.employerCosts.insurance),
   );
   newMonthInfo.employerCosts.full =
     newMonthInfo.salary +
@@ -226,7 +239,9 @@ export function calculateMonthlyIncomes(metaList: MonthlyIncomeMeta[]) {
   }, [] as MonthlyIncomeInfo[]);
 }
 
-export function buildEmptyMetaList(meta: MonthlyIncomeMeta): MonthlyIncomeMeta[] {
+export function buildEmptyMetaList(
+  meta: MonthlyIncomeMeta,
+): MonthlyIncomeMeta[] {
   return new Array(12).fill(0).map(() => cloneDeep(meta));
 }
 
@@ -285,20 +300,20 @@ function calculateBonusTax(num: number): number {
 function insuranceCostsForEmployee(
   base: number,
   baseRange: Record<string, [number, number]>,
-  meta: MonthlyIncomeMeta["insuranceRate"]
-): MonthlyIncomeInfo["insuranceCosts"] {
+  meta: MonthlyIncomeMeta['insuranceRate'],
+): MonthlyIncomeInfo['insuranceCosts'] {
   return {
     endowment: getValidBase(base, baseRange.endowment) * meta.endowment,
     health: getValidBase(base, baseRange.health) * meta.health,
     unemployment:
-      getValidBase(base, baseRange.unemployment) * meta.unemployment
+      getValidBase(base, baseRange.unemployment) * meta.unemployment,
   };
 }
 
 function insuranceCostsForEmployer(
   base: number,
   baseRange: Record<string, [number, number]>,
-  meta: CityRecipe["employer"]["insuranceRate"]
+  meta: CityRecipe['employer']['insuranceRate'],
 ) {
   return {
     endowment: getValidBase(base, baseRange.endowment) * meta.endowment,
@@ -306,7 +321,7 @@ function insuranceCostsForEmployer(
     unemployment:
       getValidBase(base, baseRange.unemployment) * meta.unemployment,
     birth: getValidBase(base, baseRange.birth) * meta.birth,
-    occupationalInjury: base * meta.occupationalInjury
+    occupationalInjury: base * meta.occupationalInjury,
   };
 }
 
@@ -314,13 +329,13 @@ function getValidBase(base: number, range: [number, number]) {
   return Math.min(Math.max(base, range[0]), range[1]);
 }
 
-function extraDeduction(meta: MonthlyIncomeMeta["extraDeduction"]): number {
-  return sum(values(omit(meta, ["enterprisePension", "enterprisePensionTwo"])));
+function extraDeduction(meta: MonthlyIncomeMeta['extraDeduction']): number {
+  return sum(values(omit(meta, ['enterprisePension', 'enterprisePensionTwo'])));
 }
 
 function findTaxRate(
   income: number,
-  taxRateTable = TaxRateTable
+  taxRateTable = TaxRateTable,
 ): TaxRateModel {
   const table = taxRateTable.slice().reverse();
   for (const meta of table) {

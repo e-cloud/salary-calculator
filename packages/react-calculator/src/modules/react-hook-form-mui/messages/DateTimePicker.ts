@@ -1,7 +1,7 @@
-import {DateTimeValidationError} from '@mui/x-date-pickers'
+import { DateTimeValidationError } from '@mui/x-date-pickers';
 
 export const defaultErrorMessages: {
-  [v in NonNullable<DateTimeValidationError>]: string
+  [v in NonNullable<DateTimeValidationError>]: string;
 } = {
   disableFuture: 'Date must be in the past',
   maxDate: 'Date is later than the maximum allowed date',
@@ -17,4 +17,4 @@ export const defaultErrorMessages: {
   'shouldDisableTime-minutes': 'Specified minute is disabled',
   'shouldDisableTime-seconds': 'Specified second is disabled',
   minutesStep: 'Invalid minutes step',
-}
+};

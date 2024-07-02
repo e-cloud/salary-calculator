@@ -2,13 +2,19 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Box, Button, Typography } from '@mui/material';
 import {
   childEducationDeductionOptions,
-  continuousEducationDeductionOptions, elderlyCareDeductionOptions,
+  continuousEducationDeductionOptions,
+  elderlyCareDeductionOptions,
   housingLoanInterestDeductionOptions,
   MonthlyIncomeInfo,
-  MonthlyIncomeMeta, rentingDeductionOptions
+  MonthlyIncomeMeta,
+  rentingDeductionOptions,
 } from 'calculator-core';
 import { mapValues } from 'lodash-es';
-import { FormContainer, SwitchElement, TextFieldElement } from '@/modules/react-hook-form-mui';
+import {
+  FormContainer,
+  SwitchElement,
+  TextFieldElement,
+} from '@/modules/react-hook-form-mui';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
@@ -19,7 +25,7 @@ import {
 } from '@/components/calculator/form-utils';
 import { useStore } from '@/store';
 import { numberFormat } from '@/utils/pipes';
-import {SimpleYuanAutoComplete} from '@/components/simpleYuanAutoComplete.tsx';
+import { SimpleYuanAutoComplete } from '@/components/simpleYuanAutoComplete.tsx';
 
 export interface DetailFormModel {
   monthSalary: number;
@@ -228,7 +234,6 @@ export function MonthIncomeForm(props: MonthIncomeFormProps) {
         }}
         mb={2}
       >
-
         <SimpleYuanAutoComplete
           name="extraDeduction.childEducation"
           label="子女教育(当月)"

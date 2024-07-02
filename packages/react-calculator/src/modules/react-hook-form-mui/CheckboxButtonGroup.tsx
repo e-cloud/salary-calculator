@@ -8,7 +8,7 @@ import {
   FormHelperText,
   FormLabel,
   useTheme,
-} from '@mui/material'
+} from '@mui/material';
 import {
   Control,
   FieldError,
@@ -17,39 +17,39 @@ import {
   PathValue,
   useController,
   UseControllerProps,
-} from 'react-hook-form'
-import {useFormError} from './FormErrorProvider'
-import {forwardRef, ReactNode, Ref, RefAttributes} from 'react'
-import {useTransform} from './useTransform'
-import {propertyExists} from './utils'
+} from 'react-hook-form';
+import { useFormError } from './FormErrorProvider';
+import { forwardRef, ReactNode, Ref, RefAttributes } from 'react';
+import { useTransform } from './useTransform';
+import { propertyExists } from './utils';
 
 export type CheckboxButtonGroupProps<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
   TValue = unknown,
 > = {
-  options: (TValue | unknown)[]
-  helperText?: ReactNode
-  name: TName
-  required?: boolean
-  parseError?: (error: FieldError) => ReactNode
-  label?: string
-  labelKey?: string
-  valueKey?: string
-  onChange?: (data: TValue[]) => void
-  returnObject?: boolean
-  disabled?: boolean
-  row?: boolean
-  control?: Control<TFieldValues>
-  rules?: UseControllerProps<TFieldValues, TName>['rules']
-  checkboxColor?: CheckboxProps['color']
-  labelProps?: Omit<FormControlLabelProps, 'label' | 'control'>
+  options: (TValue | unknown)[];
+  helperText?: ReactNode;
+  name: TName;
+  required?: boolean;
+  parseError?: (error: FieldError) => ReactNode;
+  label?: string;
+  labelKey?: string;
+  valueKey?: string;
+  onChange?: (data: TValue[]) => void;
+  returnObject?: boolean;
+  disabled?: boolean;
+  row?: boolean;
+  control?: Control<TFieldValues>;
+  rules?: UseControllerProps<TFieldValues, TName>['rules'];
+  checkboxColor?: CheckboxProps['color'];
+  labelProps?: Omit<FormControlLabelProps, 'label' | 'control'>;
   transform?: {
-    input?: (value: PathValue<TFieldValues, TName>) => TValue[]
-    output?: (value: TValue[]) => PathValue<TFieldValues, TName>
-  }
-  defaultValue?: TValue[]
-}
+    input?: (value: PathValue<TFieldValues, TName>) => TValue[];
+    output?: (value: TValue[]) => PathValue<TFieldValues, TName>;
+  };
+  defaultValue?: TValue[];
+};
 
 type CheckboxButtonGroupComponent = <
   TFieldValues extends FieldValues = FieldValues,
@@ -57,8 +57,8 @@ type CheckboxButtonGroupComponent = <
   TValue = unknown,
 >(
   props: CheckboxButtonGroupProps<TFieldValues, TName, TValue> &
-    RefAttributes<HTMLDivElement>
-) => JSX.Element
+    RefAttributes<HTMLDivElement>,
+) => JSX.Element;
 
 const CheckboxButtonGroup = forwardRef(function CheckboxButtonGroup<
   TFieldValues extends FieldValues = FieldValues,
@@ -66,7 +66,7 @@ const CheckboxButtonGroup = forwardRef(function CheckboxButtonGroup<
   TValue = unknown,
 >(
   props: CheckboxButtonGroupProps<TFieldValues, TName, TValue>,
-  ref: Ref<HTMLDivElement>
+  ref: Ref<HTMLDivElement>,
 ) {
   const {
     helperText,
@@ -87,24 +87,24 @@ const CheckboxButtonGroup = forwardRef(function CheckboxButtonGroup<
     transform,
     defaultValue = [],
     ...rest
-  } = props
+  } = props;
 
-  const theme = useTheme()
-  const errorMsgFn = useFormError()
-  const customErrorFn = parseError || errorMsgFn
+  const theme = useTheme();
+  const errorMsgFn = useFormError();
+  const customErrorFn = parseError || errorMsgFn;
 
   const {
     field,
-    fieldState: {error, invalid},
+    fieldState: { error, invalid },
   } = useController({
     name,
-    rules: required ? {required: 'This field is required'} : rules,
+    rules: required ? { required: 'This field is required' } : rules,
     disabled,
     control,
     defaultValue: defaultValue as PathValue<TFieldValues, TName>,
-  })
+  });
 
-  const {value: selectedOptions, onChange} = useTransform<
+  const { value: selectedOptions, onChange } = useTransform<
     TFieldValues,
     TName,
     TValue[]
@@ -115,63 +115,63 @@ const CheckboxButtonGroup = forwardRef(function CheckboxButtonGroup<
       input:
         typeof transform?.input === 'function'
           ? transform.input
-          : (value) => {
-              return Array.isArray(value) ? value : ([] as TValue[])
+          : value => {
+              return Array.isArray(value) ? value : ([] as TValue[]);
             },
       output: transform?.output,
     },
-  })
+  });
 
   const handleChange = (option: unknown) => {
     const optionValue = propertyExists(option, valueKey)
       ? option[valueKey]
-      : option
-    const existsAtIndex = selectedOptions.findIndex((selectedOption) => {
+      : option;
+    const existsAtIndex = selectedOptions.findIndex(selectedOption => {
       const selectedOptionValue = propertyExists(selectedOption, valueKey)
         ? selectedOption[valueKey]
-        : selectedOption
-      return optionValue === selectedOptionValue
-    })
+        : selectedOption;
+      return optionValue === selectedOptionValue;
+    });
 
     const newValues = (
       existsAtIndex === -1
         ? [...selectedOptions, option]
         : selectedOptions.filter((_, index) => existsAtIndex !== index)
-    ).map((selectedOption) =>
+    ).map(selectedOption =>
       returnObject || !propertyExists(selectedOption, valueKey)
         ? selectedOption
-        : selectedOption[valueKey]
-    ) as TValue[]
-    onChange(newValues)
+        : selectedOption[valueKey],
+    ) as TValue[];
+    onChange(newValues);
     if (typeof rest.onChange === 'function') {
-      rest.onChange(newValues)
+      rest.onChange(newValues);
     }
-  }
+  };
 
   const renderHelperText = error
     ? typeof customErrorFn === 'function'
       ? customErrorFn(error)
       : error.message
-    : helperText
+    : helperText;
 
   return (
     <FormControl error={invalid} required={required} ref={ref}>
       {label ? <FormLabel>{label}</FormLabel> : null}
       <FormGroup row={row}>
-        {options.map((option) => {
+        {options.map(option => {
           const optionValue = propertyExists(option, valueKey)
             ? option[valueKey]
-            : option
+            : option;
           const optionLabel = propertyExists(option, labelKey)
             ? option[labelKey]
-            : option
+            : option;
 
-          const isChecked = selectedOptions.some((selectedOption) => {
+          const isChecked = selectedOptions.some(selectedOption => {
             const selectedOptionValue = propertyExists(selectedOption, valueKey)
               ? selectedOption[valueKey]
-              : selectedOption
-            return selectedOptionValue === optionValue
-          })
+              : selectedOption;
+            return selectedOptionValue === optionValue;
+          });
 
           return (
             <FormControlLabel
@@ -191,12 +191,12 @@ const CheckboxButtonGroup = forwardRef(function CheckboxButtonGroup<
               label={`${optionLabel}`}
               key={`${optionValue}`}
             />
-          )
+          );
         })}
       </FormGroup>
       {renderHelperText && <FormHelperText>{renderHelperText}</FormHelperText>}
     </FormControl>
-  )
-})
-CheckboxButtonGroup.displayName = 'CheckboxButtonGroup'
-export default CheckboxButtonGroup as CheckboxButtonGroupComponent
+  );
+});
+CheckboxButtonGroup.displayName = 'CheckboxButtonGroup';
+export default CheckboxButtonGroup as CheckboxButtonGroupComponent;

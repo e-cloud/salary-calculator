@@ -1,7 +1,7 @@
-import {TimeValidationError} from '@mui/x-date-pickers'
+import { TimeValidationError } from '@mui/x-date-pickers';
 
 export const defaultErrorMessages: {
-  [v in NonNullable<TimeValidationError>]: string
+  [v in NonNullable<TimeValidationError>]: string;
 } = {
   invalidDate: 'Time is invalid',
   minTime: 'Time is earlier than the minimum allowed',
@@ -12,4 +12,4 @@ export const defaultErrorMessages: {
   'shouldDisableTime-minutes': 'Specified minute is disabled',
   'shouldDisableTime-seconds': 'Specified second is disabled',
   minutesStep: 'Invalid minutes step',
-}
+};

@@ -1,4 +1,4 @@
-import {forwardRef, ReactNode, Ref, RefAttributes} from 'react'
+import { forwardRef, ReactNode, Ref, RefAttributes } from 'react';
 import {
   Control,
   FieldError,
@@ -7,7 +7,7 @@ import {
   PathValue,
   useController,
   UseControllerProps,
-} from 'react-hook-form'
+} from 'react-hook-form';
 import {
   FormControl,
   FormControlLabel,
@@ -19,41 +19,41 @@ import {
   RadioGroup,
   RadioGroupProps,
   useTheme,
-} from '@mui/material'
-import {useFormError} from './FormErrorProvider'
-import {useTransform} from './useTransform'
+} from '@mui/material';
+import { useFormError } from './FormErrorProvider';
+import { useTransform } from './useTransform';
 
 export type RadioButtonGroupProps<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
   TValue = unknown,
 > = {
-  rules?: UseControllerProps<TFieldValues, TName>['rules']
-  options: TValue[]
-  helperText?: ReactNode
-  name: TName
-  required?: boolean
-  parseError?: (error: FieldError) => ReactNode
-  label?: string
-  labelKey?: string
-  valueKey?: string
-  disabledKey?: string
-  type?: 'number' | 'string'
-  emptyOptionLabel?: string
-  onChange?: (value: TValue | string | undefined) => void
-  returnObject?: boolean
-  row?: boolean
-  control?: Control<TFieldValues>
-  labelProps?: Omit<FormControlLabelProps, 'label' | 'control' | 'value'>
-  formLabelProps?: Omit<FormLabelProps, 'required' | 'error'>
-  disabled?: boolean
+  rules?: UseControllerProps<TFieldValues, TName>['rules'];
+  options: TValue[];
+  helperText?: ReactNode;
+  name: TName;
+  required?: boolean;
+  parseError?: (error: FieldError) => ReactNode;
+  label?: string;
+  labelKey?: string;
+  valueKey?: string;
+  disabledKey?: string;
+  type?: 'number' | 'string';
+  emptyOptionLabel?: string;
+  onChange?: (value: TValue | string | undefined) => void;
+  returnObject?: boolean;
+  row?: boolean;
+  control?: Control<TFieldValues>;
+  labelProps?: Omit<FormControlLabelProps, 'label' | 'control' | 'value'>;
+  formLabelProps?: Omit<FormLabelProps, 'required' | 'error'>;
+  disabled?: boolean;
   transform?: {
-    input?: (value: PathValue<TFieldValues, TName>) => TValue
+    input?: (value: PathValue<TFieldValues, TName>) => TValue;
     output?: (
-      value: TValue | string | undefined
-    ) => PathValue<TFieldValues, TName>
-  }
-}
+      value: TValue | string | undefined,
+    ) => PathValue<TFieldValues, TName>;
+  };
+};
 
 type RadioButtonGroupComponent = <
   TFieldValues extends FieldValues = FieldValues,
@@ -61,8 +61,8 @@ type RadioButtonGroupComponent = <
   TValue = unknown,
 >(
   props: RadioButtonGroupProps<TFieldValues, TName, TValue> &
-    RefAttributes<HTMLDivElement>
-) => JSX.Element
+    RefAttributes<HTMLDivElement>,
+) => JSX.Element;
 
 const RadioButtonGroup = forwardRef(function RadioButtonGroup<
   TFieldValues extends FieldValues = FieldValues,
@@ -70,7 +70,7 @@ const RadioButtonGroup = forwardRef(function RadioButtonGroup<
   TValue = unknown,
 >(
   props: RadioButtonGroupProps<TFieldValues, TName, TValue>,
-  ref: Ref<HTMLDivElement>
+  ref: Ref<HTMLDivElement>,
 ) {
   const {
     helperText,
@@ -93,64 +93,68 @@ const RadioButtonGroup = forwardRef(function RadioButtonGroup<
     transform,
     rules = {},
     ...rest
-  } = props
-  const theme = useTheme()
+  } = props;
+  const theme = useTheme();
 
-  const errorMsgFn = useFormError()
-  const customErrorFn = parseError || errorMsgFn
+  const errorMsgFn = useFormError();
+  const customErrorFn = parseError || errorMsgFn;
 
   const rulesTmp = {
     ...rules,
-    ...(required && !rules.required && {required: 'This field is required'}),
-  }
+    ...(required && !rules.required && { required: 'This field is required' }),
+  };
 
   const {
     field,
-    fieldState: {error},
+    fieldState: { error },
   } = useController({
     name,
     rules: rulesTmp,
     disabled,
     control,
-  })
+  });
 
-  const {value, onChange} = useTransform<TFieldValues, TName, TValue | string>({
+  const { value, onChange } = useTransform<
+    TFieldValues,
+    TName,
+    TValue | string
+  >({
     value: field.value,
     onChange: field.onChange,
     transform: {
       input:
         typeof transform?.input === 'function'
           ? transform.input
-          : (value) => {
-              return value || ('' as TValue)
+          : value => {
+              return value || ('' as TValue);
             },
       output:
         typeof transform?.output === 'function'
           ? transform?.output
           : (_event, value) => {
               if (value && type === 'number') {
-                return Number(value)
+                return Number(value);
               }
-              return value
+              return value;
             },
     },
-  })
+  });
 
   const renderHelperText = error
     ? typeof customErrorFn === 'function'
       ? customErrorFn(error)
       : error.message
-    : helperText
+    : helperText;
 
   const onRadioChange: RadioGroupProps['onChange'] = (event, radioValue) => {
     const returnValue = returnObject
-      ? options.find((items) => items[valueKey] === radioValue)
-      : radioValue
-    onChange(event, returnValue)
+      ? options.find(items => items[valueKey] === radioValue)
+      : radioValue;
+    onChange(event, returnValue);
     if (typeof rest.onChange === 'function') {
-      rest.onChange(returnValue)
+      rest.onChange(returnValue);
     }
-  }
+  };
 
   return (
     <FormControl error={!!error} ref={ref}>
@@ -176,19 +180,19 @@ const RadioButtonGroup = forwardRef(function RadioButtonGroup<
           />
         )}
         {options.map((option: any) => {
-          const optionKey = option[valueKey]
-          const optionDisabled = option[disabledKey] || false
+          const optionKey = option[valueKey];
+          const optionDisabled = option[disabledKey] || false;
           if (optionKey === undefined) {
             console.error(
               `RadioButtonGroup: valueKey ${valueKey} does not exist on option`,
-              option
-            )
+              option,
+            );
           }
-          let val = returnObject ? value?.[valueKey] : value
+          let val = returnObject ? value?.[valueKey] : value;
           if (type === 'number') {
-            val = Number(val)
+            val = Number(val);
           }
-          const isChecked = val === optionKey
+          const isChecked = val === optionKey;
           return (
             <FormControlLabel
               {...labelProps}
@@ -205,12 +209,12 @@ const RadioButtonGroup = forwardRef(function RadioButtonGroup<
               label={option[labelKey]}
               key={optionKey}
             />
-          )
+          );
         })}
       </RadioGroup>
       {renderHelperText && <FormHelperText>{renderHelperText}</FormHelperText>}
     </FormControl>
-  )
-})
-RadioButtonGroup.displayName = 'RadioButtonGroup'
-export default RadioButtonGroup as RadioButtonGroupComponent
+  );
+});
+RadioButtonGroup.displayName = 'RadioButtonGroup';
+export default RadioButtonGroup as RadioButtonGroupComponent;

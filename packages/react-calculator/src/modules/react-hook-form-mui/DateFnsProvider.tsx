@@ -1,22 +1,22 @@
-import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFnsV3'
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import {
   LocalizationProvider,
   LocalizationProviderProps,
   MuiPickersAdapter,
-} from '@mui/x-date-pickers'
+} from '@mui/x-date-pickers';
 
 export type DateFnsProviderProps<TDate extends Date> = Omit<
-  LocalizationProviderProps<TDate, any>,
+  LocalizationProviderProps<TDate, never>,
   'dateAdapter'
 > & {
-  dateAdapter?: new (..._args: any) => MuiPickersAdapter<TDate>
-}
+  dateAdapter?: new (..._args: any) => MuiPickersAdapter<TDate>;
+};
 
 export function DateFnsProvider({
   children,
   ...props
 }: DateFnsProviderProps<Date>) {
-  const {dateAdapter, ...localizationProps} = props
+  const { dateAdapter, ...localizationProps } = props;
   return (
     <LocalizationProvider
       dateAdapter={dateAdapter || AdapterDateFns}
@@ -24,5 +24,5 @@ export function DateFnsProvider({
     >
       {children}
     </LocalizationProvider>
-  )
+  );
 }
