@@ -71,3 +71,5 @@ export const elderlyCareDeductionOptions = [
   { value: 500, label: '四个子女，均摊扣除：500元' },
   { value: 400, label: '五个子女，均摊扣除：400元' },
 ];
+
+export const nonMergeTaxCalculationEndDate = '2027.12.31';

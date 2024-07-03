@@ -29,6 +29,7 @@ import {
   housingLoanInterestDeductionOptions,
   MonthlyIncomeInfo,
   MonthlyIncomeMeta,
+  nonMergeTaxCalculationEndDate,
   rentingDeductionOptions,
 } from 'calculator-core';
 import { mapValues, merge } from 'lodash-es';
@@ -439,6 +440,7 @@ export class CalculatorComponent {
     housingLoanInterestDeductionOptions;
   readonly rentingDeductionOptions = rentingDeductionOptions;
   readonly elderlyCareDeductionOptions = elderlyCareDeductionOptions;
+  readonly nonMergeTaxCalculationEndDate = nonMergeTaxCalculationEndDate;
 }
 
 function normalizeInsuranceBaseRange(meta: CityRecipe) {

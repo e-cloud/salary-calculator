@@ -447,7 +447,7 @@
     class="col-md-6 col-sm-12 mb-4 mb-md-0"
     *ngIf="!clear && (monthlyIncomes$ | async) as incomeList"
   >
-    <mat-accordion (animationend)="scrollToSummary()">
+    <mat-accordion [@listAnimation]="incomeList.length" (animationend)="scrollToSummary()">
       <mat-expansion-panel
         *ngFor="let item of incomeList; let idx = index; trackBy: trackIncome"
         #panel
@@ -525,7 +525,7 @@
         </mat-list-item>
         <mat-list-item>
           <mat-icon mat-list-icon>savings</mat-icon>
-          <div mat-line>全年税后收入（非合并 - 2024.1.1止）</div>
+          <div mat-line>全年税后收入（非合并 - {{ nonMergeTaxCalculationEndDate }}止）</div>
           <div mat-line class="figure">
             {{ sum.taxedIncomeDeprecated | currency }}
           </div>
@@ -539,7 +539,7 @@
 
         <mat-list-item>
           <mat-icon mat-list-icon>savings</mat-icon>
-          <div mat-line>全年现金收入（非合并 - 2024.1.1止）</div>
+          <div mat-line>全年现金收入（非合并 - {{ nonMergeTaxCalculationEndDate }}止）</div>
           <div mat-line class="figure">
             {{ sum.cashIncomeDeprecated | currency }}
           </div>
@@ -555,7 +555,7 @@
 
         <mat-list-item>
           <mat-icon mat-list-icon>savings</mat-icon>
-          <div mat-line>全年综合货币收入（非合并 - 2024.1.1止）</div>
+          <div mat-line>全年综合货币收入（非合并 - {{ nonMergeTaxCalculationEndDate }}止）</div>
           <div mat-line class="figure">
             {{ sum.cashIncomeDeprecated + sum.fullHousingFund | currency }}
           </div>
