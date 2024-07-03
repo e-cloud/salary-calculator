@@ -78,8 +78,8 @@
           <span matSuffix>元</span>
 
           <mat-autocomplete #insuranceBase="matAutocomplete" panelWidth="200">
-            <mat-option [value]="baseForm.controls.monthSalary?.value"
-              >全额缴纳：{{ baseForm.controls.monthSalary?.value }}元(不超上限{{
+            <mat-option [value]="baseForm.controls.monthSalary.value"
+              >全额缴纳：{{ baseForm.controls.monthSalary.value }}元(不超上限{{
                 insuranceTop
               }}元)
             </mat-option>
@@ -107,9 +107,9 @@
               #housingFundBase="matAutocomplete"
               panelWidth="200"
             >
-              <mat-option [value]="baseForm.controls.monthSalary?.value"
+              <mat-option [value]="baseForm.controls.monthSalary.value"
                 >全额缴纳：{{
-                  baseForm.controls.monthSalary?.value
+                  baseForm.controls.monthSalary.value
                 }}元(不超上限{{ housingFundTop }}元)
               </mat-option>
               <mat-option [value]="cityRecipe.minimumWage"
