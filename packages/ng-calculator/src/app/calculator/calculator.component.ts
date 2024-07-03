@@ -9,7 +9,13 @@ import {
 } from '@angular/animations';
 import { HttpClient } from '@angular/common/http';
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import {
   buildBaseMeta,
   buildEmptyMetaList,
@@ -60,6 +66,50 @@ const shenzhenRecipe: CityRecipe = {
   ],
 };
 
+export type TypedFormControls<T extends Record<any, any>> = {
+  [K in keyof T]-?: T[K] extends Array<infer R>
+    ? FormArray<
+        R extends Record<any, any>
+          ? FormGroup<TypedFormControls<R>>
+          : FormControl<R>
+      >
+    : T[K] extends Record<any, any>
+    ? FormGroup<TypedFormControls<T[K]>>
+    : FormControl<T[K]>;
+};
+
+export interface InputModel {
+  monthSalary: number;
+  annualBonus: number;
+  insuranceBase: number;
+  housingFundBase: number;
+  housingFundRate: number;
+  extraDeduction: {
+    childEducation: number;
+    continuingEducation: number;
+    seriousMedicalExpense: number;
+    housingLoanInterest: number;
+    renting: number;
+    elderlyCare: number;
+    enterprisePension: number;
+    enterprisePensionTwo: number;
+    other: number;
+  };
+  insuranceRate: {
+    endowment: number;
+    health: number;
+    unemployment: number;
+  };
+  insuranceBaseOnLastMonth: boolean;
+}
+
+export interface MonthlyInputModel extends InputModel {
+  newPayCycle: boolean;
+}
+
+export type InputForm = TypedFormControls<InputModel>;
+export type MonthlyInputForm = TypedFormControls<MonthlyInputModel>;
+
 @Component({
   selector: 'app-calculator',
   templateUrl: './calculator.component.html',
@@ -82,8 +132,8 @@ const shenzhenRecipe: CityRecipe = {
   ],
 })
 export class CalculatorComponent {
-  baseForm: FormGroup;
-  detailForms: FormGroup[] = [];
+  baseForm: FormGroup<InputForm>;
+  detailForms: FormGroup<MonthlyInputForm>[] = [];
   usePredefinedInsurancePercents = true;
   cityRecipe = shenzhenRecipe;
   clear = false;
@@ -137,7 +187,7 @@ export class CalculatorComponent {
         this.cityRecipe.insuranceBaseOnLastMonth,
         Validators.required,
       ],
-    });
+    }) as FormGroup<InputForm>;
 
     this.monthlyMetas$ = this.baseMeta$.pipe(
       filter((meta) => meta != null),
@@ -324,58 +374,59 @@ export class CalculatorComponent {
     metaList: MonthlyIncomeMeta[],
     cityRecipe: CityRecipe
   ) {
-    const forms = metaList.map((meta) =>
-      this.fb.group({
-        monthSalary: [meta.salary, Validators.required],
-        monthlyBonus: [0, Validators.required],
-        newPayCycle: [meta.newPayCycle],
-        insuranceBase: [meta.insuranceBase, Validators.required],
-        insuranceRate: this.fb.group({
-          endowment: [
-            cityRecipe.employee.insuranceRate.endowment * 100,
-            Validators.required,
-          ],
-          health: [
-            cityRecipe.employee.insuranceRate.health * 100,
-            Validators.required,
-          ],
-          unemployment: [
-            cityRecipe.employee.insuranceRate.unemployment * 100,
-            Validators.required,
-          ],
-        }),
-        housingFundBase: [meta.housingFundBase, Validators.required],
-        housingFundRate: [meta.housingFundRate * 100, Validators.required],
-        extraDeduction: this.fb.group({
-          childEducation: [
-            meta.extraDeduction.childEducation,
-            Validators.required,
-          ],
-          continuingEducation: [
-            meta.extraDeduction.continuingEducation,
-            Validators.required,
-          ],
-          seriousMedicalExpense: [
-            meta.extraDeduction.seriousMedicalExpense,
-            Validators.required,
-          ],
-          housingLoanInterest: [
-            meta.extraDeduction.housingLoanInterest,
-            Validators.required,
-          ],
-          renting: [meta.extraDeduction.renting, Validators.required],
-          elderlyCare: [meta.extraDeduction.elderlyCare, Validators.required],
-          enterprisePension: [
-            meta.extraDeduction.enterprisePension,
-            Validators.required,
-          ],
-          enterprisePensionTwo: [
-            meta.extraDeduction.enterprisePensionTwo,
-            Validators.required,
-          ],
-          other: [meta.extraDeduction.other, Validators.required],
-        }),
-      })
+    const forms = metaList.map(
+      (meta) =>
+        this.fb.group({
+          monthSalary: [meta.salary, Validators.required],
+          monthlyBonus: [0, Validators.required],
+          newPayCycle: [meta.newPayCycle],
+          insuranceBase: [meta.insuranceBase, Validators.required],
+          insuranceRate: this.fb.group({
+            endowment: [
+              cityRecipe.employee.insuranceRate.endowment * 100,
+              Validators.required,
+            ],
+            health: [
+              cityRecipe.employee.insuranceRate.health * 100,
+              Validators.required,
+            ],
+            unemployment: [
+              cityRecipe.employee.insuranceRate.unemployment * 100,
+              Validators.required,
+            ],
+          }),
+          housingFundBase: [meta.housingFundBase, Validators.required],
+          housingFundRate: [meta.housingFundRate * 100, Validators.required],
+          extraDeduction: this.fb.group({
+            childEducation: [
+              meta.extraDeduction.childEducation,
+              Validators.required,
+            ],
+            continuingEducation: [
+              meta.extraDeduction.continuingEducation,
+              Validators.required,
+            ],
+            seriousMedicalExpense: [
+              meta.extraDeduction.seriousMedicalExpense,
+              Validators.required,
+            ],
+            housingLoanInterest: [
+              meta.extraDeduction.housingLoanInterest,
+              Validators.required,
+            ],
+            renting: [meta.extraDeduction.renting, Validators.required],
+            elderlyCare: [meta.extraDeduction.elderlyCare, Validators.required],
+            enterprisePension: [
+              meta.extraDeduction.enterprisePension,
+              Validators.required,
+            ],
+            enterprisePensionTwo: [
+              meta.extraDeduction.enterprisePensionTwo,
+              Validators.required,
+            ],
+            other: [meta.extraDeduction.other, Validators.required],
+          }),
+        }) as unknown as FormGroup<MonthlyInputForm>
     );
 
     return forms;

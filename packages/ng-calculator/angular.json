@@ -4,7 +4,7 @@
   "newProjectRoot": "projects",
   "cli": {
     "packageManager": "pnpm",
-    "defaultCollection": "@angular-eslint/schematics"
+    "schematicCollections": ["@angular-eslint/schematics"]
   },
   "projects": {
     "ng-calculator": {
@@ -122,6 +122,5 @@
         }
       }
     }
-  },
-  "defaultProject": "ng-calculator"
+  }
 }

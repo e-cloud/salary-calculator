@@ -2,12 +2,12 @@
 
 @import "./app-theme";
 @import "./styles/general";
-@import "~bootstrap/scss/bootstrap-grid";
-@import "~bootstrap/scss/mixins";
-@import "~bootstrap/scss/utilities/position";
-@import "~bootstrap/scss/utilities/text";
-@import "~bootstrap/scss/utilities/sizing";
-@import "~bootstrap/scss/utilities/visibility";
+@import "node_modules/bootstrap/scss/bootstrap-grid";
+@import "node_modules/bootstrap/scss/mixins";
+@import "node_modules/bootstrap/scss/utilities/position";
+@import "node_modules/bootstrap/scss/utilities/text";
+@import "node_modules/bootstrap/scss/utilities/sizing";
+@import "node_modules/bootstrap/scss/utilities/visibility";
 
 // Include material core styles.
 @include mat.core;
