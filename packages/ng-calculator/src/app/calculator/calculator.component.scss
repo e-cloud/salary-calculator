@@ -1,6 +1,6 @@
-@import "~bootstrap/scss/functions";
-@import "~bootstrap/scss/mixins";
-@import "~bootstrap/scss/variables";
+@import "node_modules/bootstrap/scss/functions";
+@import "node_modules/bootstrap/scss/mixins";
+@import "node_modules/bootstrap/scss/variables";
 
 :host {
   display: block;
@@ -11,10 +11,11 @@
   margin-top: 25%;
 }
 
-mat-card-header {
+mat-mdc-card-header {
   margin-bottom: 1.25em;
 
-  ::ng-deep .mat-card-header-text {
+  /* TODO(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version. */
+  ::ng-deep .mat-mdc-card-header-text {
     margin-left: 0;
   }
 }
@@ -24,6 +25,8 @@ mat-card-header {
 }
 
 .summary {
+  --mdc-list-list-item-supporting-text-color: rgb(0 0 0 / 87%);
+
   display: flex;
   flex-wrap: wrap;
 

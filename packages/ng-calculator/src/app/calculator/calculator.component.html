@@ -1,4 +1,4 @@
-<mat-card>
+<mat-card appearance="outlined">
   <mat-card-header
     class="d-flex justify-content-between align-items-center flex-wrap ml-0"
   >
@@ -21,7 +21,7 @@
         color="primary"
         [matMenuTriggerFor]="menu"
       >
-        {{ cityRecipe.label }}
+        {{ cityRecipe.city }}: {{ cityRecipe.label }}
         <mat-icon>arrow_drop_down</mat-icon>
       </button>
       <mat-menu #menu="matMenu">
@@ -30,7 +30,7 @@
           *ngFor="let item of recipes$ | async"
           (click)="changeRecipe(item)"
         >
-          {{ item.label }}
+          {{ item.city }}: {{ item.label }}
         </button>
       </mat-menu>
     </div>
@@ -48,7 +48,7 @@
             formControlName="monthSalary"
             min="0"
           />
-          <span matSuffix>元</span>
+          <span matTextSuffix>元</span>
         </mat-form-field>
 
         <mat-form-field class="col-12 col-md-3" appearance="outline">
@@ -60,12 +60,12 @@
             formControlName="annualBonus"
             min="0"
           />
-          <span matSuffix>元</span>
+          <span matTextSuffix>元</span>
         </mat-form-field>
       </div>
 
       <div class="row mx-0">
-        <mat-form-field appearance="standard">
+        <mat-form-field>
           <mat-label>社保缴纳基数</mat-label>
           <input
             matInput
@@ -75,7 +75,7 @@
             min="0"
             [matAutocomplete]="insuranceBase"
           />
-          <span matSuffix>元</span>
+          <span matTextSuffix>元</span>
 
           <mat-autocomplete #insuranceBase="matAutocomplete" panelWidth="200">
             <mat-option [value]="baseForm.controls.monthSalary.value"
@@ -91,7 +91,7 @@
         </mat-form-field>
 
         <div class="ml-sm-3 ml-md-4">
-          <mat-form-field appearance="standard">
+          <mat-form-field>
             <mat-label>公积金缴纳基数</mat-label>
             <input
               matInput
@@ -101,7 +101,7 @@
               min="0"
               [matAutocomplete]="housingFundBase"
             />
-            <span matSuffix>元</span>
+            <span matTextSuffix>元</span>
 
             <mat-autocomplete
               #housingFundBase="matAutocomplete"
@@ -121,8 +121,7 @@
 
           <mat-form-field
             class="ml-3"
-            appearance="standard"
-            style="width: 120px"
+            style="width: 150px"
           >
             <mat-label>公积金个人缴纳比例</mat-label>
             <input
@@ -132,12 +131,12 @@
               formControlName="housingFundRate"
               min="0"
             />
-            <span matSuffix>%</span>
+            <span matTextSuffix>%</span>
           </mat-form-field>
         </div>
 
         <div class="ml-md-4" formGroupName="extraDeduction">
-          <mat-form-field appearance="standard" style="width: 120px">
+          <mat-form-field style="width: 120px">
             <mat-label>子女教育</mat-label>
             <input
               matInput
@@ -147,7 +146,7 @@
               min="0"
               [matAutocomplete]="childEducation"
             />
-            <span matSuffix>元</span>
+            <span matTextSuffix>元</span>
 
             <mat-autocomplete
               #childEducation="matAutocomplete"
@@ -167,7 +166,6 @@
 
           <mat-form-field
             class="ml-3"
-            appearance="standard"
             style="width: 120px"
           >
             <mat-label>继续教育</mat-label>
@@ -179,7 +177,7 @@
               min="0"
               [matAutocomplete]="continuingEducation"
             />
-            <span matSuffix>元</span>
+            <span matTextSuffix>元</span>
 
             <mat-autocomplete
               #continuingEducation="matAutocomplete"
@@ -198,7 +196,6 @@
 
           <mat-form-field
             class="ml-3"
-            appearance="standard"
             style="width: 120px"
           >
             <mat-label>大病医疗</mat-label>
@@ -209,12 +206,11 @@
               formControlName="seriousMedicalExpense"
               min="0"
             />
-            <span matSuffix>元</span>
+            <span matTextSuffix>元</span>
           </mat-form-field>
 
           <mat-form-field
             class="ml-3"
-            appearance="standard"
             style="width: 120px"
           >
             <mat-label>住房贷款利息</mat-label>
@@ -229,7 +225,7 @@
               "
               [matAutocomplete]="housingLoanInterest"
             />
-            <span matSuffix>元</span>
+            <span matTextSuffix>元</span>
 
             <mat-autocomplete
               #housingLoanInterest="matAutocomplete"
@@ -248,7 +244,6 @@
 
           <mat-form-field
             class="ml-3"
-            appearance="standard"
             style="width: 120px"
           >
             <mat-label>住房租金</mat-label>
@@ -267,7 +262,7 @@
               "
               [matAutocomplete]="renting"
             />
-            <span matSuffix>元</span>
+            <span matTextSuffix>元</span>
 
             <mat-autocomplete #renting="matAutocomplete" panelWidth="200">
               <mat-option
@@ -283,7 +278,6 @@
 
           <mat-form-field
             class="ml-3"
-            appearance="standard"
             style="width: 120px"
           >
             <mat-label>赡养老人</mat-label>
@@ -295,7 +289,7 @@
               min="0"
               [matAutocomplete]="elderlyCare"
             />
-            <span matSuffix>元</span>
+            <span matTextSuffix>元</span>
 
             <mat-autocomplete #elderlyCare="matAutocomplete" panelWidth="200">
               <mat-option
@@ -311,7 +305,6 @@
 
           <mat-form-field
             class="ml-3"
-            appearance="standard"
             style="width: 120px"
           >
             <mat-label>企业年金个人缴纳金额</mat-label>
@@ -322,12 +315,11 @@
               formControlName="enterprisePension"
               min="0"
             />
-            <span matSuffix>元</span>
+            <span matTextSuffix>元</span>
           </mat-form-field>
 
           <mat-form-field
             class="ml-3"
-            appearance="standard"
             style="width: 120px"
           >
             <mat-label>企业年金公司缴纳金额</mat-label>
@@ -338,12 +330,11 @@
               formControlName="enterprisePensionTwo"
               min="0"
             />
-            <span matSuffix>元</span>
+            <span matTextSuffix>元</span>
           </mat-form-field>
 
           <mat-form-field
             class="ml-3"
-            appearance="standard"
             style="width: 120px"
           >
             <mat-label>其他扣除项</mat-label>
@@ -354,14 +345,14 @@
               formControlName="other"
               min="0"
             />
-            <span matSuffix>元</span>
+            <span matTextSuffix>元</span>
           </mat-form-field>
         </div>
       </div>
 
       <div class="row mx-0" *ngIf="!usePredefinedInsurancePercents">
         <div formGroupName="insuranceRate">
-          <mat-form-field appearance="standard" style="width: 120px">
+          <mat-form-field style="width: 120px">
             <mat-label>养老保险个人缴纳比例</mat-label>
             <input
               matInput
@@ -370,12 +361,11 @@
               formControlName="endowment"
               min="0"
             />
-            <span matSuffix>%</span>
+            <span matTextSuffix>%</span>
           </mat-form-field>
 
           <mat-form-field
             class="ml-3"
-            appearance="standard"
             style="width: 120px"
           >
             <mat-label>医疗保险个人缴纳比例</mat-label>
@@ -386,12 +376,11 @@
               formControlName="health"
               min="0"
             />
-            <span matSuffix>%</span>
+            <span matTextSuffix>%</span>
           </mat-form-field>
 
           <mat-form-field
             class="ml-3"
-            appearance="standard"
             style="width: 120px"
           >
             <mat-label>失业保险个人缴纳比例</mat-label>
@@ -402,7 +391,7 @@
               formControlName="unemployment"
               min="0"
             />
-            <span matSuffix>%</span>
+            <span matTextSuffix>%</span>
           </mat-form-field>
         </div>
 
@@ -418,7 +407,7 @@
     </form>
   </mat-card-content>
 
-  <footer>
+  <mat-card-actions class="pl-4 pb-3">
     <button
       mat-raised-button
       color="primary"
@@ -439,7 +428,7 @@
     <button mat-raised-button class="ml-3" (click)="clearResult()">
       清空结果
     </button>
-  </footer>
+  </mat-card-actions>
 </mat-card>
 
 <div class="row mt-5">
@@ -476,111 +465,112 @@
 
   <div class="col-md-6">
     <mat-card
+      appearance="outlined"
       class="calc-result"
       #summary
       *ngIf="!clear && (summary$ | async) as sum"
     >
       <mat-list class="summary">
         <mat-list-item>
-          <mat-icon mat-list-icon>money</mat-icon>
-          <div mat-line>全年账面薪资收入</div>
-          <div mat-line class="figure">{{ sum.bookSalary | currency }}</div>
+          <mat-icon matListItemIcon>money</mat-icon>
+          <div matListItemLine>全年账面薪资收入</div>
+          <div matListItemLine class="figure">{{ sum.bookSalary | currency }}</div>
         </mat-list-item>
         <mat-list-item>
-          <mat-icon mat-list-icon>money</mat-icon>
-          <div mat-line>全年一次性奖金收入(单独计税)</div>
-          <div mat-line class="figure">
+          <mat-icon matListItemIcon>money</mat-icon>
+          <div matListItemLine>全年一次性奖金收入(单独计税)</div>
+          <div matListItemLine class="figure">
             {{ sum.bonus | currency }} ({{ sum.bonusTax | currency }})
           </div>
         </mat-list-item>
         <mat-list-item>
-          <mat-icon mat-list-icon>redeem</mat-icon>
-          <div mat-line>全年公积金缴纳金额</div>
-          <div mat-line class="figure">
+          <mat-icon matListItemIcon>redeem</mat-icon>
+          <div matListItemLine>全年公积金缴纳金额</div>
+          <div matListItemLine class="figure">
             {{ sum.fullHousingFund | currency }}
           </div>
         </mat-list-item>
         <mat-list-item>
-          <mat-icon mat-list-icon>monetization_on</mat-icon>
-          <div mat-line>全年预缴税额</div>
-          <div mat-line class="figure">{{ sum.prepaidTax | currency }}</div>
+          <mat-icon matListItemIcon>monetization_on</mat-icon>
+          <div matListItemLine>全年预缴税额</div>
+          <div matListItemLine class="figure">{{ sum.prepaidTax | currency }}</div>
         </mat-list-item>
         <mat-list-item>
-          <mat-icon mat-list-icon>monetization_on</mat-icon>
-          <div mat-line>全年个人综合所得税额</div>
-          <div mat-line class="figure">{{ sum.theoreticalTax | currency }}</div>
+          <mat-icon matListItemIcon>monetization_on</mat-icon>
+          <div matListItemLine>全年个人综合所得税额</div>
+          <div matListItemLine class="figure">{{ sum.theoreticalTax | currency }}</div>
         </mat-list-item>
         <mat-list-item>
-          <mat-icon mat-list-icon>monetization_on</mat-icon>
-          <div mat-line>全年个人综合所得税额（单独计算）</div>
-          <div mat-line class="figure">
+          <mat-icon matListItemIcon>monetization_on</mat-icon>
+          <div matListItemLine>全年个人综合所得税额（单独计算）</div>
+          <div matListItemLine class="figure">
             {{ sum.totalSeparatedTax | currency }}
           </div>
         </mat-list-item>
 
         <mat-list-item>
-          <mat-icon mat-list-icon>savings</mat-icon>
-          <div mat-line>全年税后收入</div>
-          <div mat-line class="figure">{{ sum.taxedIncome | currency }}</div>
+          <mat-icon matListItemIcon>savings</mat-icon>
+          <div matListItemLine>全年税后收入</div>
+          <div matListItemLine class="figure">{{ sum.taxedIncome | currency }}</div>
         </mat-list-item>
         <mat-list-item>
-          <mat-icon mat-list-icon>savings</mat-icon>
-          <div mat-line>全年税后收入（非合并 - {{ nonMergeTaxCalculationEndDate }}止）</div>
-          <div mat-line class="figure">
+          <mat-icon matListItemIcon>savings</mat-icon>
+          <div matListItemLine>全年税后收入（非合并 - {{ nonMergeTaxCalculationEndDate }}止）</div>
+          <div matListItemLine class="figure">
             {{ sum.taxedIncomeDeprecated | currency }}
           </div>
         </mat-list-item>
 
         <mat-list-item>
-          <mat-icon mat-list-icon>savings</mat-icon>
-          <div mat-line>全年现金收入</div>
-          <div mat-line class="figure">{{ sum.cashIncome | currency }}</div>
+          <mat-icon matListItemIcon>savings</mat-icon>
+          <div matListItemLine>全年现金收入</div>
+          <div matListItemLine class="figure">{{ sum.cashIncome | currency }}</div>
         </mat-list-item>
 
         <mat-list-item>
-          <mat-icon mat-list-icon>savings</mat-icon>
-          <div mat-line>全年现金收入（非合并 - {{ nonMergeTaxCalculationEndDate }}止）</div>
-          <div mat-line class="figure">
+          <mat-icon matListItemIcon>savings</mat-icon>
+          <div matListItemLine>全年现金收入（非合并 - {{ nonMergeTaxCalculationEndDate }}止）</div>
+          <div matListItemLine class="figure">
             {{ sum.cashIncomeDeprecated | currency }}
           </div>
         </mat-list-item>
 
         <mat-list-item>
-          <mat-icon mat-list-icon>savings</mat-icon>
-          <div mat-line>全年综合货币收入</div>
-          <div mat-line class="figure">
+          <mat-icon matListItemIcon>savings</mat-icon>
+          <div matListItemLine>全年综合货币收入</div>
+          <div matListItemLine class="figure">
             {{ sum.cashIncome + sum.fullHousingFund | currency }}
           </div>
         </mat-list-item>
 
         <mat-list-item>
-          <mat-icon mat-list-icon>savings</mat-icon>
-          <div mat-line>全年综合货币收入（非合并 - {{ nonMergeTaxCalculationEndDate }}止）</div>
-          <div mat-line class="figure">
+          <mat-icon matListItemIcon>savings</mat-icon>
+          <div matListItemLine>全年综合货币收入（非合并 - {{ nonMergeTaxCalculationEndDate }}止）</div>
+          <div matListItemLine class="figure">
             {{ sum.cashIncomeDeprecated + sum.fullHousingFund | currency }}
           </div>
         </mat-list-item>
 
         <mat-list-item>
-          <mat-icon mat-list-icon>redeem</mat-icon>
-          <div mat-line>个人养老保险缴纳总额</div>
-          <div mat-line class="figure">
+          <mat-icon matListItemIcon>redeem</mat-icon>
+          <div matListItemLine>个人养老保险缴纳总额</div>
+          <div matListItemLine class="figure">
             {{ sum.employee.endowmentInsurance | currency }}
           </div>
         </mat-list-item>
 
         <mat-list-item>
-          <mat-icon mat-list-icon>redeem</mat-icon>
-          <div mat-line>个人医保缴纳总额</div>
-          <div mat-line class="figure">
+          <mat-icon matListItemIcon>redeem</mat-icon>
+          <div matListItemLine>个人医保缴纳总额</div>
+          <div matListItemLine class="figure">
             {{ sum.employee.healthInsurance | currency }}
           </div>
         </mat-list-item>
 
         <mat-list-item>
-          <mat-icon mat-list-icon>payments</mat-icon>
-          <div mat-line>公司成本</div>
-          <div mat-line class="figure">
+          <mat-icon matListItemIcon>payments</mat-icon>
+          <div matListItemLine>公司成本</div>
+          <div matListItemLine class="figure">
             {{ sum.employerCosts.full | currency }}
           </div>
         </mat-list-item>
@@ -592,7 +582,7 @@
 <ng-template #detailForm let-form="form" let-income="income" let-idx="index">
   <form class="d-flex flex-column" [formGroup]="form">
     <div class="ml-md-3 d-flex flex-wrap align-items-center">
-      <mat-form-field appearance="standard">
+      <mat-form-field>
         <mat-label>月薪</mat-label>
         <input
           matInput
@@ -601,10 +591,10 @@
           formControlName="monthSalary"
           min="0"
         />
-        <span matSuffix>元</span>
+        <span matTextSuffix>元</span>
       </mat-form-field>
 
-      <mat-form-field class="ml-3" appearance="standard">
+      <mat-form-field class="ml-3">
         <mat-label>月度奖金</mat-label>
         <input
           matInput
@@ -613,7 +603,7 @@
           formControlName="monthlyBonus"
           min="0"
         />
-        <span matSuffix>元</span>
+        <span matTextSuffix>元</span>
       </mat-form-field>
 
       <mat-slide-toggle class="ml-3" formControlName="newPayCycle"
@@ -622,7 +612,7 @@
     </div>
 
     <div class="ml-md-3 d-flex flex-wrap">
-      <mat-form-field appearance="standard">
+      <mat-form-field>
         <mat-label>社保缴纳基数</mat-label>
         <input
           matInput
@@ -632,7 +622,7 @@
           min="0"
           [matAutocomplete]="insuranceBase2"
         />
-        <span matSuffix>元</span>
+        <span matTextSuffix>元</span>
 
         <mat-autocomplete #insuranceBase2="matAutocomplete" panelWidth="200">
           <mat-option [value]="form.controls.monthSalary?.value"
@@ -648,7 +638,7 @@
       </mat-form-field>
 
       <div class="ml-3" formGroupName="insuranceRate">
-        <mat-form-field appearance="standard" style="width: 120px">
+        <mat-form-field style="width: 120px">
           <mat-label>养老保险个人缴纳比例</mat-label>
           <input
             matInput
@@ -657,10 +647,10 @@
             formControlName="endowment"
             min="0"
           />
-          <span matSuffix>%</span>
+          <span matTextSuffix>%</span>
         </mat-form-field>
 
-        <mat-form-field class="ml-3" appearance="standard" style="width: 120px">
+        <mat-form-field class="ml-3" style="width: 120px">
           <mat-label>医疗保险个人缴纳比例</mat-label>
           <input
             matInput
@@ -669,10 +659,10 @@
             formControlName="health"
             min="0"
           />
-          <span matSuffix>%</span>
+          <span matTextSuffix>%</span>
         </mat-form-field>
 
-        <mat-form-field class="ml-3" appearance="standard" style="width: 120px">
+        <mat-form-field class="ml-3" style="width: 120px">
           <mat-label>失业保险个人缴纳比例</mat-label>
           <input
             matInput
@@ -681,13 +671,13 @@
             formControlName="unemployment"
             min="0"
           />
-          <span matSuffix>%</span>
+          <span matTextSuffix>%</span>
         </mat-form-field>
       </div>
     </div>
 
     <div class="ml-md-3 d-flex flex-wrap">
-      <mat-form-field appearance="standard">
+      <mat-form-field>
         <mat-label>公积金缴纳基数</mat-label>
         <input
           matInput
@@ -697,7 +687,7 @@
           min="0"
           [matAutocomplete]="housingFundBase2"
         />
-        <span matSuffix>元</span>
+        <span matTextSuffix>元</span>
 
         <mat-autocomplete #housingFundBase2="matAutocomplete" panelWidth="200">
           <mat-option [value]="form.controls.monthSalary?.value"
@@ -712,7 +702,7 @@
         </mat-autocomplete>
       </mat-form-field>
 
-      <mat-form-field class="ml-3" appearance="standard" style="width: 120px">
+      <mat-form-field class="ml-3" style="width: 120px">
         <mat-label>公积金个人缴纳比例</mat-label>
         <input
           matInput
@@ -721,12 +711,12 @@
           formControlName="housingFundRate"
           min="0"
         />
-        <span matSuffix>%</span>
+        <span matTextSuffix>%</span>
       </mat-form-field>
     </div>
 
     <div class="ml-md-3 d-flex flex-wrap" formGroupName="extraDeduction">
-      <mat-form-field appearance="standard" style="width: 120px">
+      <mat-form-field style="width: 120px">
         <mat-label>子女教育(当月)</mat-label>
         <input
           matInput
@@ -736,10 +726,10 @@
           min="0"
           [matAutocomplete]="childEducation"
         />
-        <span matSuffix>元</span>
+        <span matTextSuffix>元</span>
       </mat-form-field>
 
-      <mat-form-field class="ml-3" appearance="standard" style="width: 120px">
+      <mat-form-field class="ml-3" style="width: 120px">
         <mat-label>继续教育(当月)</mat-label>
         <input
           matInput
@@ -749,10 +739,10 @@
           min="0"
           [matAutocomplete]="continuingEducation"
         />
-        <span matSuffix>元</span>
+        <span matTextSuffix>元</span>
       </mat-form-field>
 
-      <mat-form-field class="ml-3" appearance="standard" style="width: 120px">
+      <mat-form-field class="ml-3" style="width: 120px">
         <mat-label>大病医疗(当月)</mat-label>
         <input
           matInput
@@ -761,10 +751,10 @@
           formControlName="seriousMedicalExpense"
           min="0"
         />
-        <span matSuffix>元</span>
+        <span matTextSuffix>元</span>
       </mat-form-field>
 
-      <mat-form-field class="ml-3" appearance="standard" style="width: 120px">
+      <mat-form-field class="ml-3" style="width: 120px">
         <mat-label>住房贷款利息(当月)</mat-label>
         <input
           matInput
@@ -777,10 +767,10 @@
           "
           [matAutocomplete]="housingLoanInterest"
         />
-        <span matSuffix>元</span>
+        <span matTextSuffix>元</span>
       </mat-form-field>
 
-      <mat-form-field class="ml-3" appearance="standard" style="width: 120px">
+      <mat-form-field class="ml-3" style="width: 120px">
         <mat-label>住房租金(当月)</mat-label>
         <input
           matInput
@@ -793,10 +783,10 @@
           "
           [matAutocomplete]="renting"
         />
-        <span matSuffix>元</span>
+        <span matTextSuffix>元</span>
       </mat-form-field>
 
-      <mat-form-field class="ml-3" appearance="standard" style="width: 120px">
+      <mat-form-field class="ml-3" style="width: 120px">
         <mat-label>赡养老人(当月)</mat-label>
         <input
           matInput
@@ -806,10 +796,10 @@
           min="0"
           [matAutocomplete]="elderlyCare"
         />
-        <span matSuffix>元</span>
+        <span matTextSuffix>元</span>
       </mat-form-field>
 
-      <mat-form-field class="ml-3" appearance="standard" style="width: 120px">
+      <mat-form-field class="ml-3" style="width: 120px">
         <mat-label>企业年金个人缴纳金额</mat-label>
         <input
           matInput
@@ -818,10 +808,10 @@
           formControlName="enterprisePension"
           min="0"
         />
-        <span matSuffix>元</span>
+        <span matTextSuffix>元</span>
       </mat-form-field>
 
-      <mat-form-field class="ml-3" appearance="standard" style="width: 120px">
+      <mat-form-field class="ml-3" style="width: 120px">
         <mat-label>企业年金公司缴纳金额</mat-label>
         <input
           matInput
@@ -830,10 +820,10 @@
           formControlName="enterprisePensionTwo"
           min="0"
         />
-        <span matSuffix>元</span>
+        <span matTextSuffix>元</span>
       </mat-form-field>
 
-      <mat-form-field class="ml-3" appearance="standard" style="width: 120px">
+      <mat-form-field class="ml-3" style="width: 120px">
         <mat-label>其他扣除项</mat-label>
         <input
           matInput
@@ -842,7 +832,7 @@
           formControlName="other"
           min="0"
         />
-        <span matSuffix>元</span>
+        <span matTextSuffix>元</span>
       </mat-form-field>
     </div>
 

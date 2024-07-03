@@ -11,10 +11,11 @@
 
 // Include material core styles.
 @include mat.core;
+@include mat.typography-hierarchy($app-typography);
 @include mat.all-component-themes($mat-theme);
 @include material-app-theme($mat-theme);
 
-.mat-accordion {
+.mat-mdc-accordion {
   display: block;
 }
 
@@ -25,4 +26,9 @@
 .ng-animating .mat-expansion-panel-content {
   visibility: hidden;
   height: 0;
+}
+
+.mat-mdc-dialog-container {
+  --mdc-dialog-supporting-text-line-height: 20px;
+  --mdc-dialog-subhead-size: 24px;
 }
