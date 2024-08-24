@@ -11,7 +11,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { CalculatorComponent } from './calculator/calculator.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
-import { HttpClientModule } from '@angular/common/http';
+import {
+  provideHttpClient,
+  withInterceptorsFromDi,
+} from '@angular/common/http';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
@@ -37,11 +40,10 @@ registerLocaleData(zh);
     MonthPipe,
     HelpInfoComponent,
   ],
+  bootstrap: [AppComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    HttpClientModule,
-
     MatSliderModule,
     MatButtonModule,
     MatCardModule,
@@ -67,7 +69,7 @@ registerLocaleData(zh);
       provide: DEFAULT_CURRENCY_CODE,
       useValue: '¥',
     },
+    provideHttpClient(withInterceptorsFromDi()),
   ],
-  bootstrap: [AppComponent],
 })
 export class AppModule {}
