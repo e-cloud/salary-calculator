@@ -92,8 +92,8 @@ export interface InputModel {
     housingLoanInterest: number;
     renting: number;
     elderlyCare: number;
-    enterprisePension: number;
-    enterprisePensionTwo: number;
+    enterprisePensionFromEmployee: number;
+    enterprisePensionFromEmployer: number;
     other: number;
   };
   insuranceRate: {
@@ -166,8 +166,8 @@ export class CalculatorComponent {
         housingLoanInterest: [0, Validators.required],
         renting: [0, Validators.required],
         elderlyCare: [0, Validators.required],
-        enterprisePension: [0, Validators.required],
-        enterprisePensionTwo: [0, Validators.required],
+        enterprisePensionFromEmployee: [0, Validators.required],
+        enterprisePensionFromEmployer: [0, Validators.required],
         other: [0, Validators.required],
       }),
       insuranceRate: this.fb.group({
@@ -293,8 +293,8 @@ export class CalculatorComponent {
         housingLoanInterest: 0,
         renting: 0,
         elderlyCare: 0,
-        enterprisePension: 0,
-        enterprisePensionTwo: 0,
+        enterprisePensionFromEmployee: 0,
+        enterprisePensionFromEmployer: 0,
         other: 0,
       },
       insuranceRate: {
@@ -417,12 +417,12 @@ export class CalculatorComponent {
             ],
             renting: [meta.extraDeduction.renting, Validators.required],
             elderlyCare: [meta.extraDeduction.elderlyCare, Validators.required],
-            enterprisePension: [
-              meta.extraDeduction.enterprisePension,
+            enterprisePensionFromEmployee: [
+              meta.extraDeduction.enterprisePensionFromEmployee,
               Validators.required,
             ],
-            enterprisePensionTwo: [
-              meta.extraDeduction.enterprisePensionTwo,
+            enterprisePensionFromEmployer: [
+              meta.extraDeduction.enterprisePensionFromEmployer,
               Validators.required,
             ],
             other: [meta.extraDeduction.other, Validators.required],

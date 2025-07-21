@@ -63,8 +63,8 @@ export interface MonthlyIncomeInfo {
     housingLoanInterest: number;
     renting: number;
     elderlyCare: number;
-    enterprisePension: number;
-    enterprisePensionTwo: number;
+    enterprisePensionFromEmployee: number;
+    enterprisePensionFromEmployer: number;
     other: number;
   };
   fullExtraDeduction: number;
@@ -147,9 +147,9 @@ export interface MonthlyIncomeMeta {
     // 赡养老人
     elderlyCare: number;
     // 企业年金（个人）
-    enterprisePension: number;
+    enterprisePensionFromEmployee: number;
     // 企业年金（企业）
-    enterprisePensionTwo: number;
+    enterprisePensionFromEmployer: number;
     // 其他扣除
     other: number;
   };
@@ -239,6 +239,7 @@ export interface FullYearIncomeInfo {
   employee: {
     endowmentInsurance: number;
     healthInsurance: number;
+    enterprisePensionFull: number;
   };
 
   /**
@@ -320,8 +321,8 @@ export interface RawMeta {
     housingLoanInterest: number;
     renting: number;
     elderlyCare: number;
-    enterprisePension: number;
-    enterprisePensionTwo: number;
+    enterprisePensionFromEmployee: number;
+    enterprisePensionFromEmployer: number;
     other: number;
   };
   insuranceRate: {

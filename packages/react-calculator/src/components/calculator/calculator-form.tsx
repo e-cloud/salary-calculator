@@ -41,8 +41,8 @@ const schema = yup.object().shape({
     housingLoanInterest: numberRule,
     renting: numberRule,
     elderlyCare: numberRule,
-    enterprisePension: numberRule,
-    enterprisePensionTwo: numberRule,
+    enterprisePensionFromEmployee: numberRule,
+    enterprisePensionFromEmployer: numberRule,
     other: numberRule,
   }),
   insuranceRate: yup.object().shape({
@@ -66,8 +66,8 @@ interface FormModel {
     housingLoanInterest: number;
     renting: number;
     elderlyCare: number;
-    enterprisePension: number;
-    enterprisePensionTwo: number;
+    enterprisePensionFromEmployee: number;
+    enterprisePensionFromEmployer: number;
     other: number;
   };
   insuranceRate: {
@@ -92,8 +92,8 @@ function makeDefaultFormData(recipe: CityRecipe): FormModel {
       housingLoanInterest: 0,
       renting: 0,
       elderlyCare: 0,
-      enterprisePension: 0,
-      enterprisePensionTwo: 0,
+      enterprisePensionFromEmployee: 0,
+      enterprisePensionFromEmployer: 0,
       other: 0,
     },
     insuranceRate: {
@@ -191,8 +191,8 @@ export function CalculatorForm({ usePredefinedInsurancePercents }: FormProps) {
         housingLoanInterest: 0,
         renting: 0,
         elderlyCare: 0,
-        enterprisePension: 0,
-        enterprisePensionTwo: 0,
+        enterprisePensionFromEmployee: 0,
+        enterprisePensionFromEmployer: 0,
         other: 0,
       },
     });
@@ -329,7 +329,7 @@ export function CalculatorForm({ usePredefinedInsurancePercents }: FormProps) {
         />
 
         <TextFieldElement
-          name="extraDeduction.enterprisePension"
+          name="extraDeduction.enterprisePensionFromEmployee"
           label="企业年金个人缴纳金额"
           variant="standard"
           type="number"
@@ -339,7 +339,7 @@ export function CalculatorForm({ usePredefinedInsurancePercents }: FormProps) {
         />
 
         <TextFieldElement
-          name="extraDeduction.enterprisePensionTwo"
+          name="extraDeduction.enterprisePensionFromEmployer"
           label="企业年金公司缴纳金额"
           variant="standard"
           type="number"

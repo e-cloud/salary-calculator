@@ -42,8 +42,8 @@ export interface DetailFormModel {
     housingLoanInterest: number;
     renting: number;
     elderlyCare: number;
-    enterprisePension: number;
-    enterprisePensionTwo: number;
+    enterprisePensionFromEmployee: number;
+    enterprisePensionFromEmployer: number;
     other: number;
   };
   insuranceRate: {
@@ -74,8 +74,8 @@ const schema = yup.object().shape({
     housingLoanInterest: numberRule,
     renting: numberRule,
     elderlyCare: numberRule,
-    enterprisePension: numberRule,
-    enterprisePensionTwo: numberRule,
+    enterprisePensionFromEmployee: numberRule,
+    enterprisePensionFromEmployer: numberRule,
     other: numberRule,
   }),
   insuranceRate: yup.object().shape({
@@ -280,7 +280,7 @@ export function MonthIncomeForm(props: MonthIncomeFormProps) {
         />
 
         <TextFieldElement
-          name="extraDeduction.enterprisePension"
+          name="extraDeduction.enterprisePensionFromEmployee"
           label="企业年金个人缴纳金额"
           variant="standard"
           type="number"
@@ -290,7 +290,7 @@ export function MonthIncomeForm(props: MonthIncomeFormProps) {
         />
 
         <TextFieldElement
-          name="extraDeduction.enterprisePensionTwo"
+          name="extraDeduction.enterprisePensionFromEmployer"
           label="企业年金公司缴纳金额"
           variant="standard"
           type="number"

@@ -64,15 +64,16 @@ export function calculateFullYearIncome(
     full.taxedIncome -
     sumBy(list, 'insuranceFullCost') -
     sumBy(list, 'housingFund') -
-    sumBy(list, 'extraDeduction.enterprisePension');
+    sumBy(list, 'extraDeduction.enterprisePensionFromEmployee');
   full.cashIncomeDeprecated =
     full.taxedIncomeDeprecated -
     sumBy(list, 'insuranceFullCost') -
     sumBy(list, 'housingFund') -
-    sumBy(list, 'extraDeduction.enterprisePension');
+    sumBy(list, 'extraDeduction.enterprisePensionFromEmployee');
 
   full.employee.endowmentInsurance = sumBy(list, 'insuranceCosts.endowment');
   full.employee.healthInsurance = sumBy(list, 'insuranceCosts.health');
+  full.employee.enterprisePensionFull = sumBy(list, 'extraDeduction.enterprisePensionFromEmployee') + sumBy(list, 'extraDeduction.enterprisePensionFromEmployer');
 
   full.employerCosts.full = sumBy(list, 'employerCosts.full') + full.bonus;
   full.employerCosts.enterprisePension = sumBy(
@@ -158,7 +159,7 @@ export function calculateMonthIncome(
   // 社保缴纳额
   const insuranceFullCost = sum(values(insuranceDeducted));
 
-  const enterprisePension = current.extraDeduction.enterprisePensionTwo;
+  const enterprisePension = current.extraDeduction.enterprisePensionFromEmployee;
 
   // 专项扣除额
   const extraDeducted =
@@ -209,7 +210,7 @@ export function calculateMonthIncome(
 
   // 雇主成本
   newMonthInfo.employerCosts.enterprisePension =
-    current.extraDeduction.enterprisePensionTwo;
+    current.extraDeduction.enterprisePensionFromEmployer;
   newMonthInfo.employerCosts.insurance = insuranceCostsForEmployer(
     newPayCycle || !current.insuranceBaseOnLastMonth
       ? current.insuranceBase
@@ -330,7 +331,7 @@ function getValidBase(base: number, range: [number, number]) {
 }
 
 function extraDeduction(meta: MonthlyIncomeMeta['extraDeduction']): number {
-  return sum(values(omit(meta, ['enterprisePension', 'enterprisePensionTwo'])));
+  return sum(values(omit(meta, ['enterprisePensionFromEmployee', 'enterprisePensionFromEmployer'])));
 }
 
 function findTaxRate(

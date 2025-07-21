@@ -312,7 +312,7 @@
               matInput
               type="number"
               placeholder="0"
-              formControlName="enterprisePension"
+              formControlName="enterprisePensionFromEmployee"
               min="0"
             />
             <span matTextSuffix>元</span>
@@ -327,7 +327,7 @@
               matInput
               type="number"
               placeholder="0"
-              formControlName="enterprisePensionTwo"
+              formControlName="enterprisePensionFromEmployer"
               min="0"
             />
             <span matTextSuffix>元</span>
@@ -564,6 +564,14 @@
           <div matListItemLine>个人医保缴纳总额</div>
           <div matListItemLine class="figure">
             {{ sum.employee.healthInsurance | currency }}
+          </div>
+        </mat-list-item>
+
+        <mat-list-item>
+          <mat-icon matListItemIcon>redeem</mat-icon>
+          <div matListItemLine>全年企业年金缴纳总额</div>
+          <div matListItemLine class="figure">
+            {{ sum.employee.enterprisePensionFull | currency }}
           </div>
         </mat-list-item>
 
@@ -805,7 +813,7 @@
           matInput
           type="number"
           placeholder="0"
-          formControlName="enterprisePension"
+          formControlName="enterprisePensionFromEmployee"
           min="0"
         />
         <span matTextSuffix>元</span>
@@ -817,7 +825,7 @@
           matInput
           type="number"
           placeholder="0"
-          formControlName="enterprisePensionTwo"
+          formControlName="enterprisePensionFromEmployer"
           min="0"
         />
         <span matTextSuffix>元</span>
