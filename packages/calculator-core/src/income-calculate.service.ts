@@ -71,8 +71,11 @@ export function calculateFullYearIncome(
     sumBy(list, 'housingFund') -
     sumBy(list, 'extraDeduction.enterprisePensionFromEmployee');
 
+  full.fullInsurance = sumBy(list, 'insuranceFullCost');
   full.employee.endowmentInsurance = sumBy(list, 'insuranceCosts.endowment');
   full.employee.healthInsurance = sumBy(list, 'insuranceCosts.health');
+  full.employee.enterprisePension = sumBy(list, 'extraDeduction.enterprisePensionFromEmployee');
+  full.employee.housingFund = sumBy(list, 'housingFund');
   full.employee.enterprisePensionFull = sumBy(list, 'extraDeduction.enterprisePensionFromEmployee') + sumBy(list, 'extraDeduction.enterprisePensionFromEmployer');
 
   full.employerCosts.full = sumBy(list, 'employerCosts.full') + full.bonus;

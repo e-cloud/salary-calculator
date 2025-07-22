@@ -35,7 +35,15 @@ import {
 } from 'calculator-core';
 import { mapValues, merge } from 'lodash-es';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
-import { filter, map, share, startWith, switchMap, tap } from 'rxjs/operators';
+import {
+  filter,
+  map,
+  share,
+  shareReplay,
+  startWith,
+  switchMap,
+  tap,
+} from 'rxjs/operators';
 
 const shenzhenRecipe: CityRecipe = {
   id: 0,
@@ -154,6 +162,7 @@ export class CalculatorComponent {
 
   // 饼图配置
   deductionChartOption: Observable<EChartsOption>;
+  annualDeductionChartOption: Observable<EChartsOption>;
 
   readonly months = Array.from({ length: 12 }, (_, i) => i + 1);
 
@@ -219,7 +228,7 @@ export class CalculatorComponent {
     this.monthlyIncomes$ = this.monthlyMetas$.pipe(
       filter((list) => list.length > 0),
       map((list) => calculateMonthlyIncomes(list)),
-      share()
+      shareReplay(1)
     );
 
     this.summary$ = combineLatest([this.monthlyIncomes$, this.baseMeta$]).pipe(
@@ -229,6 +238,78 @@ export class CalculatorComponent {
       ),
       map(([list, meta]) => {
         return calculateFullYearIncome(list!, meta.annualBonus);
+      }),
+      shareReplay(1)
+    );
+
+    this.annualDeductionChartOption = this.summary$.pipe(
+      map((summary) => {
+        const data = [
+          { value: summary.cashIncomeDeprecated, name: '全年税后' },
+          { value: summary.employee.housingFund, name: '全年公积金' },
+          { value: summary.fullInsurance, name: '全年社保' },
+          { value: summary.totalSeparatedTax, name: '全年个税' },
+          {
+            value: summary.employee.enterprisePension,
+            name: '全年企业年金',
+          },
+        ];
+
+        return {
+          tooltip: {
+            trigger: 'item',
+            formatter: function (params: any) {
+              const currency = new Intl.NumberFormat('zh-CN', {
+                style: 'currency',
+                currency: 'CNY',
+                maximumFractionDigits: 2,
+              });
+              return `${params.seriesName} <br/>${
+                params.name
+              }: ${currency.format(params.value)} (${params.percent}%)`;
+            },
+          },
+          legend: {
+            orient: 'vertical',
+            right: 10,
+            data: data.map((item) => item.name),
+          },
+          series: [
+            {
+              name: '年薪分配',
+              type: 'pie',
+              startAngle: -45,
+              avoidLabelOverlap: true,
+              itemStyle: {
+                borderRadius: 10,
+                borderColor: '#fff',
+                borderWidth: 1,
+              },
+              emphasis: {
+                label: {
+                  show: true,
+                  fontSize: 20,
+                  fontWeight: 'bold',
+                },
+              },
+              label: {
+                padding: 4,
+                minMargin: 8,
+                formatter: function (params: any) {
+                  const currency = new Intl.NumberFormat('zh-CN', {
+                    style: 'currency',
+                    currency: 'CNY',
+                    maximumFractionDigits: 2,
+                  });
+                  return `${params.name}:\n${currency.format(params.value)} (${
+                    params.percent
+                  }%)`;
+                },
+              },
+              data: data,
+            },
+          ],
+        } as EChartsOption;
       })
     );
 

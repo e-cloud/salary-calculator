@@ -28,6 +28,7 @@ import { MonthPipe } from './calculator/month.pipe';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatDialogModule } from '@angular/material/dialog';
 import { HelpInfoComponent } from './help-info/help-info.component';
+import { MatTabsModule } from '@angular/material/tabs';
 
 zh[14] = ['#,###0.###', '#,##0%', '¤#,###0.00', '#E0'];
 
@@ -60,6 +61,7 @@ registerLocaleData(zh);
     MatListModule,
     MatAutocompleteModule,
     MatDialogModule,
+    MatTabsModule,
     NgxEchartsModule.forRoot({
       /**
        * This will import all modules from echarts.

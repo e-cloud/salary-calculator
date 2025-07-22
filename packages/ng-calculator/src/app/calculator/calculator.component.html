@@ -446,34 +446,96 @@
       class="calc-result mb-4"
       *ngIf="!clear && (deductionChartOption | async) as chartOption"
     >
-      <mat-card-header
-        class="d-flex justify-content-between align-items-center"
-      >
-        <mat-card-title>月薪扣除项分析</mat-card-title>
-        <mat-form-field
-          class="dense-xs"
-          appearance="outline"
-          style="width: 150px"
-        >
-          <mat-label>月份</mat-label>
-          <mat-select
-            [value]="selectedMonthIndex$ | async"
-            (selectionChange)="changeChartMonth($event.value)"
+      <mat-tab-group>
+        <mat-tab label="月薪扣除项分析">
+          <mat-card-header
+            class="d-flex justify-content-between align-items-center"
           >
-            <mat-option *ngFor="let m of months; let i = index" [value]="i">
-              {{ m }}月
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </mat-card-header>
-      <mat-card-content>
-        <div
-          echarts
-          [options]="chartOption"
-          class="chart-container"
-          style="height: 400px; width: 100%"
-        ></div>
-      </mat-card-content>
+            <mat-card-title></mat-card-title>
+            <mat-form-field
+              class="dense-xs"
+              appearance="outline"
+              style="width: 150px"
+            >
+              <mat-label>月份</mat-label>
+              <mat-select
+                [value]="selectedMonthIndex$ | async"
+                (selectionChange)="changeChartMonth($event.value)"
+              >
+                <mat-option *ngFor="let m of months; let i = index" [value]="i">
+                  {{ m }}月
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </mat-card-header>
+          <mat-card-content>
+            <div
+              echarts
+              [options]="chartOption"
+              class="chart-container"
+              style="height: 400px; width: 100%"
+            ></div>
+            <div
+              class="text-center mt-2"
+              *ngIf="(monthlyIncomes$ | async) as incomes"
+            >
+              <ng-container
+                *ngIf="
+                  (selectedMonthIndex$ | async) as index;
+                  else noSelection
+                "
+              >
+                {{ incomes[index].cashIncome | currency }} (实发) +
+                {{ incomes[index].tax | currency }} (个税) +
+                {{ incomes[index].insuranceFullCost | currency }} (社保) +
+                {{ incomes[index].housingFund | currency }} (公积金) +
+                {{
+                  incomes[index].extraDeduction.enterprisePensionFromEmployee
+                    | currency
+                }}
+                (企业年金) =
+                {{ incomes[index].salary | currency }} (月收入)
+              </ng-container>
+              <ng-template #noSelection>
+                <ng-container *ngIf="incomes.length > 0">
+                  {{ incomes[0].cashIncome | currency }} (实发) +
+                  {{ incomes[0].tax | currency }} (个税) +
+                  {{ incomes[0].insuranceFullCost | currency }} (社保) +
+                  {{ incomes[0].housingFund | currency }} (公积金) +
+                  {{
+                    incomes[0].extraDeduction.enterprisePensionFromEmployee
+                      | currency
+                  }}
+                  (企业年金) =
+                  {{ incomes[0].salary | currency }} (月收入)
+                </ng-container>
+              </ng-template>
+            </div>
+          </mat-card-content>
+        </mat-tab>
+        <mat-tab
+          label="年度扣除项分析"
+          *ngIf="annualDeductionChartOption | async as annualDeductionChartOption"
+        >
+          <mat-card-content>
+            <div
+              echarts
+              [options]="annualDeductionChartOption"
+              class="chart-container"
+              style="height: 400px; width: 100%"
+            ></div>
+            <div class="text-center mt-2" *ngIf="summary$ | async as sum">
+              {{ sum.cashIncomeDeprecated | currency }} (全年税后) +
+              {{ sum.totalSeparatedTax | currency }} (全年个税) +
+              {{ sum.fullInsurance | currency }} (全年社保) +
+              {{ sum.employee.housingFund | currency }} (全年公积金) +
+              {{ sum.employee.enterprisePension | currency }} (全年企业年金)
+              =
+              {{ sum.bookSalary + sum.bonus | currency }} (全年总收入)
+            </div>
+          </mat-card-content>
+        </mat-tab>
+      </mat-tab-group>
     </mat-card>
 
     <!-- 汇总卡片 -->

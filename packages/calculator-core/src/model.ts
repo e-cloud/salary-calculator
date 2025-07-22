@@ -216,19 +216,23 @@ export interface FullYearIncomeInfo {
    */
   taxedIncomeDeprecated: number;
   /**
-   * 全年现金收入
+   * 全年到手（现金）
    */
   cashIncome: number;
   /**
-   * 全年现金收入(奖金单独计税版，2024.1.1废止)
+   * 全年到手（现金）(旧算法)
    */
   cashIncomeDeprecated: number;
+  /**
+   * 全年社保总额
+   */
+  fullInsurance: number;
   /**
    * 全年一次性奖金收入
    */
   bonus: number;
   /**
-   * 奖金单独计税
+   * 全年一次性奖金税
    */
   bonusTax: number;
   /**
@@ -239,6 +243,8 @@ export interface FullYearIncomeInfo {
   employee: {
     endowmentInsurance: number;
     healthInsurance: number;
+    housingFund: number;
+    enterprisePension: number;
     enterprisePensionFull: number;
   };
 

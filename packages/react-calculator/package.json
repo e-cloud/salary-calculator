@@ -20,7 +20,7 @@
     "@hookform/resolvers": "^2.8.8",
     "@mui/icons-material": "^5.15.21",
     "@mui/material": "^5.15.1",
-    "calculator-core": "workspace:*",
+    "calculator-core": "workspace:latest",
     "date-fns": "^2.28.0",
     "lodash-es": "^4.14.0",
     "react": "^18.3.1",
