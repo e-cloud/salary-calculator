@@ -34,3 +34,15 @@ $mat-theme: mat.m2-define-light-theme(
     typography: $app-typography,
   )
 );
+
+.dense-sm {
+  @include mat.all-component-densities(-1);
+}
+
+.dense-xs {
+  @include mat.all-component-densities(-2);
+}
+
+.dense-xxs {
+  @include mat.all-component-densities(-4);
+}

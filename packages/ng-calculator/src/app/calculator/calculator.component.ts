@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
+/* eslint-disable @typescript-eslint/no-non-null-assertion,@typescript-eslint/no-explicit-any */
 import {
   animate,
   query,
@@ -16,6 +16,7 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
+import type { EChartsOption } from 'echarts';
 import {
   buildBaseMeta,
   buildEmptyMetaList,
@@ -144,13 +145,19 @@ export class CalculatorComponent {
     meta: Partial<MonthlyIncomeMeta>;
     index: number;
   }>();
+  selectedMonthIndex$ = new BehaviorSubject<number>(0);
 
   monthlyMetas$: Observable<MonthlyIncomeMeta[]>;
   monthlyIncomes$: Observable<MonthlyIncomeInfo[]>;
   summary$: Observable<FullYearIncomeInfo>;
   recipes$: Observable<CityRecipe[]>;
 
-  @ViewChild('summary', { read: ElementRef }) summary: ElementRef | null = null;
+  // 饼图配置
+  deductionChartOption: Observable<EChartsOption>;
+
+  readonly months = Array.from({ length: 12 }, (_, i) => i + 1);
+
+  @ViewChild('chart', { read: ElementRef }) chart: ElementRef | null = null;
 
   constructor(private fb: FormBuilder, private http: HttpClient) {
     this.baseForm = fb.group({
@@ -225,6 +232,90 @@ export class CalculatorComponent {
       })
     );
 
+    // 创建月薪扣除饼图数据
+    this.deductionChartOption = combineLatest([
+      this.monthlyIncomes$,
+      this.selectedMonthIndex$.pipe(startWith(0)),
+    ]).pipe(
+      filter(([incomes, _]) => !!incomes && incomes.length > 0),
+      map(([incomes, index]) => {
+        // 使用第一个月的数据作为示例
+        const firstMonth = incomes[index];
+
+        // 准备饼图数据
+        const data = [
+          { value: firstMonth.cashIncome, name: '实发工资' },
+          { value: firstMonth.housingFund, name: '住房公积金' },
+          { value: firstMonth.insuranceCosts.endowment, name: '养老保险' },
+          { value: firstMonth.insuranceCosts.health, name: '医疗保险' },
+          { value: firstMonth.tax, name: '个人所得税' },
+          { value: firstMonth.insuranceCosts.unemployment, name: '失业保险' },
+          {
+            value: firstMonth.extraDeduction.enterprisePensionFromEmployee,
+            name: '企业年金',
+          },
+        ];
+
+        // 返回ECharts配置
+        return {
+          tooltip: {
+            trigger: 'item',
+            formatter: function (params: any) {
+              const currency = new Intl.NumberFormat('zh-CN', {
+                style: 'currency',
+                currency: 'CNY',
+                maximumFractionDigits: 2,
+              });
+              return `${params.seriesName} <br/>${
+                params.name
+              }: ${currency.format(params.value)} (${params.percent}%)`;
+            },
+          },
+          legend: {
+            orient: 'vertical',
+            right: 10,
+            data: data.map((item) => item.name),
+          },
+          series: [
+            {
+              name: '月薪分配',
+              type: 'pie',
+              //radius: ['40%', '70%'],
+              startAngle: -45,
+              avoidLabelOverlap: true,
+              itemStyle: {
+                borderRadius: 10,
+                borderColor: '#fff',
+                borderWidth: 1,
+              },
+              emphasis: {
+                label: {
+                  show: true,
+                  fontSize: 20,
+                  fontWeight: 'bold',
+                },
+              },
+              label: {
+                padding: 4,
+                minMargin: 8,
+                formatter: function (params: any) {
+                  const currency = new Intl.NumberFormat('zh-CN', {
+                    style: 'currency',
+                    currency: 'CNY',
+                    maximumFractionDigits: 2,
+                  });
+                  return `${params.name}:\n${currency.format(params.value)} (${
+                    params.percent
+                  }%)`;
+                },
+              },
+              data: data,
+            },
+          ],
+        } as EChartsOption;
+      })
+    );
+
     this.metaUpdate$.subscribe(() => {
       this.baseForm.disable();
     });
@@ -261,6 +352,10 @@ export class CalculatorComponent {
     if (src > 0) {
       form.get(controlName)?.setValue(0);
     }
+  }
+
+  changeChartMonth(index: number) {
+    this.selectedMonthIndex$.next(index);
   }
 
   changeRecipe(recipe: CityRecipe) {
@@ -306,11 +401,12 @@ export class CalculatorComponent {
     });
   }
 
-  scrollToSummary() {
+  scrollToChart() {
     setTimeout(() => {
-      if (this.summary) {
-        (this.summary.nativeElement as HTMLElement).scrollIntoView({
+      if (this.chart) {
+        (this.chart.nativeElement as HTMLElement).scrollIntoView({
           behavior: 'smooth',
+          block: 'nearest',
         });
       }
     }, 500);
@@ -441,19 +537,4 @@ export class CalculatorComponent {
   readonly rentingDeductionOptions = rentingDeductionOptions;
   readonly elderlyCareDeductionOptions = elderlyCareDeductionOptions;
   readonly nonMergeTaxCalculationEndDate = nonMergeTaxCalculationEndDate;
-}
-
-function normalizeInsuranceBaseRange(meta: CityRecipe) {
-  if (Array.isArray(meta.insuranceBaseRange)) {
-    const originRange = meta.insuranceBaseRange;
-    meta.insuranceBaseRange = {
-      endowment: originRange,
-      health: originRange,
-      unemployment: originRange,
-      birth: originRange,
-      occupationalInjury: originRange,
-    };
-  }
-
-  return meta.insuranceBaseRange;
 }

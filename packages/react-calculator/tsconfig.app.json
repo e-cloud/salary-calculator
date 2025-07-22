@@ -30,9 +30,6 @@
   "include": ["src"],
   "references": [
     {
-      "path": "../ng-calculator"
-    },
-    {
       "path": "../calculator-core"
     }
   ]

@@ -1,4 +1,4 @@
-// eslint-disable-next-line unused-imports/no-unused-imports-ts, unused-imports/no-unused-imports
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Pipe, PipeTransform } from '@angular/core';
 import { DatePipe } from '@angular/common';
 

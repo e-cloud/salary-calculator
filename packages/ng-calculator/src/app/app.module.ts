@@ -2,6 +2,7 @@ import { DEFAULT_CURRENCY_CODE, LOCALE_ID, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import zh from '@angular/common/locales/zh';
 import { registerLocaleData } from '@angular/common';
+import { NgxEchartsModule } from 'ngx-echarts';
 
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -59,6 +60,14 @@ registerLocaleData(zh);
     MatListModule,
     MatAutocompleteModule,
     MatDialogModule,
+    NgxEchartsModule.forRoot({
+      /**
+       * This will import all modules from echarts.
+       * If you only need custom modules,
+       * please refer to [Custom Build] section.
+       */
+      echarts: () => import('echarts'),
+    }),
   ],
   providers: [
     {

@@ -1,6 +1,6 @@
 module.exports = {
   root: true,
-  ignorePatterns: ["dist"],
+  ignorePatterns: ["dist", "environment.prod.ts"],
   overrides: [
     {
       files: ["*.ts"],

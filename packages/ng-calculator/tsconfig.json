@@ -29,9 +29,6 @@
   },
   "references": [
     {
-      "path": "../react-calculator"
-    },
-    {
       "path": "../calculator-core"
     }
   ]
