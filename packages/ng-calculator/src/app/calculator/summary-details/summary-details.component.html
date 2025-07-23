@@ -1,0 +1,136 @@
+<mat-card
+  appearance="outlined"
+  class="calc-result"
+  #summary
+  *ngIf="!clear && (summary$ | async) as sum"
+>
+  <mat-list class="summary">
+    <mat-list-item>
+      <mat-icon matListItemIcon>money</mat-icon>
+      <div matListItemLine>全年账面薪资收入</div>
+      <div matListItemLine class="figure">
+        {{ sum.bookSalary | currency }}
+      </div>
+    </mat-list-item>
+    <mat-list-item>
+      <mat-icon matListItemIcon>money</mat-icon>
+      <div matListItemLine>全年一次性奖金收入(单独计税)</div>
+      <div matListItemLine class="figure">
+        {{ sum.bonus | currency }} ({{ sum.bonusTax | currency }})
+      </div>
+    </mat-list-item>
+    <mat-list-item>
+      <mat-icon matListItemIcon>redeem</mat-icon>
+      <div matListItemLine>全年公积金缴纳金额</div>
+      <div matListItemLine class="figure">
+        {{ sum.fullHousingFund | currency }}
+      </div>
+    </mat-list-item>
+    <mat-list-item>
+      <mat-icon matListItemIcon>monetization_on</mat-icon>
+      <div matListItemLine>全年预缴税额</div>
+      <div matListItemLine class="figure">
+        {{ sum.prepaidTax | currency }}
+      </div>
+    </mat-list-item>
+    <mat-list-item>
+      <mat-icon matListItemIcon>monetization_on</mat-icon>
+      <div matListItemLine>全年个人综合所得税额</div>
+      <div matListItemLine class="figure">
+        {{ sum.theoreticalTax | currency }}
+      </div>
+    </mat-list-item>
+    <mat-list-item>
+      <mat-icon matListItemIcon>monetization_on</mat-icon>
+      <div matListItemLine>全年个人综合所得税额（单独计算）</div>
+      <div matListItemLine class="figure">
+        {{ sum.totalSeparatedTax | currency }}
+      </div>
+    </mat-list-item>
+
+    <mat-list-item>
+      <mat-icon matListItemIcon>savings</mat-icon>
+      <div matListItemLine>全年税后收入</div>
+      <div matListItemLine class="figure">
+        {{ sum.taxedIncome | currency }}
+      </div>
+    </mat-list-item>
+    <mat-list-item>
+      <mat-icon matListItemIcon>savings</mat-icon>
+      <div matListItemLine>
+        全年税后收入（非合并 - {{ nonMergeTaxCalculationEndDate }}止）
+      </div>
+      <div matListItemLine class="figure">
+        {{ sum.taxedIncomeDeprecated | currency }}
+      </div>
+    </mat-list-item>
+
+    <mat-list-item>
+      <mat-icon matListItemIcon>savings</mat-icon>
+      <div matListItemLine>全年现金收入</div>
+      <div matListItemLine class="figure">
+        {{ sum.cashIncome | currency }}
+      </div>
+    </mat-list-item>
+
+    <mat-list-item>
+      <mat-icon matListItemIcon>savings</mat-icon>
+      <div matListItemLine>
+        全年现金收入（非合并 - {{ nonMergeTaxCalculationEndDate }}止）
+      </div>
+      <div matListItemLine class="figure">
+        {{ sum.cashIncomeDeprecated | currency }}
+      </div>
+    </mat-list-item>
+
+    <mat-list-item>
+      <mat-icon matListItemIcon>savings</mat-icon>
+      <div matListItemLine>全年综合货币收入</div>
+      <div matListItemLine class="figure">
+        {{ sum.cashIncome + sum.fullHousingFund | currency }}
+      </div>
+    </mat-list-item>
+
+    <mat-list-item>
+      <mat-icon matListItemIcon>savings</mat-icon>
+      <div matListItemLine>
+        全年综合货币收入（非合并 - {{ nonMergeTaxCalculationEndDate }}止）
+      </div>
+      <div matListItemLine class="figure">
+        {{ sum.cashIncomeDeprecated + sum.fullHousingFund | currency }}
+      </div>
+    </mat-list-item>
+
+    <mat-list-item>
+      <mat-icon matListItemIcon>redeem</mat-icon>
+      <div matListItemLine>个人养老保险缴纳总额</div>
+      <div matListItemLine class="figure">
+        {{ sum.employee.endowmentInsurance | currency }}
+      </div>
+    </mat-list-item>
+
+    <mat-list-item>
+      <mat-icon matListItemIcon>redeem</mat-icon>
+      <div matListItemLine>个人医保缴纳总额</div>
+      <div matListItemLine class="figure">
+        {{ sum.employee.healthInsurance | currency }}
+      </div>
+    </mat-list-item>
+
+    <mat-list-item>
+      <mat-icon matListItemIcon>redeem</mat-icon>
+      <div matListItemLine>全年企业年金缴纳总额</div>
+      <div matListItemLine class="figure">
+        {{ sum.employee.enterprisePensionFull | currency }}
+      </div>
+    </mat-list-item>
+
+    <mat-list-item>
+      <mat-icon matListItemIcon>payments</mat-icon>
+      <div matListItemLine>公司成本</div>
+      <div matListItemLine class="figure">
+        {{ sum.employerCosts.full | currency }}
+      </div>
+    </mat-list-item>
+  </mat-list>
+</mat-card>

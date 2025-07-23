@@ -30,6 +30,11 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { HelpInfoComponent } from './help-info/help-info.component';
 import { MatTabsModule } from '@angular/material/tabs';
 
+import { CalculatorFormComponent } from './calculator/calculator-form/calculator-form.component';
+import { MonthlyResultsComponent } from './calculator/monthly-results/monthly-results.component';
+import { SummaryChartsComponent } from './calculator/summary-charts/summary-charts.component';
+import { SummaryDetailsComponent } from './calculator/summary-details/summary-details.component';
+
 zh[14] = ['#,###0.###', '#,##0%', '¤#,###0.00', '#E0'];
 
 registerLocaleData(zh);
@@ -41,6 +46,10 @@ registerLocaleData(zh);
     CalculatorComponent,
     MonthPipe,
     HelpInfoComponent,
+    CalculatorFormComponent,
+    MonthlyResultsComponent,
+    SummaryChartsComponent,
+    SummaryDetailsComponent,
   ],
   bootstrap: [AppComponent],
   imports: [

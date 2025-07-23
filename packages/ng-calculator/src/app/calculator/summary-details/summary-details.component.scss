@@ -1,0 +1,31 @@
+@import "node_modules/bootstrap/scss/functions";
+@import "node_modules/bootstrap/scss/mixins";
+@import "node_modules/bootstrap/scss/variables";
+
+.summary {
+  --mdc-list-list-item-supporting-text-color: rgb(0 0 0 / 87%);
+  --mdc-list-list-item-leading-icon-color: rgb(0 0 0 / 87%);
+
+  display: flex;
+  flex-wrap: wrap;
+
+  .figure {
+    font-size: 1.5em;
+    line-height: 1.25em;
+  }
+}
+
+.summary mat-list-item {
+  overflow: hidden;
+  flex: 50% 0 0;
+}
+
+@include media-breakpoint-down(sm) {
+  .calc-result {
+    padding: 0;
+  }
+
+  .summary mat-list-item {
+    flex-basis: 100%;
+  }
+}

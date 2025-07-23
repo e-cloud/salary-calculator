@@ -1,37 +1,18 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion,@typescript-eslint/no-explicit-any */
-import {
-  animate,
-  query,
-  stagger,
-  style,
-  transition,
-  trigger,
-} from '@angular/animations';
 import { HttpClient } from '@angular/common/http';
-import { Component, ElementRef, ViewChild } from '@angular/core';
-import {
-  FormArray,
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
+import { Component } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import type { EChartsOption } from 'echarts';
 import {
   buildBaseMeta,
   buildEmptyMetaList,
   calculateFullYearIncome,
   calculateMonthlyIncomes,
-  childEducationDeductionOptions,
   CityRecipe,
-  continuousEducationDeductionOptions,
-  elderlyCareDeductionOptions,
   FullYearIncomeInfo,
-  housingLoanInterestDeductionOptions,
   MonthlyIncomeInfo,
   MonthlyIncomeMeta,
-  nonMergeTaxCalculationEndDate,
-  rentingDeductionOptions,
+  RawMeta,
 } from 'calculator-core';
 import { mapValues, merge } from 'lodash-es';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
@@ -44,6 +25,7 @@ import {
   switchMap,
   tap,
 } from 'rxjs/operators';
+import { InputForm, MonthlyInputForm, MonthlyInputModel } from './types';
 
 const shenzhenRecipe: CityRecipe = {
   id: 0,
@@ -76,70 +58,10 @@ const shenzhenRecipe: CityRecipe = {
   ],
 };
 
-export type TypedFormControls<T extends Record<any, any>> = {
-  [K in keyof T]-?: T[K] extends Array<infer R>
-    ? FormArray<
-        R extends Record<any, any>
-          ? FormGroup<TypedFormControls<R>>
-          : FormControl<R>
-      >
-    : T[K] extends Record<any, any>
-    ? FormGroup<TypedFormControls<T[K]>>
-    : FormControl<T[K]>;
-};
-
-export interface InputModel {
-  monthSalary: number;
-  annualBonus: number;
-  insuranceBase: number;
-  housingFundBase: number;
-  housingFundRate: number;
-  extraDeduction: {
-    childEducation: number;
-    continuingEducation: number;
-    seriousMedicalExpense: number;
-    housingLoanInterest: number;
-    renting: number;
-    elderlyCare: number;
-    enterprisePensionFromEmployee: number;
-    enterprisePensionFromEmployer: number;
-    other: number;
-  };
-  insuranceRate: {
-    endowment: number;
-    health: number;
-    unemployment: number;
-  };
-  insuranceBaseOnLastMonth: boolean;
-}
-
-export interface MonthlyInputModel extends InputModel {
-  newPayCycle: boolean;
-}
-
-export type InputForm = TypedFormControls<InputModel>;
-export type MonthlyInputForm = TypedFormControls<MonthlyInputModel>;
-
 @Component({
   selector: 'app-calculator',
   templateUrl: './calculator.component.html',
   styleUrls: ['./calculator.component.scss'],
-  animations: [
-    trigger('listAnimation', [
-      transition('* <=> *', [
-        query(
-          ':enter',
-          [
-            style({ opacity: 0, transform: 'translateX(-20%)' }),
-            stagger(100, [
-              animate(300, style({ opacity: 1, transform: 'translateX(0)' })),
-            ]),
-          ],
-          { optional: true }
-        ),
-      ]),
-    ]),
-  ],
 })
 export class CalculatorComponent {
   baseForm: FormGroup<InputForm>;
@@ -164,13 +86,10 @@ export class CalculatorComponent {
   deductionChartOption: Observable<EChartsOption>;
   annualDeductionChartOption: Observable<EChartsOption>;
 
-  readonly months = Array.from({ length: 12 }, (_, i) => i + 1);
-
-  @ViewChild('chart', { read: ElementRef }) chart: ElementRef | null = null;
-
   constructor(private fb: FormBuilder, private http: HttpClient) {
     this.baseForm = fb.group({
       monthSalary: [10000, Validators.required],
+      monthlyBonus: [0, Validators.required],
       annualBonus: [0, Validators.required],
       insuranceBase: [10000, Validators.required],
       housingFundBase: [10000, Validators.required],
@@ -426,15 +345,6 @@ export class CalculatorComponent {
     return this.cityRecipe.housingFundBaseRange[1];
   }
 
-  trackIncome = (_: number, x: MonthlyIncomeInfo) => x.actualMonth;
-  trackByValue = (_: number, x: any) => x.value;
-
-  resetConflict(src: number, form: FormGroup, controlName: string) {
-    if (src > 0) {
-      form.get(controlName)?.setValue(0);
-    }
-  }
-
   changeChartMonth(index: number) {
     this.selectedMonthIndex$.next(index);
   }
@@ -482,21 +392,10 @@ export class CalculatorComponent {
     });
   }
 
-  scrollToChart() {
-    setTimeout(() => {
-      if (this.chart) {
-        (this.chart.nativeElement as HTMLElement).scrollIntoView({
-          behavior: 'smooth',
-          block: 'nearest',
-        });
-      }
-    }, 500);
-  }
-
-  updateMeta(value: any, index: number) {
+  updateMeta(value: MonthlyInputModel, index: number) {
     this.metaUpdate$.next({
       meta: {
-        salary: value.monthSalary + value.monthlyBonus,
+        salary: value.monthSalary + (value.monthlyBonus || 0),
         insuranceBase: value.insuranceBase,
         housingFundBase: value.housingFundBase,
         housingFundRate: value.housingFundRate / 100,
@@ -512,7 +411,7 @@ export class CalculatorComponent {
     });
   }
 
-  calculate(data: any): void {
+  calculate(data: RawMeta): void {
     this.saveToCache();
 
     this.baseMeta$.next(buildBaseMeta(data, this.cityRecipe));
@@ -609,13 +508,4 @@ export class CalculatorComponent {
 
     return forms;
   }
-
-  readonly childEducationDeductionOptions = childEducationDeductionOptions;
-  readonly continuousEducationDeductionOptions =
-    continuousEducationDeductionOptions;
-  readonly housingLoanInterestDeductionOptions =
-    housingLoanInterestDeductionOptions;
-  readonly rentingDeductionOptions = rentingDeductionOptions;
-  readonly elderlyCareDeductionOptions = elderlyCareDeductionOptions;
-  readonly nonMergeTaxCalculationEndDate = nonMergeTaxCalculationEndDate;
 }

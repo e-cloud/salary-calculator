@@ -1,0 +1,13 @@
+@import "node_modules/bootstrap/scss/functions";
+@import "node_modules/bootstrap/scss/mixins";
+@import "node_modules/bootstrap/scss/variables";
+
+@include media-breakpoint-down(md) {
+  .mat-expansion-panel .mat-expansion-panel-header {
+    transition: 150ms ease-in-out;
+  }
+
+  .mat-expansion-panel:not(.mat-expanded) .mat-expansion-panel-header {
+    font-size: 0.8em;
+  }
+}
