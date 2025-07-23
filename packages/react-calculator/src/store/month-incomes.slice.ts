@@ -1,4 +1,3 @@
- 
 import {
   FullYearIncomeInfo,
   MonthlyIncomeInfo,

@@ -1,4 +1,3 @@
- 
 import {
   buildEmptyMetaList,
   calculateFullYearIncome,

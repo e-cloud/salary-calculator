@@ -74,9 +74,14 @@ export function calculateFullYearIncome(
   full.fullInsurance = sumBy(list, 'insuranceFullCost');
   full.employee.endowmentInsurance = sumBy(list, 'insuranceCosts.endowment');
   full.employee.healthInsurance = sumBy(list, 'insuranceCosts.health');
-  full.employee.enterprisePension = sumBy(list, 'extraDeduction.enterprisePensionFromEmployee');
+  full.employee.enterprisePension = sumBy(
+    list,
+    'extraDeduction.enterprisePensionFromEmployee',
+  );
   full.employee.housingFund = sumBy(list, 'housingFund');
-  full.employee.enterprisePensionFull = sumBy(list, 'extraDeduction.enterprisePensionFromEmployee') + sumBy(list, 'extraDeduction.enterprisePensionFromEmployer');
+  full.employee.enterprisePensionFull =
+    sumBy(list, 'extraDeduction.enterprisePensionFromEmployee') +
+    sumBy(list, 'extraDeduction.enterprisePensionFromEmployer');
 
   full.employerCosts.full = sumBy(list, 'employerCosts.full') + full.bonus;
   full.employerCosts.enterprisePension = sumBy(
@@ -162,7 +167,8 @@ export function calculateMonthIncome(
   // 社保缴纳额
   const insuranceFullCost = sum(values(insuranceDeducted));
 
-  const enterprisePension = current.extraDeduction.enterprisePensionFromEmployee;
+  const enterprisePension =
+    current.extraDeduction.enterprisePensionFromEmployee;
 
   // 专项扣除额
   const extraDeducted =
@@ -334,7 +340,14 @@ function getValidBase(base: number, range: [number, number]) {
 }
 
 function extraDeduction(meta: MonthlyIncomeMeta['extraDeduction']): number {
-  return sum(values(omit(meta, ['enterprisePensionFromEmployee', 'enterprisePensionFromEmployer'])));
+  return sum(
+    values(
+      omit(meta, [
+        'enterprisePensionFromEmployee',
+        'enterprisePensionFromEmployer',
+      ]),
+    ),
+  );
 }
 
 function findTaxRate(
