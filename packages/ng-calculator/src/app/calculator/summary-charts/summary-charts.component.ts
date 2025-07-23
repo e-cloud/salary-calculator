@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { EChartsOption } from 'echarts';
+import type { EChartsOption } from 'echarts';
 import { FullYearIncomeInfo, MonthlyIncomeInfo } from 'calculator-core';
 import { BehaviorSubject, Observable } from 'rxjs';
 

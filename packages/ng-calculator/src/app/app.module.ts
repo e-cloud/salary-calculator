@@ -39,6 +39,13 @@ zh[14] = ['#,###0.###', '#,##0%', '¤#,###0.00', '#E0'];
 
 registerLocaleData(zh);
 
+declare global {
+  interface Window {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    echarts: any;
+  }
+}
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -73,11 +80,10 @@ registerLocaleData(zh);
     MatTabsModule,
     NgxEchartsModule.forRoot({
       /**
-       * This will import all modules from echarts.
-       * If you only need custom modules,
-       * please refer to [Custom Build] section.
+       * Using ECharts from CDN
+       * Instead of importing from node_modules
        */
-      echarts: () => import('echarts'),
+      echarts: window.echarts,
     }),
   ],
   providers: [
