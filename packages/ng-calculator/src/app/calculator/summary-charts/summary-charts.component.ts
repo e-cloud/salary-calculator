@@ -2,8 +2,14 @@
 import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
 import type { EChartsOption } from 'echarts';
 import { FullYearIncomeInfo, MonthlyIncomeInfo } from 'calculator-core';
-import { BehaviorSubject, Observable, combineLatest } from 'rxjs';
-import { filter, map, startWith } from 'rxjs/operators';
+import {
+  BehaviorSubject,
+  Observable,
+  combineLatest,
+  filter,
+  map,
+  startWith,
+} from 'rxjs';
 
 @Component({
   selector: 'app-summary-charts',

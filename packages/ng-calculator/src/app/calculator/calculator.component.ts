@@ -13,8 +13,11 @@ import {
   RawMeta,
 } from 'calculator-core';
 import { merge } from 'lodash-es';
-import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
 import {
+  BehaviorSubject,
+  Observable,
+  Subject,
+  combineLatest,
   filter,
   map,
   share,
@@ -22,7 +25,7 @@ import {
   startWith,
   switchMap,
   tap,
-} from 'rxjs/operators';
+} from 'rxjs';
 import { MonthlyInputModel } from './types';
 
 const shenzhenRecipe: CityRecipe = {

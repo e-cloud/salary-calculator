@@ -1,6 +1,6 @@
 module.exports = {
   root: true,
-  ignorePatterns: ["dist", "environment.prod.ts"],
+  ignorePatterns: ["dist", "environment.prod.ts", "dedupe-lodash-es.ts"],
   overrides: [
     {
       files: ["*.ts"],
