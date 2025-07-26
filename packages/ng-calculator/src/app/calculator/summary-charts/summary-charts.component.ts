@@ -31,6 +31,7 @@ export class SummaryChartsComponent implements OnInit {
 
   deductionChartOption$!: Observable<EChartsOption>;
   annualDeductionChartOption$!: Observable<EChartsOption>;
+  annualIncomeChartOption$!: Observable<EChartsOption>;
   readonly months = Array.from({ length: 12 }, (_, i) => i + 1);
 
   ngOnInit() {
@@ -182,6 +183,69 @@ export class SummaryChartsComponent implements OnInit {
                 },
               },
               label: {
+                padding: 4,
+                minMargin: 8,
+                formatter: function (params: any) {
+                  const currency = new Intl.NumberFormat('zh-CN', {
+                    style: 'currency',
+                    currency: 'CNY',
+                    maximumFractionDigits: 2,
+                  });
+                  return `${params.name}:\n${currency.format(params.value)} (${
+                    params.percent
+                  }%)`;
+                },
+              },
+              data: data,
+            },
+          ],
+        } as EChartsOption;
+      })
+    );
+
+    this.annualIncomeChartOption$ = this.summary$.pipe(
+      map((summary) => {
+        const data = [
+          { value: summary.postTaxSalary, name: '全年工资现金收入' },
+          { value: summary.postTaxBonus, name: '全年税后奖金' },
+          { value: summary.fullHousingFund, name: '全年公积金' },
+          {
+            value: summary.employee.enterprisePensionFull,
+            name: '全年企业年金',
+          },
+        ];
+
+        return {
+          tooltip: {
+            trigger: 'item',
+            formatter: function (params: any) {
+              const currency = new Intl.NumberFormat('zh-CN', {
+                style: 'currency',
+                currency: 'CNY',
+                maximumFractionDigits: 2,
+              });
+              return `${params.seriesName} <br/>${
+                params.name
+              }: ${currency.format(params.value)} (${params.percent}%)`;
+            },
+          },
+          legend: {
+            orient: 'vertical',
+            right: 10,
+            data: data.map((item) => item.name),
+          },
+          series: [
+            {
+              name: '年度收入分析',
+              type: 'pie',
+              startAngle: -45,
+              avoidLabelOverlap: true,
+              itemStyle: {
+                borderRadius: 10,
+                borderColor: '#fff',
+                borderWidth: 1,
+              },
+              emphasis: {
                 padding: 4,
                 minMargin: 8,
                 formatter: function (params: any) {

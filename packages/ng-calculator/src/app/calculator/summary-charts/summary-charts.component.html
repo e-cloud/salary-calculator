@@ -81,5 +81,26 @@
         </div>
       </mat-card-content>
     </mat-tab>
+    <mat-tab
+      label="年度收入分析"
+      *ngIf="annualIncomeChartOption$ | async as annualIncomeChartOption"
+    >
+      <mat-card-content>
+        <div
+          echarts
+          [options]="annualIncomeChartOption"
+          class="chart-container"
+          style="height: 400px; width: 100%"
+        ></div>
+        <div class="text-center mt-2" *ngIf="summary$ | async as sum">
+          {{ sum.postTaxSalary | currency }} (全年工资现金收入) +
+          {{ sum.postTaxBonus | currency }} (全年税后奖金) +
+          {{ sum.fullHousingFund | currency }} (全年公积金) +
+          {{ sum.employee.enterprisePensionFull | currency }} (全年企业年金) =
+          {{ sum.totalIncomeDeprecated | currency }}
+          (全年综合货币收入)
+        </div>
+      </mat-card-content>
+    </mat-tab>
   </mat-tab-group>
 </mat-card>
