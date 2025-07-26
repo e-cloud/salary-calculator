@@ -71,7 +71,7 @@ importers:
         version: 18.2.1(@angular/common@18.2.1(@angular/core@18.2.1(rxjs@6.6.7)(zone.js@0.14.10))(rxjs@6.6.7))(@angular/core@18.2.1(rxjs@6.6.7)(zone.js@0.14.10))(@angular/platform-browser@18.2.1(@angular/animations@18.2.1(@angular/core@18.2.1(rxjs@6.6.7)(zone.js@0.14.10)))(@angular/common@18.2.1(@angular/core@18.2.1(rxjs@6.6.7)(zone.js@0.14.10))(rxjs@6.6.7))(@angular/core@18.2.1(rxjs@6.6.7)(zone.js@0.14.10)))(rxjs@6.6.7)
       '@angular/material':
         specifier: ^18.2.1
-        version: 18.2.1(upss2gpavhu6kbmy2utvz7jfdu)
+        version: 18.2.1(24a86df50f0020b8aaf6ff4539ca289a)
       '@angular/platform-browser':
         specifier: ^18.2.1
         version: 18.2.1(@angular/animations@18.2.1(@angular/core@18.2.1(rxjs@6.6.7)(zone.js@0.14.10)))(@angular/common@18.2.1(@angular/core@18.2.1(rxjs@6.6.7)(zone.js@0.14.10))(rxjs@6.6.7))(@angular/core@18.2.1(rxjs@6.6.7)(zone.js@0.14.10))
@@ -94,8 +94,8 @@ importers:
         specifier: ^4.17.21
         version: 4.17.21
       ngx-echarts:
-        specifier: ^18.0.0
-        version: 18.0.0(echarts@5.6.0)
+        specifier: ^20.0.0
+        version: 20.0.1(@angular/core@18.2.1(rxjs@6.6.7)(zone.js@0.14.10))(echarts@5.6.0)
       rxjs:
         specifier: ~6.6.7
         version: 6.6.7
@@ -301,10 +301,10 @@ importers:
         version: 8.57.0
       eslint-config-airbnb-base:
         specifier: ^15.0.0
-        version: 15.0.0(eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.18.0(eslint@8.57.0)(typescript@5.5.4))(eslint@8.57.0))(eslint@8.57.0)
+        version: 15.0.0(eslint-plugin-import@2.29.1)(eslint@8.57.0)
       eslint-config-airbnb-typescript:
         specifier: ^17.0.0
-        version: 17.1.0(@typescript-eslint/eslint-plugin@7.18.0(@typescript-eslint/parser@7.18.0(eslint@8.57.0)(typescript@5.5.4))(eslint@8.57.0)(typescript@5.5.4))(@typescript-eslint/parser@7.18.0(eslint@8.57.0)(typescript@5.5.4))(eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.18.0(eslint@8.57.0)(typescript@5.5.4))(eslint@8.57.0))(eslint@8.57.0)
+        version: 17.1.0(@typescript-eslint/eslint-plugin@7.18.0(@typescript-eslint/parser@7.18.0(eslint@8.57.0)(typescript@5.5.4))(eslint@8.57.0)(typescript@5.5.4))(@typescript-eslint/parser@7.18.0(eslint@8.57.0)(typescript@5.5.4))(eslint-plugin-import@2.29.1)(eslint@8.57.0)
       eslint-config-next:
         specifier: ^12.1.4
         version: 12.3.4(eslint@8.57.0)(typescript@5.5.4)
@@ -5457,9 +5457,10 @@ packages:
   neo-async@2.6.2:
     resolution: {integrity: sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==}
 
-  ngx-echarts@18.0.0:
-    resolution: {integrity: sha512-1rJW7vhMTTQMZNO5AhbHfTDorhP7dcvwRsDH5jFk2SPb/gjIFWvXBY9VSNAOKumuSBnopm2+uSz6BRO5oWxovA==}
+  ngx-echarts@20.0.1:
+    resolution: {integrity: sha512-SpMj8jX4qVle1ZEA3ob4AlTXduhsUeMQdyILu7UWcNr/zRqR3dPgiiahIepdOIel+5PJDl3qtJGUiYhuIyUUMA==}
     peerDependencies:
+      '@angular/core': '>=20.0.0'
       echarts: '>=5.0.0'
 
   nice-napi@1.0.2:
@@ -7859,7 +7860,7 @@ snapshots:
       rxjs: 6.6.7
       tslib: 2.6.3
 
-  '@angular/material@18.2.1(upss2gpavhu6kbmy2utvz7jfdu)':
+  '@angular/material@18.2.1(24a86df50f0020b8aaf6ff4539ca289a)':
     dependencies:
       '@angular/animations': 18.2.1(@angular/core@18.2.1(rxjs@6.6.7)(zone.js@0.14.10))
       '@angular/cdk': 18.2.1(@angular/common@18.2.1(@angular/core@18.2.1(rxjs@6.6.7)(zone.js@0.14.10))(rxjs@6.6.7))(@angular/core@18.2.1(rxjs@6.6.7)(zone.js@0.14.10))(rxjs@6.6.7)
@@ -11536,7 +11537,7 @@ snapshots:
 
   escape-string-regexp@4.0.0: {}
 
-  eslint-config-airbnb-base@15.0.0(eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.18.0(eslint@8.57.0)(typescript@5.5.4))(eslint@8.57.0))(eslint@8.57.0):
+  eslint-config-airbnb-base@15.0.0(eslint-plugin-import@2.29.1)(eslint@8.57.0):
     dependencies:
       confusing-browser-globals: 1.0.11
       eslint: 8.57.0
@@ -11545,12 +11546,12 @@ snapshots:
       object.entries: 1.1.8
       semver: 6.3.1
 
-  eslint-config-airbnb-typescript@17.1.0(@typescript-eslint/eslint-plugin@7.18.0(@typescript-eslint/parser@7.18.0(eslint@8.57.0)(typescript@5.5.4))(eslint@8.57.0)(typescript@5.5.4))(@typescript-eslint/parser@7.18.0(eslint@8.57.0)(typescript@5.5.4))(eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.18.0(eslint@8.57.0)(typescript@5.5.4))(eslint@8.57.0))(eslint@8.57.0):
+  eslint-config-airbnb-typescript@17.1.0(@typescript-eslint/eslint-plugin@7.18.0(@typescript-eslint/parser@7.18.0(eslint@8.57.0)(typescript@5.5.4))(eslint@8.57.0)(typescript@5.5.4))(@typescript-eslint/parser@7.18.0(eslint@8.57.0)(typescript@5.5.4))(eslint-plugin-import@2.29.1)(eslint@8.57.0):
     dependencies:
       '@typescript-eslint/eslint-plugin': 7.18.0(@typescript-eslint/parser@7.18.0(eslint@8.57.0)(typescript@5.5.4))(eslint@8.57.0)(typescript@5.5.4)
       '@typescript-eslint/parser': 7.18.0(eslint@8.57.0)(typescript@5.5.4)
       eslint: 8.57.0
-      eslint-config-airbnb-base: 15.0.0(eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.18.0(eslint@8.57.0)(typescript@5.5.4))(eslint@8.57.0))(eslint@8.57.0)
+      eslint-config-airbnb-base: 15.0.0(eslint-plugin-import@2.29.1)(eslint@8.57.0)
       eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.18.0(eslint@8.57.0)(typescript@5.5.4))(eslint@8.57.0)
 
   eslint-config-next@12.3.4(eslint@8.57.0)(typescript@5.5.4):
@@ -11587,7 +11588,7 @@ snapshots:
     dependencies:
       debug: 4.3.6(supports-color@9.4.0)
       eslint: 8.57.0
-      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@5.62.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-typescript@2.7.1)(eslint@8.57.0)
+      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.18.0(eslint@8.57.0)(typescript@5.5.4))(eslint@8.57.0)
       glob: 7.2.3
       is-glob: 4.0.3
       resolve: 1.22.8
@@ -11595,7 +11596,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-module-utils@2.8.1(@typescript-eslint/parser@5.62.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@2.7.1(eslint-plugin-import@2.29.1)(eslint@8.57.0))(eslint@8.57.0):
+  eslint-module-utils@2.8.1(@typescript-eslint/parser@5.62.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@2.7.1)(eslint@8.57.0):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
@@ -11626,7 +11627,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 8.57.0
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.8.1(@typescript-eslint/parser@5.62.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@2.7.1(eslint-plugin-import@2.29.1)(eslint@8.57.0))(eslint@8.57.0)
+      eslint-module-utils: 2.8.1(@typescript-eslint/parser@5.62.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@2.7.1)(eslint@8.57.0)
       hasown: 2.0.2
       is-core-module: 2.15.1
       is-glob: 4.0.3
@@ -13354,8 +13355,9 @@ snapshots:
 
   neo-async@2.6.2: {}
 
-  ngx-echarts@18.0.0(echarts@5.6.0):
+  ngx-echarts@20.0.1(@angular/core@18.2.1(rxjs@6.6.7)(zone.js@0.14.10))(echarts@5.6.0):
     dependencies:
+      '@angular/core': 18.2.1(rxjs@6.6.7)(zone.js@0.14.10)
       echarts: 5.6.0
       tslib: 2.6.3
 

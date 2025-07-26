@@ -30,7 +30,7 @@
     "calculator-core": "workspace:latest",
     "echarts": "^5.6.0",
     "lodash-es": "^4.17.21",
-    "ngx-echarts": "^18.0.0",
+    "ngx-echarts": "^20.0.0",
     "rxjs": "~6.6.7",
     "tslib": "^2.3.1",
     "zone.js": "~0.14.10"
