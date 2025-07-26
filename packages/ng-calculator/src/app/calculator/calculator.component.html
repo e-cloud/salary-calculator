@@ -11,7 +11,7 @@
 
 <div class="row mt-5">
   <app-monthly-results
-    class="col-md-6 col-sm-12 mb-4 mb-md-0"
+    class="col-lg-6 col-sm-12 mb-4 mb-md-0"
     [clear]="clear"
     [monthlyIncomes$]="monthlyIncomes$"
     [monthlyMetas$]="monthlyMetas$"
@@ -21,7 +21,7 @@
     (changeChartMonth)="changeChartMonth($event)"
   ></app-monthly-results>
 
-  <div class="col-md-6">
+  <div class="col-lg-6">
     <app-summary-charts
       [clear]="clear"
       [monthlyIncomes$]="monthlyIncomes$"

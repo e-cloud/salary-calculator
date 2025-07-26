@@ -20,6 +20,10 @@
   flex: 50% 0 0;
 }
 
+::ng-deep .summary-tooltip .mdc-tooltip__surface {
+  max-width: unset;
+}
+
 @include media-breakpoint-down(sm) {
   .calc-result {
     padding: 0;

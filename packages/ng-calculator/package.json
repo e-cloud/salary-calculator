@@ -27,7 +27,7 @@
     "@angular/platform-browser-dynamic": "^18.2.1",
     "@angular/router": "^18.2.1",
     "bootstrap": "^4.6.1",
-    "calculator-core": "workspace:calculator-core@*",
+    "calculator-core": "workspace:calculator-core@latest",
     "echarts": "^5.6.0",
     "lodash-es": "^4.17.21",
     "ngx-echarts": "^20.0.0",

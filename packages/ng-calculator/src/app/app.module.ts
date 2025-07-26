@@ -27,9 +27,10 @@ import { MatListModule } from '@angular/material/list';
 import { MonthPipe } from './calculator/month.pipe';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatDialogModule } from '@angular/material/dialog';
-import { HelpInfoComponent } from './help-info/help-info.component';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
+import { HelpInfoComponent } from './help-info/help-info.component';
 import { CalculatorFormComponent } from './calculator/calculator-form/calculator-form.component';
 import { MonthlyResultsComponent } from './calculator/monthly-results/monthly-results.component';
 import { SummaryChartsComponent } from './calculator/summary-charts/summary-charts.component';
@@ -78,6 +79,7 @@ declare global {
     MatAutocompleteModule,
     MatDialogModule,
     MatTabsModule,
+    MatTooltipModule,
     NgxEchartsModule.forRoot({
       /**
        * Using ECharts from CDN
