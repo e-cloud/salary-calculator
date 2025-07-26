@@ -17,7 +17,7 @@ import {
   autocompleteTemplates,
   monthlyResultsLabelSuffix,
 } from '../template-metadata';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { MonthlyInputForm, MonthlyInputModel } from '../types';
 
 @Component({
@@ -48,6 +48,7 @@ export class MonthlyResultsComponent implements OnInit {
   @Input() monthlyIncomes$!: Observable<MonthlyIncomeInfo[]>;
   @Input() monthlyMetas$!: Observable<MonthlyIncomeMeta[]>;
   @Input() cityRecipe!: CityRecipe;
+  @Input() scroll$!: BehaviorSubject<void>;
 
   @Output() updateMeta = new EventEmitter<{
     meta: MonthlyInputModel;
@@ -86,7 +87,7 @@ export class MonthlyResultsComponent implements OnInit {
   }
 
   scrollToChart() {
-    // This can be handled by the parent or a dedicated service
+    this.scroll$.next();
   }
 
   resetConflict(src: number, form: FormGroup, controlName: string) {

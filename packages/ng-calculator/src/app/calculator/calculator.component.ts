@@ -75,6 +75,7 @@ export class CalculatorComponent {
     index: number;
   }>();
   selectedMonthIndex$ = new BehaviorSubject<number>(0);
+  scroll$ = new BehaviorSubject<void>(undefined);
 
   monthlyMetas$: Observable<MonthlyIncomeMeta[]>;
   monthlyIncomes$: Observable<MonthlyIncomeInfo[]>;

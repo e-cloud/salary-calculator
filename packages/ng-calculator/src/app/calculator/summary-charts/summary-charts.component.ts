@@ -1,5 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  OnInit,
+  ViewChild,
+  ElementRef,
+} from '@angular/core';
 import type { EChartsOption } from 'echarts';
 import { FullYearIncomeInfo, MonthlyIncomeInfo } from 'calculator-core';
 import {
@@ -21,8 +29,12 @@ export class SummaryChartsComponent implements OnInit {
   @Input() monthlyIncomes$!: Observable<MonthlyIncomeInfo[]>;
   @Input() summary$!: Observable<FullYearIncomeInfo>;
   @Input() selectedMonthIndex$!: BehaviorSubject<number>;
+  @Input() scroll$!: Observable<void>;
 
   @Output() changeChartMonth = new EventEmitter<number>();
+
+  // 用于滚动到图表位置
+  @ViewChild('chart', { read: ElementRef }) chart: ElementRef | null = null;
 
   deductionChartOption$!: Observable<EChartsOption>;
   annualDeductionChartOption$!: Observable<EChartsOption>;
@@ -30,6 +42,9 @@ export class SummaryChartsComponent implements OnInit {
 
   ngOnInit() {
     this.initializeChartOptions();
+    this.scroll$.subscribe(() => {
+      this.scrollToChart();
+    });
   }
 
   onChangeChartMonth(index: number) {
@@ -193,5 +208,16 @@ export class SummaryChartsComponent implements OnInit {
         } as EChartsOption;
       })
     );
+  }
+
+  private scrollToChart() {
+    setTimeout(() => {
+      if (this.chart) {
+        (this.chart.nativeElement as HTMLElement).scrollIntoView({
+          behavior: 'smooth',
+          block: 'nearest',
+        });
+      }
+    }, 500);
   }
 }

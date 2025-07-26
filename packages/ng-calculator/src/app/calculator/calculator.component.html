@@ -16,6 +16,7 @@
     [monthlyIncomes$]="monthlyIncomes$"
     [monthlyMetas$]="monthlyMetas$"
     [cityRecipe]="cityRecipe"
+    [scroll$]="scroll$"
     (updateMeta)="updateMeta($event.meta, $event.index)"
     (changeChartMonth)="changeChartMonth($event)"
   ></app-monthly-results>
@@ -26,6 +27,7 @@
       [monthlyIncomes$]="monthlyIncomes$"
       [summary$]="summary$"
       [selectedMonthIndex$]="selectedMonthIndex$"
+      [scroll$]="scroll$"
       (changeChartMonth)="changeChartMonth($event)"
     ></app-summary-charts>
 
