@@ -10,7 +10,7 @@
     "lint:style": "stylelint src/**/*.{scss,css} --fix",
     "e2e": "ng e2e",
     "format": "prettier --config-precedence file-override --write",
-    "format:all": "prettier --loglevel error --config-precedence file-override --write ./src/**/**.{ts,js,json,scss,css}",
+    "format:all": "prettier --loglevel error --config-precedence file-override --write ./src/**/**.{html,ts,js,json,scss,css}",
     "release": "npm run build -- --configuration production --base-href /salary-calculator/",
     "deploy": "gh-pages --dist dist/salary-calculator"
   },

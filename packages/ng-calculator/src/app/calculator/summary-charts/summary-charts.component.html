@@ -38,15 +38,12 @@
           *ngIf="monthlyIncomes$ | async as incomes"
         >
           <ng-container
-            *ngIf="
-              selectedMonth$ | async as selectedIndex;
-              else noSelection
-            "
+            *ngIf="selectedMonth$ | async as selectedIndex; else noSelection"
           >
             {{ incomes[selectedIndex - 1].cashIncome | currency }} (税后) +
             {{ incomes[selectedIndex - 1].tax | currency }} (个税) +
-            {{ incomes[selectedIndex - 1].insuranceFullCost | currency }} (社保) +
-            {{ incomes[selectedIndex - 1].housingFund | currency }} (公积金) +
+            {{ incomes[selectedIndex - 1].insuranceFullCost | currency }} (社保)
+            + {{ incomes[selectedIndex - 1].housingFund | currency }} (公积金) +
             {{
               incomes[selectedIndex - 1].extraDeduction
                 .enterprisePensionFromEmployee | currency

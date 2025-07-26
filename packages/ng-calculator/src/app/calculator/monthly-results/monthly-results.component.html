@@ -1,6 +1,4 @@
-<div
-  *ngIf="!clear && (monthlyIncomes$ | async) as incomeList"
->
+<div *ngIf="!clear && (monthlyIncomes$ | async) as incomeList">
   <mat-accordion
     [@listAnimation]="incomeList.length"
     (animationend)="scrollToChart()"
@@ -170,7 +168,9 @@
 
     <div class="ml-md-3 d-flex flex-wrap" formGroupName="extraDeduction">
       <mat-form-field [style.width]="templates.childEducation.width">
-        <mat-label>{{ templates.childEducation.label }}{{ labelSuffix }}</mat-label>
+        <mat-label
+          >{{ templates.childEducation.label }}{{ labelSuffix }}</mat-label
+        >
         <input
           matInput
           type="number"
@@ -181,13 +181,22 @@
         />
 
         <mat-autocomplete #childEducation="matAutocomplete" panelWidth="200">
-          <mat-option *ngFor="let item of templates.childEducation.options" [value]="item.value">{{ item.label }}</mat-option>
+          <mat-option
+            *ngFor="let item of templates.childEducation.options"
+            [value]="item.value"
+            >{{ item.label }}</mat-option
+          >
         </mat-autocomplete>
         <span matTextSuffix>元</span>
       </mat-form-field>
 
-      <mat-form-field class="ml-3" [style.width]="templates.continuingEducation.width">
-        <mat-label>{{ templates.continuingEducation.label }}{{ labelSuffix }}</mat-label>
+      <mat-form-field
+        class="ml-3"
+        [style.width]="templates.continuingEducation.width"
+      >
+        <mat-label
+          >{{ templates.continuingEducation.label }}{{ labelSuffix }}</mat-label
+        >
         <input
           matInput
           type="number"
@@ -197,8 +206,15 @@
           [matAutocomplete]="continuingEducation"
         />
 
-        <mat-autocomplete #continuingEducation="matAutocomplete" panelWidth="200">
-          <mat-option *ngFor="let item of templates.continuingEducation.options" [value]="item.value">{{ item.label }}</mat-option>
+        <mat-autocomplete
+          #continuingEducation="matAutocomplete"
+          panelWidth="200"
+        >
+          <mat-option
+            *ngFor="let item of templates.continuingEducation.options"
+            [value]="item.value"
+            >{{ item.label }}</mat-option
+          >
         </mat-autocomplete>
         <span matTextSuffix>元</span>
       </mat-form-field>
@@ -215,8 +231,13 @@
         <span matTextSuffix>元</span>
       </mat-form-field>
 
-      <mat-form-field class="ml-3" [style.width]="templates.housingLoanInterest.width">
-        <mat-label>{{ templates.housingLoanInterest.label }}{{ labelSuffix }}</mat-label>
+      <mat-form-field
+        class="ml-3"
+        [style.width]="templates.housingLoanInterest.width"
+      >
+        <mat-label
+          >{{ templates.housingLoanInterest.label }}{{ labelSuffix }}</mat-label
+        >
         <input
           matInput
           type="number"
@@ -224,13 +245,24 @@
           formControlName="housingLoanInterest"
           min="0"
           (ngModelChange)="
-            resetConflict($event, form, templates.housingLoanInterest.conflictWith || '')
+            resetConflict(
+              $event,
+              form,
+              templates.housingLoanInterest.conflictWith || ''
+            )
           "
           [matAutocomplete]="housingLoanInterest"
         />
 
-        <mat-autocomplete #housingLoanInterest="matAutocomplete" panelWidth="200">
-          <mat-option *ngFor="let item of templates.housingLoanInterest.options" [value]="item.value">{{ item.label }}</mat-option>
+        <mat-autocomplete
+          #housingLoanInterest="matAutocomplete"
+          panelWidth="200"
+        >
+          <mat-option
+            *ngFor="let item of templates.housingLoanInterest.options"
+            [value]="item.value"
+            >{{ item.label }}</mat-option
+          >
         </mat-autocomplete>
         <span matTextSuffix>元</span>
       </mat-form-field>
@@ -250,13 +282,19 @@
         />
 
         <mat-autocomplete #renting="matAutocomplete" panelWidth="200">
-          <mat-option *ngFor="let item of templates.renting.options" [value]="item.value">{{ item.label }}</mat-option>
+          <mat-option
+            *ngFor="let item of templates.renting.options"
+            [value]="item.value"
+            >{{ item.label }}</mat-option
+          >
         </mat-autocomplete>
         <span matTextSuffix>元</span>
       </mat-form-field>
 
       <mat-form-field class="ml-3" [style.width]="templates.elderlyCare.width">
-        <mat-label>{{ templates.elderlyCare.label }}{{ labelSuffix }}</mat-label>
+        <mat-label
+          >{{ templates.elderlyCare.label }}{{ labelSuffix }}</mat-label
+        >
         <input
           matInput
           type="number"
@@ -267,7 +305,11 @@
         />
 
         <mat-autocomplete #elderlyCare="matAutocomplete" panelWidth="200">
-          <mat-option *ngFor="let item of templates.elderlyCare.options" [value]="item.value">{{ item.label }}</mat-option>
+          <mat-option
+            *ngFor="let item of templates.elderlyCare.options"
+            [value]="item.value"
+            >{{ item.label }}</mat-option
+          >
         </mat-autocomplete>
         <span matTextSuffix>元</span>
       </mat-form-field>

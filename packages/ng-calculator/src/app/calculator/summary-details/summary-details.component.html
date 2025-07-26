@@ -5,7 +5,12 @@
   *ngIf="!clear && (summary$ | async) as sum"
 >
   <mat-list class="summary">
-    <mat-list-item matTooltip="全年账面薪资收入 = 每月薪资总和" matTooltipClass="summary-tooltip" matTooltipPosition="above" matTooltipShowDelay="300">
+    <mat-list-item
+      matTooltip="全年账面薪资收入 = 每月薪资总和"
+      matTooltipClass="summary-tooltip"
+      matTooltipPosition="above"
+      matTooltipShowDelay="300"
+    >
       <mat-icon matListItemIcon>money</mat-icon>
       <div matListItemLine>全年账面薪资收入</div>
       <div matListItemLine class="figure">
@@ -19,28 +24,48 @@
         {{ sum.bonus | currency }} ({{ sum.bonusTax | currency }})
       </div>
     </mat-list-item>
-    <mat-list-item matTooltip="全年公积金缴纳金额 = 每月公积金缴纳金额总和" matTooltipClass="summary-tooltip" matTooltipPosition="above" matTooltipShowDelay="300">
+    <mat-list-item
+      matTooltip="全年公积金缴纳金额 = 每月公积金缴纳金额总和"
+      matTooltipClass="summary-tooltip"
+      matTooltipPosition="above"
+      matTooltipShowDelay="300"
+    >
       <mat-icon matListItemIcon>redeem</mat-icon>
       <div matListItemLine>全年公积金缴纳金额</div>
       <div matListItemLine class="figure">
         {{ sum.fullHousingFund | currency }}
       </div>
     </mat-list-item>
-    <mat-list-item matTooltip="全年预缴税额 = 每月预缴税额总和" matTooltipClass="summary-tooltip" matTooltipPosition="above" matTooltipShowDelay="300">
+    <mat-list-item
+      matTooltip="全年预缴税额 = 每月预缴税额总和"
+      matTooltipClass="summary-tooltip"
+      matTooltipPosition="above"
+      matTooltipShowDelay="300"
+    >
       <mat-icon matListItemIcon>monetization_on</mat-icon>
       <div matListItemLine>全年预缴税额</div>
       <div matListItemLine class="figure">
         {{ sum.prepaidTax | currency }}
       </div>
     </mat-list-item>
-    <mat-list-item matTooltip="全年个人综合所得税额 = 整体计算税额(全年账面薪资收入 + 全年一次性奖金收入)" matTooltipClass="summary-tooltip" matTooltipPosition="above" matTooltipShowDelay="300">
+    <mat-list-item
+      matTooltip="全年个人综合所得税额 = 整体计算税额(全年账面薪资收入 + 全年一次性奖金收入)"
+      matTooltipClass="summary-tooltip"
+      matTooltipPosition="above"
+      matTooltipShowDelay="300"
+    >
       <mat-icon matListItemIcon>monetization_on</mat-icon>
       <div matListItemLine>全年个人综合所得税额</div>
       <div matListItemLine class="figure">
         {{ sum.theoreticalTax | currency }}
       </div>
     </mat-list-item>
-    <mat-list-item matTooltip="全年个人综合所得税额（分开计算） = 全年预缴税额 + 单独计算税额(全年一次性奖金收入)" matTooltipClass="summary-tooltip" matTooltipPosition="above" matTooltipShowDelay="300">
+    <mat-list-item
+      matTooltip="全年个人综合所得税额（分开计算） = 全年预缴税额 + 单独计算税额(全年一次性奖金收入)"
+      matTooltipClass="summary-tooltip"
+      matTooltipPosition="above"
+      matTooltipShowDelay="300"
+    >
       <mat-icon matListItemIcon>monetization_on</mat-icon>
       <div matListItemLine>全年个人综合所得税额（分开计算）</div>
       <div matListItemLine class="figure">
@@ -48,14 +73,24 @@
       </div>
     </mat-list-item>
 
-    <mat-list-item matTooltip="全年税后收入 = 全年账面薪资收入 + 全年一次性奖金收入 - 全年个人综合所得税额" matTooltipClass="summary-tooltip" matTooltipPosition="above" matTooltipShowDelay="300">
+    <mat-list-item
+      matTooltip="全年税后收入 = 全年账面薪资收入 + 全年一次性奖金收入 - 全年个人综合所得税额"
+      matTooltipClass="summary-tooltip"
+      matTooltipPosition="above"
+      matTooltipShowDelay="300"
+    >
       <mat-icon matListItemIcon>savings</mat-icon>
       <div matListItemLine>全年税后收入</div>
       <div matListItemLine class="figure">
         {{ sum.taxedIncome | currency }}
       </div>
     </mat-list-item>
-    <mat-list-item matTooltip="全年税后收入（非合并） = 全年账面薪资收入 + 全年一次性奖金收入 - 全年个人综合所得税额（分开计算）" matTooltipClass="summary-tooltip" matTooltipPosition="above" matTooltipShowDelay="300">
+    <mat-list-item
+      matTooltip="全年税后收入（非合并） = 全年账面薪资收入 + 全年一次性奖金收入 - 全年个人综合所得税额（分开计算）"
+      matTooltipClass="summary-tooltip"
+      matTooltipPosition="above"
+      matTooltipShowDelay="300"
+    >
       <mat-icon matListItemIcon>savings</mat-icon>
       <div matListItemLine>
         全年税后收入（非合并 - {{ nonMergeTaxCalculationEndDate }}止）
@@ -65,7 +100,12 @@
       </div>
     </mat-list-item>
 
-    <mat-list-item matTooltip="全年现金收入 = 全年税后收入 - 全年社保个人缴纳总额 - 全年公积金个人缴纳总额 - 全年企业年金个人缴纳总额" matTooltipClass="summary-tooltip" matTooltipPosition="above" matTooltipShowDelay="300">
+    <mat-list-item
+      matTooltip="全年现金收入 = 全年税后收入 - 全年社保个人缴纳总额 - 全年公积金个人缴纳总额 - 全年企业年金个人缴纳总额"
+      matTooltipClass="summary-tooltip"
+      matTooltipPosition="above"
+      matTooltipShowDelay="300"
+    >
       <mat-icon matListItemIcon>savings</mat-icon>
       <div matListItemLine>全年现金收入</div>
       <div matListItemLine class="figure">
@@ -73,7 +113,12 @@
       </div>
     </mat-list-item>
 
-    <mat-list-item matTooltip="全年现金收入（非合并） = 全年税后收入（非合并） - 全年社保个人缴纳总额 - 全年公积金个人缴纳总额 - 全年企业年金个人缴纳总额" matTooltipClass="summary-tooltip" matTooltipPosition="above" matTooltipShowDelay="300">
+    <mat-list-item
+      matTooltip="全年现金收入（非合并） = 全年税后收入（非合并） - 全年社保个人缴纳总额 - 全年公积金个人缴纳总额 - 全年企业年金个人缴纳总额"
+      matTooltipClass="summary-tooltip"
+      matTooltipPosition="above"
+      matTooltipShowDelay="300"
+    >
       <mat-icon matListItemIcon>savings</mat-icon>
       <div matListItemLine>
         全年现金收入（非合并 - {{ nonMergeTaxCalculationEndDate }}止）
@@ -83,7 +128,12 @@
       </div>
     </mat-list-item>
 
-    <mat-list-item matTooltip="全年综合货币收入 = 全年现金收入 + 全年公积金缴纳总额 + 全年企业年金缴纳总额" matTooltipClass="summary-tooltip" matTooltipPosition="above" matTooltipShowDelay="300">
+    <mat-list-item
+      matTooltip="全年综合货币收入 = 全年现金收入 + 全年公积金缴纳总额 + 全年企业年金缴纳总额"
+      matTooltipClass="summary-tooltip"
+      matTooltipPosition="above"
+      matTooltipShowDelay="300"
+    >
       <mat-icon matListItemIcon>savings</mat-icon>
       <div matListItemLine>全年综合货币收入</div>
       <div matListItemLine class="figure">
@@ -91,7 +141,12 @@
       </div>
     </mat-list-item>
 
-    <mat-list-item matTooltip="全年综合货币收入（非合并） = 全年现金收入（非合并） + 全年公积金缴纳总额 + 全年企业年金缴纳总额" matTooltipClass="summary-tooltip" matTooltipPosition="above" matTooltipShowDelay="300">
+    <mat-list-item
+      matTooltip="全年综合货币收入（非合并） = 全年现金收入（非合并） + 全年公积金缴纳总额 + 全年企业年金缴纳总额"
+      matTooltipClass="summary-tooltip"
+      matTooltipPosition="above"
+      matTooltipShowDelay="300"
+    >
       <mat-icon matListItemIcon>savings</mat-icon>
       <div matListItemLine>
         全年综合货币收入（非合并 - {{ nonMergeTaxCalculationEndDate }}止）
@@ -117,7 +172,12 @@
       </div>
     </mat-list-item>
 
-    <mat-list-item matTooltip="全年企业年金缴纳总额 = 全年企业年金个人缴纳总额 + 全年企业年金公司缴纳总额" matTooltipClass="summary-tooltip" matTooltipPosition="above" matTooltipShowDelay="300">
+    <mat-list-item
+      matTooltip="全年企业年金缴纳总额 = 全年企业年金个人缴纳总额 + 全年企业年金公司缴纳总额"
+      matTooltipClass="summary-tooltip"
+      matTooltipPosition="above"
+      matTooltipShowDelay="300"
+    >
       <mat-icon matListItemIcon>redeem</mat-icon>
       <div matListItemLine>全年企业年金缴纳总额</div>
       <div matListItemLine class="figure">

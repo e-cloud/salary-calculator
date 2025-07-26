@@ -150,7 +150,8 @@
               panelWidth="200"
             >
               <mat-option
-                *ngFor="let item of childEducationDeductionOptions;
+                *ngFor="
+                  let item of childEducationDeductionOptions;
                   trackBy: trackByValue
                 "
                 [value]="item.value"
@@ -159,7 +160,10 @@
             </mat-autocomplete>
           </mat-form-field>
 
-          <mat-form-field class="ml-3" [style.width]="templates.continuingEducation.width">
+          <mat-form-field
+            class="ml-3"
+            [style.width]="templates.continuingEducation.width"
+          >
             <mat-label>{{ templates.continuingEducation.label }}</mat-label>
             <input
               matInput
@@ -176,7 +180,8 @@
               panelWidth="200"
             >
               <mat-option
-                *ngFor="let item of continuousEducationDeductionOptions;
+                *ngFor="
+                  let item of continuousEducationDeductionOptions;
                   trackBy: trackByValue
                 "
                 [value]="item.value"
@@ -197,7 +202,10 @@
             <span matTextSuffix>元</span>
           </mat-form-field>
 
-          <mat-form-field class="ml-3" [style.width]="templates.housingLoanInterest.width">
+          <mat-form-field
+            class="ml-3"
+            [style.width]="templates.housingLoanInterest.width"
+          >
             <mat-label>{{ templates.housingLoanInterest.label }}</mat-label>
             <input
               matInput
@@ -206,7 +214,11 @@
               formControlName="housingLoanInterest"
               min="0"
               (ngModelChange)="
-                resetConflict($event, baseForm, templates.housingLoanInterest.conflictWith || '')
+                resetConflict(
+                  $event,
+                  baseForm,
+                  templates.housingLoanInterest.conflictWith || ''
+                )
               "
               [matAutocomplete]="housingLoanInterest"
             />
@@ -217,7 +229,8 @@
               panelWidth="200"
             >
               <mat-option
-                *ngFor="let item of housingLoanInterestDeductionOptions;
+                *ngFor="
+                  let item of housingLoanInterestDeductionOptions;
                   trackBy: trackByValue
                 "
                 [value]="item.value"
@@ -247,7 +260,8 @@
 
             <mat-autocomplete #renting="matAutocomplete" panelWidth="200">
               <mat-option
-                *ngFor="let item of rentingDeductionOptions;
+                *ngFor="
+                  let item of rentingDeductionOptions;
                   trackBy: trackByValue
                 "
                 [value]="item.value"
@@ -256,7 +270,10 @@
             </mat-autocomplete>
           </mat-form-field>
 
-          <mat-form-field class="ml-3" [style.width]="templates.elderlyCare.width">
+          <mat-form-field
+            class="ml-3"
+            [style.width]="templates.elderlyCare.width"
+          >
             <mat-label>{{ templates.elderlyCare.label }}</mat-label>
             <input
               matInput
@@ -270,7 +287,8 @@
 
             <mat-autocomplete #elderlyCare="matAutocomplete" panelWidth="200">
               <mat-option
-                *ngFor="let item of elderlyCareDeductionOptions;
+                *ngFor="
+                  let item of elderlyCareDeductionOptions;
                   trackBy: trackByValue
                 "
                 [value]="item.value"
