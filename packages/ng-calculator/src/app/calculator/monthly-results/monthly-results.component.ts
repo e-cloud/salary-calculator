@@ -6,9 +6,13 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { CityRecipe, MonthlyIncomeInfo } from 'calculator-core';
+import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  CityRecipe,
+  MonthlyIncomeInfo,
+  MonthlyIncomeMeta,
+} from 'calculator-core';
 import {
   autocompleteTemplates,
   monthlyResultsLabelSuffix,
@@ -37,12 +41,12 @@ import { MonthlyInputForm, MonthlyInputModel } from '../types';
     ]),
   ],
 })
-export class MonthlyResultsComponent {
+export class MonthlyResultsComponent implements OnInit {
   readonly templates = autocompleteTemplates;
   readonly labelSuffix = monthlyResultsLabelSuffix;
   @Input() clear!: boolean;
   @Input() monthlyIncomes$!: Observable<MonthlyIncomeInfo[]>;
-  @Input() detailForms!: FormGroup<MonthlyInputForm>[];
+  @Input() monthlyMetas$!: Observable<MonthlyIncomeMeta[]>;
   @Input() cityRecipe!: CityRecipe;
 
   @Output() updateMeta = new EventEmitter<{
@@ -50,6 +54,16 @@ export class MonthlyResultsComponent {
     index: number;
   }>();
   @Output() changeChartMonth = new EventEmitter<number>();
+
+  detailForms: FormGroup<MonthlyInputForm>[] = [];
+
+  constructor(private fb: FormBuilder) {}
+
+  ngOnInit() {
+    this.monthlyMetas$.subscribe((metaList) => {
+      this.detailForms = this.buildDetailForms(metaList, this.cityRecipe);
+    });
+  }
 
   trackIncome = (_: number, x: MonthlyIncomeInfo) => x.actualMonth;
 
@@ -63,6 +77,14 @@ export class MonthlyResultsComponent {
     return this.cityRecipe.housingFundBaseRange[1];
   }
 
+  onUpdateMeta(value: MonthlyInputModel, index: number) {
+    this.updateMeta.emit({ meta: value, index });
+  }
+
+  onChangeChartMonth(index: number) {
+    this.changeChartMonth.emit(index);
+  }
+
   scrollToChart() {
     // This can be handled by the parent or a dedicated service
   }
@@ -71,5 +93,67 @@ export class MonthlyResultsComponent {
     if (src > 0) {
       form.get(controlName)?.setValue(0);
     }
+  }
+
+  private buildDetailForms(
+    metaList: MonthlyIncomeMeta[],
+    cityRecipe: CityRecipe
+  ) {
+    const forms = metaList.map(
+      (meta) =>
+        this.fb.group({
+          monthSalary: [meta.salary, Validators.required],
+          monthlyBonus: [0, Validators.required],
+          newPayCycle: [meta.newPayCycle],
+          insuranceBase: [meta.insuranceBase, Validators.required],
+          insuranceRate: this.fb.group({
+            endowment: [
+              cityRecipe.employee.insuranceRate.endowment * 100,
+              Validators.required,
+            ],
+            health: [
+              cityRecipe.employee.insuranceRate.health * 100,
+              Validators.required,
+            ],
+            unemployment: [
+              cityRecipe.employee.insuranceRate.unemployment * 100,
+              Validators.required,
+            ],
+          }),
+          housingFundBase: [meta.housingFundBase, Validators.required],
+          housingFundRate: [meta.housingFundRate * 100, Validators.required],
+          extraDeduction: this.fb.group({
+            childEducation: [
+              meta.extraDeduction.childEducation,
+              Validators.required,
+            ],
+            continuingEducation: [
+              meta.extraDeduction.continuingEducation,
+              Validators.required,
+            ],
+            seriousMedicalExpense: [
+              meta.extraDeduction.seriousMedicalExpense,
+              Validators.required,
+            ],
+            housingLoanInterest: [
+              meta.extraDeduction.housingLoanInterest,
+              Validators.required,
+            ],
+            renting: [meta.extraDeduction.renting, Validators.required],
+            elderlyCare: [meta.extraDeduction.elderlyCare, Validators.required],
+            enterprisePensionFromEmployee: [
+              meta.extraDeduction.enterprisePensionFromEmployee,
+              Validators.required,
+            ],
+            enterprisePensionFromEmployer: [
+              meta.extraDeduction.enterprisePensionFromEmployer,
+              Validators.required,
+            ],
+            other: [meta.extraDeduction.other, Validators.required],
+          }),
+        }) as unknown as FormGroup<MonthlyInputForm>
+    );
+
+    return forms;
   }
 }

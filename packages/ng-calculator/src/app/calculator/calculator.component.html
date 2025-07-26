@@ -1,11 +1,9 @@
 <!-- 基础表单组件 -->
 <app-calculator-form
-  [baseForm]="baseForm"
   [usePredefinedInsurancePercents]="usePredefinedInsurancePercents"
   [cityRecipe]="cityRecipe"
   [recipes$]="recipes$"
   (calculate)="calculate($event)"
-  (reset)="reset()"
   (clearResult)="clearResult()"
   (changeRecipe)="changeRecipe($event)"
   (changePredefineCondition)="changePredefineCondition($event)"
@@ -16,7 +14,7 @@
     class="col-md-6 col-sm-12 mb-4 mb-md-0"
     [clear]="clear"
     [monthlyIncomes$]="monthlyIncomes$"
-    [detailForms]="detailForms"
+    [monthlyMetas$]="monthlyMetas$"
     [cityRecipe]="cityRecipe"
     (updateMeta)="updateMeta($event.meta, $event.index)"
     (changeChartMonth)="changeChartMonth($event)"
@@ -25,8 +23,6 @@
   <div class="col-md-6">
     <app-summary-charts
       [clear]="clear"
-      [deductionChartOption]="deductionChartOption"
-      [annualDeductionChartOption]="annualDeductionChartOption"
       [monthlyIncomes$]="monthlyIncomes$"
       [summary$]="summary$"
       [selectedMonthIndex$]="selectedMonthIndex$"

@@ -2,7 +2,7 @@
   #chart
   appearance="outlined"
   class="calc-result mb-4"
-  *ngIf="!clear && (deductionChartOption | async) as chartOption"
+  *ngIf="!clear && (deductionChartOption$ | async) as chartOption"
 >
   <mat-tab-group>
     <mat-tab label="月薪扣除项分析">
@@ -17,7 +17,7 @@
         >
           <mat-label>月份</mat-label>
           <mat-select
-            (selectionChange)="changeChartMonth.emit($event.value)"
+            (selectionChange)="onChangeChartMonth($event.value)"
             [value]="selectedMonthIndex$ | async"
           >
             <mat-option *ngFor="let month of months" [value]="month - 1">{{
@@ -48,8 +48,8 @@
             {{ incomes[selectedIndex].insuranceFullCost | currency }} (社保) +
             {{ incomes[selectedIndex].housingFund | currency }} (公积金) +
             {{
-              incomes[selectedIndex].extraDeduction.enterprisePensionFromEmployee
-                | currency
+              incomes[selectedIndex].extraDeduction
+                .enterprisePensionFromEmployee | currency
             }}
             (企业年金) =
             {{ incomes[selectedIndex].salary | currency }} (税前)
@@ -62,7 +62,7 @@
     </mat-tab>
     <mat-tab
       label="年度扣除项分析"
-      *ngIf="annualDeductionChartOption | async as annualDeductionChartOption"
+      *ngIf="annualDeductionChartOption$ | async as annualDeductionChartOption"
     >
       <mat-card-content>
         <div

@@ -8,7 +8,7 @@
     <mat-expansion-panel
       *ngFor="let item of incomeList; let idx = index; trackBy: trackIncome"
       #panel
-      (opened)="changeChartMonth.emit(idx)"
+      (opened)="onChangeChartMonth(idx)"
     >
       <mat-expansion-panel-header>
         {{ item.actualMonth - 1 | month }} 实收：
@@ -335,7 +335,7 @@
         color="primary"
         type="submit"
         [disabled]="form.invalid"
-        (click)="updateMeta.emit({meta: form.value, index: idx})"
+        (click)="onUpdateMeta(form.value, idx)"
       >
         更新
       </button>

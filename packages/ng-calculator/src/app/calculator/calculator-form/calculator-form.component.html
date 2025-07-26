@@ -10,7 +10,7 @@
         color="primary"
         name="usePredefinedInsurancePercents"
         [(ngModel)]="usePredefinedInsurancePercents"
-        (ngModelChange)="changePredefineCondition.emit($event)"
+        (ngModelChange)="onChangePredefineCondition($event)"
       >
         预定义社保缴纳参数
       </mat-slide-toggle>
@@ -28,7 +28,7 @@
         <button
           mat-menu-item
           *ngFor="let item of recipes$ | async"
-          (click)="changeRecipe.emit(item)"
+          (click)="onChangeRecipe(item)"
         >
           {{ item.city }}: {{ item.label }}
         </button>
@@ -374,7 +374,7 @@
       color="primary"
       type="submit"
       [disabled]="baseForm.disabled || baseForm.invalid"
-      (click)="calculate.emit($any(baseForm.value))"
+      (click)="onCalculate()"
     >
       计算
     </button>
@@ -382,11 +382,11 @@
       mat-raised-button
       class="ml-3"
       [disabled]="baseForm.disabled"
-      (click)="reset.emit()"
+      (click)="onReset()"
     >
       重置
     </button>
-    <button mat-raised-button class="ml-3" (click)="clearResult.emit()">
+    <button mat-raised-button class="ml-3" (click)="onClearResult()">
       清空结果
     </button>
   </mat-card-actions>
