@@ -22,10 +22,15 @@ export function calculateFullYearIncome(
   list: MonthlyIncomeInfo[],
   annualBonus: number,
 ): FullYearIncomeInfo {
+  // 初始化全年收入信息对象
   const full = {
+    /** 全年账面工资 */
     bookSalary: sumBy(list, 'salary'),
+    /** 全年已预缴税额 */
     prepaidTax: sumBy(list, 'tax'),
+    /** 年终奖 */
     bonus: annualBonus,
+    /** 年终奖应纳税额 */
     bonusTax: calculateBonusTax(annualBonus),
     employee: {
       endowmentInsurance: 0,
@@ -44,8 +49,12 @@ export function calculateFullYearIncome(
     },
   } as FullYearIncomeInfo;
 
+  /** 全年总收入（含年终奖） */
   full.bookIncome = full.bookSalary + full.bonus;
+  /** 税后年终奖 */
+  full.postTaxBonus = full.bonus - full.bonusTax;
 
+  /** 全年总扣除（免税额+专项附加扣除+社保+公积金） */
   const totalDeduction =
     5000 * 12 +
     sumBy(
@@ -53,49 +62,78 @@ export function calculateFullYearIncome(
       x => x.fullExtraDeduction + x.insuranceFullCost + x.housingFund,
     );
 
+  /** 理论应纳税总额（合并计税） */
   full.theoreticalTax = calculateTax(full.bookIncome - totalDeduction);
+  /** 分开计税应纳税总额 */
   full.totalSeparatedTax =
     calculateTax(full.bookSalary - totalDeduction) + full.bonusTax;
 
+  /** 全年税后工资 */
+  full.postTaxSalary = sumBy(list, 'cashIncome');
+  /** 全年税后总收入（合并计税） */
   full.taxedIncome = full.bookIncome - full.theoreticalTax;
+  /** 全年税后总收入（分开计税） */
   full.taxedIncomeDeprecated = full.bookIncome - full.totalSeparatedTax;
+  /** 全年公积金总额（个人+公司） */
   full.fullHousingFund = sumBy(list, 'housingFund') * 2;
+
+  /** 全年到手现金收入（合并计税） */
   full.cashIncome =
     full.taxedIncome -
     sumBy(list, 'insuranceFullCost') -
     sumBy(list, 'housingFund') -
     sumBy(list, 'extraDeduction.enterprisePensionFromEmployee');
+  /** 全年到手现金收入（分开计税） */
+  const referenceCashIncome = sumBy(list, 'cashIncome') + full.postTaxBonus
   full.cashIncomeDeprecated =
     full.taxedIncomeDeprecated -
     sumBy(list, 'insuranceFullCost') -
     sumBy(list, 'housingFund') -
     sumBy(list, 'extraDeduction.enterprisePensionFromEmployee');
 
+  /** 全年个人社保总额 */
   full.fullInsurance = sumBy(list, 'insuranceFullCost');
+
+
+  /** 全年个人养老保险 */
   full.employee.endowmentInsurance = sumBy(list, 'insuranceCosts.endowment');
+  /** 全年个人医疗保险 */
   full.employee.healthInsurance = sumBy(list, 'insuranceCosts.health');
+  /** 全年个人企业年金 */
   full.employee.enterprisePension = sumBy(
     list,
     'extraDeduction.enterprisePensionFromEmployee',
   );
+  /** 全年个人公积金 */
   full.employee.housingFund = sumBy(list, 'housingFund');
+
+  /** 全年企业年金总额（个人+公司） */
   full.employee.enterprisePensionFull =
     sumBy(list, 'extraDeduction.enterprisePensionFromEmployee') +
     sumBy(list, 'extraDeduction.enterprisePensionFromEmployer');
 
+
+  /** 全年个人总收入 */
+  full.totalIncome = full.cashIncome + full.fullHousingFund + full.employee.enterprisePensionFull;
+  /** 全年个人总收入（分开计税） */
+  full.totalIncomeDeprecated =
+    full.cashIncomeDeprecated + full.fullHousingFund + full.employee.enterprisePensionFull;
+
+
+  /** 全年雇主总成本 */
   full.employerCosts.full = sumBy(list, 'employerCosts.full') + full.bonus;
+  /** 全年雇主企业年金成本 */
   full.employerCosts.enterprisePension = sumBy(
     list,
     'employerCosts.enterprisePension',
   );
+  /** 全年雇主社保成本 */
   full.employerCosts.insurance = {
-    endowment: sumBy(list, 'employerCosts.insurance.endowment') + full.bonus,
-    health: sumBy(list, 'employerCosts.health.endowment') + full.bonus,
-    unemployment:
-      sumBy(list, 'employerCosts.unemployment.endowment') + full.bonus,
-    birth: sumBy(list, 'employerCosts.birth.endowment') + full.bonus,
-    occupationalInjury:
-      sumBy(list, 'employerCosts.occupationalInjury.endowment') + full.bonus,
+    endowment: sumBy(list, 'employerCosts.insurance.endowment'),
+    health: sumBy(list, 'employerCosts.insurance.health'),
+    unemployment: sumBy(list, 'employerCosts.insurance.unemployment'),
+    birth: sumBy(list, 'employerCosts.insurance.birth'),
+    occupationalInjury: sumBy(list, 'employerCosts.insurance.occupationalInjury'),
   };
 
   return full;
@@ -172,7 +210,7 @@ export function calculateMonthIncome(
 
   // 专项扣除额
   const extraDeducted =
-    extraDeduction(current.extraDeduction) + enterprisePension;
+    sumExtraDeduction(current.extraDeduction) + enterprisePension;
 
   const accumulatedDeduction = newMonthInfo.actualMonth * current.freeTaxQuota;
   const specialDeduction = insuranceFullCost + personalHousingFund;
@@ -339,7 +377,7 @@ function getValidBase(base: number, range: [number, number]) {
   return Math.min(Math.max(base, range[0]), range[1]);
 }
 
-function extraDeduction(meta: MonthlyIncomeMeta['extraDeduction']): number {
+function sumExtraDeduction(meta: MonthlyIncomeMeta['extraDeduction']): number {
   return sum(
     values(
       omit(meta, [

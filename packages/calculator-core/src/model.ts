@@ -224,6 +224,14 @@ export interface FullYearIncomeInfo {
    */
   cashIncomeDeprecated: number;
   /**
+   * 全年广义收入（现金收入 + 公积金 + 企业年金）
+   */
+  totalIncome: number;
+  /**
+   * 全年广义收入（现金收入 + 公积金 + 企业年金）(旧算法)
+   */
+  totalIncomeDeprecated: number;
+  /**
    * 全年社保总额
    */
   fullInsurance: number;
@@ -235,6 +243,10 @@ export interface FullYearIncomeInfo {
    * 全年一次性奖金税
    */
   bonusTax: number;
+  /**
+   * 全年一次性奖金税后收入
+   */
+  postTaxBonus: number;
   /**
    * 全年薪酬所得税+一次性奖金所得税
    */
