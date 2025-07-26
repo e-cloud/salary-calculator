@@ -83,7 +83,7 @@ export class MonthlyResultsComponent implements OnInit {
   }
 
   onChangeChartMonth(index: number) {
-    this.changeChartMonth.emit(index);
+    this.changeChartMonth.emit(index + 1);
   }
 
   scrollToChart() {

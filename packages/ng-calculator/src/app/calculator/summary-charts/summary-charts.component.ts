@@ -10,14 +10,7 @@ import {
 } from '@angular/core';
 import type { EChartsOption } from 'echarts';
 import { FullYearIncomeInfo, MonthlyIncomeInfo } from 'calculator-core';
-import {
-  BehaviorSubject,
-  Observable,
-  combineLatest,
-  filter,
-  map,
-  startWith,
-} from 'rxjs';
+import { BehaviorSubject, Observable, combineLatest, filter, map } from 'rxjs';
 
 @Component({
   selector: 'app-summary-charts',
@@ -28,7 +21,7 @@ export class SummaryChartsComponent implements OnInit {
   @Input() clear!: boolean;
   @Input() monthlyIncomes$!: Observable<MonthlyIncomeInfo[]>;
   @Input() summary$!: Observable<FullYearIncomeInfo>;
-  @Input() selectedMonthIndex$!: BehaviorSubject<number>;
+  @Input() selectedMonth$!: BehaviorSubject<number>;
   @Input() scroll$!: Observable<void>;
 
   @Output() changeChartMonth = new EventEmitter<number>();
@@ -55,12 +48,12 @@ export class SummaryChartsComponent implements OnInit {
     // 创建月薪扣除饼图数据
     this.deductionChartOption$ = combineLatest([
       this.monthlyIncomes$,
-      this.selectedMonthIndex$.pipe(startWith(0)),
+      this.selectedMonth$,
     ]).pipe(
       filter(([incomes, _]) => !!incomes && incomes.length > 0),
-      map(([incomes, index]) => {
+      map(([incomes, month]) => {
         // 使用选中月份的数据
-        const selectedMonth = incomes[index];
+        const selectedMonth = incomes[month - 1];
 
         // 准备饼图数据
         const data = [

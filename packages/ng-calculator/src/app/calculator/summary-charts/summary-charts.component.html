@@ -18,9 +18,9 @@
           <mat-label>月份</mat-label>
           <mat-select
             (selectionChange)="onChangeChartMonth($event.value)"
-            [value]="selectedMonthIndex$ | async"
+            [value]="selectedMonth$ | async"
           >
-            <mat-option *ngFor="let month of months" [value]="month - 1">{{
+            <mat-option *ngFor="let month of months" [value]="month">{{
               month
             }}</mat-option>
           </mat-select>
@@ -35,24 +35,24 @@
         ></div>
         <div
           class="text-center mt-2"
-          *ngIf="(monthlyIncomes$ | async) as incomes"
+          *ngIf="monthlyIncomes$ | async as incomes"
         >
           <ng-container
             *ngIf="
-              (selectedMonthIndex$ | async) as selectedIndex;
+              selectedMonth$ | async as selectedIndex;
               else noSelection
             "
           >
-            {{ incomes[selectedIndex].cashIncome | currency }} (税后) +
-            {{ incomes[selectedIndex].tax | currency }} (个税) +
-            {{ incomes[selectedIndex].insuranceFullCost | currency }} (社保) +
-            {{ incomes[selectedIndex].housingFund | currency }} (公积金) +
+            {{ incomes[selectedIndex - 1].cashIncome | currency }} (税后) +
+            {{ incomes[selectedIndex - 1].tax | currency }} (个税) +
+            {{ incomes[selectedIndex - 1].insuranceFullCost | currency }} (社保) +
+            {{ incomes[selectedIndex - 1].housingFund | currency }} (公积金) +
             {{
-              incomes[selectedIndex].extraDeduction
+              incomes[selectedIndex - 1].extraDeduction
                 .enterprisePensionFromEmployee | currency
             }}
             (企业年金) =
-            {{ incomes[selectedIndex].salary | currency }} (税前)
+            {{ incomes[selectedIndex - 1].salary | currency }} (税前)
           </ng-container>
           <ng-template #noSelection>
             <span>选择一个月份查看详情</span>

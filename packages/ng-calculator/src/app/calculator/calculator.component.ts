@@ -17,9 +17,11 @@ import {
   BehaviorSubject,
   Observable,
   Subject,
+  catchError,
   combineLatest,
   filter,
   map,
+  of,
   share,
   shareReplay,
   startWith,
@@ -74,7 +76,7 @@ export class CalculatorComponent {
     meta: Partial<MonthlyIncomeMeta>;
     index: number;
   }>();
-  selectedMonthIndex$ = new BehaviorSubject<number>(0);
+  selectedMonth$ = new BehaviorSubject<number>(1);
   scroll$ = new BehaviorSubject<void>(undefined);
 
   monthlyMetas$: Observable<MonthlyIncomeMeta[]>;
@@ -116,6 +118,10 @@ export class CalculatorComponent {
       map(([list, meta]) => {
         return calculateFullYearIncome(list!, meta.annualBonus);
       }),
+      catchError((error) => {
+        alert(`计算错误: ${error.message}`);
+        return of(null as any);
+      }),
       shareReplay(1)
     );
 
@@ -132,8 +138,9 @@ export class CalculatorComponent {
       );
   }
 
-  changeChartMonth(index: number) {
-    this.selectedMonthIndex$.next(index);
+  changeChartMonth(month: number) {
+    console.log(`Changing chart month to: ${month}`);
+    this.selectedMonth$.next(month);
   }
 
   changeRecipe(recipe: CityRecipe) {
