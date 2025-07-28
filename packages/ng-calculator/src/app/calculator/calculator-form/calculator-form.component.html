@@ -15,13 +15,23 @@
         预定义社保缴纳参数
       </mat-slide-toggle>
 
+      <mat-slide-toggle
+        class="example-margin ml-3"
+        color="primary"
+        name="useUniformPolicy"
+        [(ngModel)]="useUniformPolicy"
+        (ngModelChange)="onUniformPolicyChange($event)"
+      >
+        全年使用统一基数标准
+      </mat-slide-toggle>
+
       <button
-        class="ml-0 ml-sm-3 mt-1 mt-sm-0"
+        class="ml-3 mt-1 mt-sm-0"
         mat-button
         color="primary"
         [matMenuTriggerFor]="menu"
       >
-        {{ cityRecipe.city }}: {{ cityRecipe.label }}
+        {{ cityRecipe?.city }}: {{ cityRecipe?.label }}
         <mat-icon>arrow_drop_down</mat-icon>
       </button>
       <mat-menu #menu="matMenu">
@@ -33,6 +43,18 @@
           {{ item.city }}: {{ item.label }}
         </button>
       </mat-menu>
+
+      <mat-form-field class="ml-3 dense-xs" style="width: 120px" appearance="outline">
+        <mat-label>计算年份</mat-label>
+        <mat-select
+          [(value)]="selectedYear"
+          (selectionChange)="onYearChange($event.value)"
+        >
+          <mat-option *ngFor="let year of availableYears" [value]="year">
+            {{ year }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
     </div>
   </mat-card-header>
 
@@ -64,31 +86,39 @@
         </mat-form-field>
       </div>
 
-      <div class="row mx-0">
-        <mat-form-field>
-          <mat-label>{{ templates.insuranceBase.label }}</mat-label>
-          <input
-            matInput
-            type="number"
-            [placeholder]="templates.insuranceBase.placeholder"
-            formControlName="insuranceBase"
-            min="0"
-            [matAutocomplete]="insuranceBase"
-          />
-          <span matTextSuffix>元</span>
+      <div class="row mx-0" *ngIf="policyHint">
+          <div class="text-muted small my-1">
+            {{ policyHint }}
+          </div>
+      </div>
 
-          <mat-autocomplete #insuranceBase="matAutocomplete" panelWidth="200">
-            <mat-option [value]="baseForm.controls.monthSalary.value"
-              >全额缴纳：{{ baseForm.controls.monthSalary.value }}元(不超上限{{
-                insuranceTop
-              }}元)
-            </mat-option>
-            <mat-option [value]="cityRecipe.minimumWage"
-              >最低工资标准：{{ cityRecipe.minimumWage }}元</mat-option
-            >
-            <mat-option [value]="0">不缴纳：0元</mat-option>
-          </mat-autocomplete>
-        </mat-form-field>
+      <div class="row mx-0">
+        <div>
+          <mat-form-field>
+            <mat-label>{{ templates.insuranceBase.label }}</mat-label>
+            <input
+              matInput
+              type="number"
+              [placeholder]="templates.insuranceBase.placeholder"
+              formControlName="insuranceBase"
+              min="0"
+              [matAutocomplete]="insuranceBase"
+            />
+            <span matTextSuffix>元</span>
+
+            <mat-autocomplete #insuranceBase="matAutocomplete" panelWidth="200">
+              <mat-option [value]="baseForm.controls.monthSalary.value"
+                >全额缴纳：{{
+                  baseForm.controls.monthSalary.value
+                }}元(不超上限{{ currentInsuranceTop }}元)
+              </mat-option>
+              <mat-option [value]="currentMinimumWage"
+                >最低工资标准：{{ currentMinimumWage }}元</mat-option
+              >
+              <mat-option [value]="0">不缴纳：0元</mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+        </div>
 
         <div class="ml-sm-3 ml-md-4">
           <mat-form-field>
@@ -110,10 +140,10 @@
               <mat-option [value]="baseForm.controls.monthSalary.value"
                 >全额缴纳：{{
                   baseForm.controls.monthSalary.value
-                }}元(不超上限{{ housingFundTop }}元)
+                }}元(不超上限{{ currentHousingFundTop }}元)
               </mat-option>
-              <mat-option [value]="cityRecipe.minimumWage"
-                >最低工资标准：{{ cityRecipe.minimumWage }}元</mat-option
+              <mat-option [value]="currentMinimumWage"
+                >最低工资标准：{{ currentMinimumWage }}元</mat-option
               >
               <mat-option [value]="0">不缴纳：0元</mat-option>
             </mat-autocomplete>

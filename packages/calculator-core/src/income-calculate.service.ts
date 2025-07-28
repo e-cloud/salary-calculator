@@ -15,6 +15,7 @@ import {
   FullYearIncomeInfo,
   MonthlyIncomeInfo,
   MonthlyIncomeMeta,
+  Policy,
   RawMeta,
 } from './model';
 
@@ -196,9 +197,9 @@ export function calculateMonthIncome(
 
   // 社保缴纳明细
   const insuranceDeducted = insuranceCostsForEmployee(
-    newPayCycle || !current.insuranceBaseOnLastMonth
+    newPayCycle || !current.insuranceBaseOnLastMonth || !lastMonth
       ? current.insuranceBase
-      : lastMonth!.salary,
+      : lastMonth.salary,
     current.insuranceBaseRange,
     current.insuranceRate,
   );
@@ -215,12 +216,12 @@ export function calculateMonthIncome(
   const accumulatedDeduction = newMonthInfo.actualMonth * current.freeTaxQuota;
   const specialDeduction = insuranceFullCost + personalHousingFund;
   const accumulatedSpecialDeduction =
-    (newPayCycle ? 0 : lastMonth!.accumulatedSpecialDeduction) +
+    (newPayCycle || !lastMonth ? 0 : lastMonth.accumulatedSpecialDeduction) +
     specialDeduction;
   const accumulatedExtraDeduction =
-    (newPayCycle ? 0 : lastMonth!.accumulatedExtraDeduction) + extraDeducted;
+    (newPayCycle || !lastMonth ? 0 : lastMonth.accumulatedExtraDeduction) + extraDeducted;
   const accumulatedSalary =
-    (newPayCycle ? 0 : lastMonth!.accumulatedSalary) + current.salary;
+    (newPayCycle || !lastMonth ? 0 : lastMonth.accumulatedSalary) + current.salary;
   // 预扣预缴应纳税所得额
   const accumulatedTaxQuota = Math.max(
     accumulatedSalary -
@@ -233,7 +234,7 @@ export function calculateMonthIncome(
   // 当月缴税额
   const tax =
     calculateTax(accumulatedTaxQuota) -
-    (newPayCycle ? 0 : lastMonth!.accumulatedTax);
+    (newPayCycle || !lastMonth ? 0 : lastMonth.accumulatedTax);
 
   newMonthInfo.fullExtraDeduction = extraDeducted;
   newMonthInfo.insuranceCosts = insuranceDeducted;
@@ -253,15 +254,15 @@ export function calculateMonthIncome(
   newMonthInfo.accumulatedSpecialDeduction = accumulatedSpecialDeduction;
   newMonthInfo.accumulatedExtraDeduction = accumulatedExtraDeduction;
   newMonthInfo.accumulatedTax =
-    tax + (newPayCycle ? 0 : lastMonth!.accumulatedTax);
+    tax + (newPayCycle || !lastMonth ? 0 : lastMonth.accumulatedTax);
 
   // 雇主成本
   newMonthInfo.employerCosts.enterprisePension =
     current.extraDeduction.enterprisePensionFromEmployer;
   newMonthInfo.employerCosts.insurance = insuranceCostsForEmployer(
-    newPayCycle || !current.insuranceBaseOnLastMonth
+    newPayCycle || !current.insuranceBaseOnLastMonth || !lastMonth
       ? current.insuranceBase
-      : lastMonth!.salary,
+      : lastMonth.salary,
     current.insuranceBaseRange,
     current.employer.insuranceRate,
   );
@@ -293,46 +294,6 @@ export function buildEmptyMetaList(
   return new Array(12).fill(0).map(() => cloneDeep(meta));
 }
 
-export function buildBaseMeta(
-  data: RawMeta,
-  recipe: CityRecipe,
-): MonthlyIncomeMeta {
-  return {
-    salary: data.monthSalary,
-    insuranceBase: data.insuranceBase,
-    housingFundBase: data.housingFundBase,
-    housingFundRate: data.housingFundRate / 100,
-    insuranceRate: mapValues<MonthlyIncomeMeta['insuranceRate'], number>(
-      data.insuranceRate,
-      v => v / 100,
-    ),
-    freeTaxQuota: 5000,
-    extraDeduction: data.extraDeduction,
-    annualBonus: data.annualBonus,
-    insuranceBaseRange: normalizeInsuranceBaseRange(recipe),
-    housingFundBaseRange: recipe.housingFundBaseRange,
-    insuranceBaseOnLastMonth: data.insuranceBaseOnLastMonth,
-    newPayCycle: false,
-    employer: recipe.employer,
-  };
-}
-
-export function normalizeInsuranceBaseRange(meta: CityRecipe) {
-  let { insuranceBaseRange } = meta;
-  if (Array.isArray(insuranceBaseRange)) {
-    // eslint-disable-next-line no-param-reassign
-    insuranceBaseRange = {
-      endowment: insuranceBaseRange,
-      health: insuranceBaseRange,
-      unemployment: insuranceBaseRange,
-      birth: insuranceBaseRange,
-      occupationalInjury: insuranceBaseRange,
-    };
-  }
-
-  return insuranceBaseRange;
-}
-
 function calculateTax(num: number): number {
   const taxRate = findTaxRate(num);
 
@@ -361,7 +322,13 @@ function insuranceCostsForEmployee(
 function insuranceCostsForEmployer(
   base: number,
   baseRange: Record<string, [number, number]>,
-  meta: CityRecipe['employer']['insuranceRate'],
+  meta: {
+    endowment: number;
+    health: number;
+    unemployment: number;
+    birth: number;
+    occupationalInjury: number;
+  },
 ) {
   return {
     endowment: getValidBase(base, baseRange.endowment) * meta.endowment,
@@ -400,4 +367,142 @@ function findTaxRate(
   }
 
   return taxRateTable[0];
+}
+
+/**
+ * 根据给定的年份和月份，从城市配方中查找有效的政策。
+ * @param recipe 包含政策列表的城市配方
+ * @param year 计算年份, e.g., 2025
+ * @param month 计算月份 (1-12)
+ * @returns 该时间点有效的政策对象 (Policy)
+ */
+export function findPolicyForMonth(recipe: CityRecipe, year: number, month: number): Policy {
+  const targetDateStr = `${year}-${month.toString().padStart(2, '0')}`;
+
+  // 由于 CityRecipe.policies 已按日期降序排列，
+  // 找到的第一个生效日期小于或等于目标日期的策略，就是当前有效的策略。
+  const effectivePolicy = recipe.policies.find(p => p.effectiveDate <= targetDateStr);
+
+  if (!effectivePolicy) {
+    // 降级处理：如果找不到策略（例如查询一个非常早的年份），
+    // 使用列表中最后一个（即最早的）策略。
+    const fallbackPolicy = recipe.policies[recipe.policies.length - 1];
+    if (!fallbackPolicy) {
+      throw new Error(`在 ${recipe.city} 未找到任何有效政策。`);
+    }
+    return fallbackPolicy;
+  }
+
+  return effectivePolicy;
+}
+
+/**
+ * 查找指定年份的最新政策
+ * @param recipe 城市配方
+ * @param year 年份
+ * @returns 该年份的最新政策
+ */
+export function findLatestPolicyForYear(recipe: CityRecipe, year: number): Policy {
+  const yearStr = year.toString();
+
+  // 找到该年份内的所有政策
+  const policiesInYear = recipe.policies.filter(p => p.effectiveDate.startsWith(yearStr));
+
+  if (policiesInYear.length > 0) {
+    // 返回该年份内最新的政策（由于已按降序排列，第一个就是最新的）
+    return policiesInYear[0];
+  }
+
+  // 如果该年份没有政策，返回最接近的历史政策
+  return findPolicyForMonth(recipe, year, 1);
+}
+
+/**
+ * 使用Policy构建MonthlyIncomeMeta
+ * @param data 用户输入数据
+ * @param recipe 城市配方
+ * @param policy 政策对象
+ * @returns 月度收入元数据
+ */
+export function buildMetaFromPolicy(
+  data: RawMeta,
+  policy: Policy,
+): MonthlyIncomeMeta {
+  return {
+    salary: data.monthSalary,
+    insuranceBase: data.insuranceBase,
+    housingFundBase: data.housingFundBase,
+    housingFundRate: data.housingFundRate / 100,
+    insuranceRate: policy.employee.insuranceRate,
+    freeTaxQuota: 5000,
+    extraDeduction: data.extraDeduction,
+    annualBonus: data.annualBonus,
+    insuranceBaseRange: normalizePolicyInsuranceBaseRange(policy),
+    housingFundBaseRange: policy.housingFundBaseRange,
+    insuranceBaseOnLastMonth: data.insuranceBaseOnLastMonth,
+    newPayCycle: false,
+    employer: {
+      insuranceRate: policy.employer.insuranceRate,
+    },
+  };
+}
+
+/**
+ * 标准化Policy中的社保基数范围
+ * @param policy 政策对象
+ * @returns 标准化的社保基数范围
+ */
+export function normalizePolicyInsuranceBaseRange(policy: Policy) {
+  let { insuranceBaseRange } = policy;
+  if (Array.isArray(insuranceBaseRange)) {
+    // eslint-disable-next-line no-param-reassign
+    insuranceBaseRange = {
+      endowment: insuranceBaseRange,
+      health: insuranceBaseRange,
+      unemployment: insuranceBaseRange,
+      birth: insuranceBaseRange,
+      occupationalInjury: insuranceBaseRange,
+    };
+  }
+
+  return insuranceBaseRange;
+}
+
+/**
+ * 构建月度元数据列表（支持新的Policy模型）
+ * @param recipe 城市配方
+ * @param year 计算年份
+ * @param userInput 用户输入
+ * @param useUniformPolicy 是否全年使用统一政策
+ * @returns 月度元数据列表
+ */
+export function buildMonthlyMetas(
+  recipe: CityRecipe,
+  year: number,
+  userInput: RawMeta,
+  useUniformPolicy: boolean = false,
+): MonthlyIncomeMeta[] {
+  let uniformPolicy: Policy | undefined;
+  if (useUniformPolicy) {
+    // 若开启统一模式，则为全年查找唯一的最新策略
+    uniformPolicy = findLatestPolicyForYear(recipe, year);
+  }
+
+  const metaList: MonthlyIncomeMeta[] = [];
+  for (let month = 1; month <= 12; month++) {
+    let policyForThisMonth: Policy;
+
+    if (useUniformPolicy && uniformPolicy) {
+      // 统一模式：所有月份都使用同一个策略
+      policyForThisMonth = uniformPolicy;
+    } else {
+      // 默认分段模式：为每个月动态查找其对应的有效策略
+      policyForThisMonth = findPolicyForMonth(recipe, year, month);
+    }
+
+    // 使用找到的策略来填充当月的计算元数据
+    const meta = buildMetaFromPolicy(userInput, policyForThisMonth);
+    metaList.push(meta);
+  }
+  return metaList;
 }

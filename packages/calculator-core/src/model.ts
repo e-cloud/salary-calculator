@@ -179,7 +179,15 @@ export interface MonthlyIncomeMeta {
    */
   newPayCycle: boolean;
 
-  employer: CityRecipe['employer'];
+  employer: {
+    insuranceRate: {
+      endowment: number;
+      health: number;
+      unemployment: number;
+      birth: number;
+      occupationalInjury: number;
+    };
+  };
 }
 
 export interface FullYearIncomeInfo {
@@ -277,17 +285,18 @@ export interface FullYearIncomeInfo {
 }
 
 /**
- * 城市工薪缴纳参数
+ * [新增] Policy 接口
+ * 用于封装在特定时间点生效的一整套缴费规则。
  */
-export interface CityRecipe {
-  id: number;
-  label: string;
-  city: string;
-  // 最低工资
+export interface Policy {
+  /**
+   * 政策生效的起始年月, 格式 "YYYY-MM"
+   */
+  effectiveDate: string;
+
+  // 所有可能随时间变化的参数
   minimumWage: number;
-  // 平均工资
   avgWage: number;
-  // 雇员参数
   employee: {
     insuranceRate: {
       endowment: number;
@@ -295,22 +304,15 @@ export interface CityRecipe {
       unemployment: number;
     };
   };
-  // 雇主参数
   employer: {
     insuranceRate: {
-      // 养老保险
       endowment: number;
-      // 医疗保险
       health: number;
-      // 失业保险
       unemployment: number;
-      // 生育保险（企业承担）
       birth: number;
-      // 工伤保险（企业承担）
       occupationalInjury: number;
     };
   };
-  // 社保基础参数范围
   insuranceBaseRange:
     | {
         endowment: [number, number];
@@ -321,9 +323,19 @@ export interface CityRecipe {
       }
     | [number, number];
   housingFundBaseRange: [number, number];
+  references?: string[];
+}
+
+/**
+ * 城市工薪缴纳参数
+ * 城市的主体定义，包含一个政策历史列表。
+ */
+export interface CityRecipe {
+  id: number;
+  label: string;
+  city: string;
+  policies: Policy[];
   insuranceBaseOnLastMonth: boolean;
-  // 各省市参考资料地址
-  references: string[];
 }
 
 export interface RawMeta {

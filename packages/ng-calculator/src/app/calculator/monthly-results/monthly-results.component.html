@@ -25,13 +25,14 @@
           income: item,
           index: idx
         }"
+        *ngIf="detailForms[idx]"
       ></ng-container>
     </mat-expansion-panel>
   </mat-accordion>
 </div>
 
 <ng-template #detailForm let-form="form" let-income="income" let-idx="index">
-  <form class="d-flex flex-column" [formGroup]="form">
+  <form class="d-flex flex-column" [formGroup]="form" *ngIf="form">
     <div class="ml-md-3 d-flex flex-wrap align-items-center">
       <mat-form-field>
         <mat-label>月薪</mat-label>
@@ -78,11 +79,11 @@
         <mat-autocomplete #insuranceBase2="matAutocomplete" panelWidth="200">
           <mat-option [value]="form.controls.monthSalary?.value"
             >全额缴纳：{{ form.controls.monthSalary?.value }}元(不超上限{{
-              insuranceTop
+              getInsuranceTopForMonth(idx + 1)
             }}元)
           </mat-option>
-          <mat-option [value]="cityRecipe.minimumWage"
-            >最低工资标准：{{ cityRecipe.minimumWage }}元</mat-option
+          <mat-option [value]="getMinimumWageForMonth(idx + 1)"
+            >最低工资标准：{{ getMinimumWageForMonth(idx + 1) }}元</mat-option
           >
           <mat-option [value]="0">不缴纳：0元</mat-option>
         </mat-autocomplete>
@@ -143,11 +144,11 @@
         <mat-autocomplete #housingFundBase2="matAutocomplete" panelWidth="200">
           <mat-option [value]="form.controls.monthSalary?.value"
             >全额缴纳：{{ form.controls.monthSalary?.value }}元(不超上限{{
-              housingFundTop
+              getHousingFundTopForMonth(idx + 1)
             }}元)
           </mat-option>
-          <mat-option [value]="cityRecipe.minimumWage"
-            >最低工资标准：{{ cityRecipe.minimumWage }}元</mat-option
+          <mat-option [value]="getMinimumWageForMonth(idx + 1)"
+            >最低工资标准：{{ getMinimumWageForMonth(idx + 1) }}元</mat-option
           >
           <mat-option [value]="0">不缴纳：0元</mat-option>
         </mat-autocomplete>

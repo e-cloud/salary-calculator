@@ -2,63 +2,64 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import {
-  buildBaseMeta,
-  buildEmptyMetaList,
+  buildMonthlyMetas,
   calculateFullYearIncome,
   calculateMonthlyIncomes,
   CityRecipe,
   FullYearIncomeInfo,
   MonthlyIncomeInfo,
   MonthlyIncomeMeta,
-  RawMeta,
 } from 'calculator-core';
-import { merge } from 'lodash-es';
 import {
   BehaviorSubject,
   Observable,
-  Subject,
-  catchError,
   combineLatest,
   filter,
-  map,
-  of,
-  share,
   shareReplay,
-  startWith,
-  switchMap,
   tap,
+  take,
+  map,
 } from 'rxjs';
 import { MonthlyInputModel } from './types';
+import { CalculateParams } from './calculator-form/calculator-form.component';
 
-const shenzhenRecipe: CityRecipe = {
-  id: 0,
-  label: '非深户一档',
-  city: '深圳',
-  minimumWage: 2200,
-  avgWage: 10646,
-  employee: {
-    insuranceRate: {
-      endowment: 0.08,
-      health: 0.02,
-      unemployment: 0.003,
+// 默认城市的示例数据，不应该在实际应用中使用
+const sampleRecipe: CityRecipe = {
+  id: 1,
+  label: '默认城市',
+  city: '默认城市',
+  policies: [
+    {
+      effectiveDate: '2024-07',
+      minimumWage: 2360,
+      avgWage: 11620,
+      employee: {
+        insuranceRate: {
+          endowment: 0.08,
+          health: 0.02,
+          unemployment: 0.003,
+        },
+      },
+      employer: {
+        insuranceRate: {
+          endowment: 0.13,
+          health: 0.045,
+          unemployment: 0.007,
+          birth: 0.0045,
+          occupationalInjury: 0.0014,
+        },
+      },
+      insuranceBaseRange: {
+        endowment: [2360, 34860],
+        health: [6972, 34860],
+        unemployment: [2360, 34860],
+        birth: [6972, 34860],
+        occupationalInjury: [6972, 34860],
+      },
+      housingFundBaseRange: [2360, 34860],
     },
-  },
-  employer: {
-    insuranceRate: {
-      endowment: 0.14,
-      health: 0.052,
-      unemployment: 0.007,
-      birth: 0.0045,
-      occupationalInjury: 0.007,
-    },
-  },
-  insuranceBaseRange: [2200, 20268],
-  housingFundBaseRange: [2200, 34860],
-  insuranceBaseOnLastMonth: true,
-  references: [
-    'http://hrss.sz.gov.cn/szsi/sbjxxgk/tzgg/simtgg/content/post_8388699.html',
-    'http://gjj.sz.gov.cn/xxgk/zxtzgg/content/post_7827299.html',
   ],
+  insuranceBaseOnLastMonth: true,
 };
 
 @Component({
@@ -68,66 +69,39 @@ const shenzhenRecipe: CityRecipe = {
 })
 export class CalculatorComponent {
   usePredefinedInsurancePercents = true;
-  cityRecipe = shenzhenRecipe;
+  cityRecipe: CityRecipe = null!;
   clear = false;
+  selectedYear = new Date().getFullYear();
 
-  baseMeta$ = new BehaviorSubject<MonthlyIncomeMeta>(null as any);
-  metaUpdate$ = new Subject<{
-    meta: Partial<MonthlyIncomeMeta>;
-    index: number;
-  }>();
   selectedMonth$ = new BehaviorSubject<number>(1);
   scroll$ = new BehaviorSubject<void>(undefined);
 
-  monthlyMetas$: Observable<MonthlyIncomeMeta[]>;
-  monthlyIncomes$: Observable<MonthlyIncomeInfo[]>;
-  summary$: Observable<FullYearIncomeInfo>;
+  private monthlyMetasSubject$ = new BehaviorSubject<MonthlyIncomeMeta[]>([]);
+  monthlyMetas$!: Observable<MonthlyIncomeMeta[]>;
+  monthlyIncomes$!: Observable<MonthlyIncomeInfo[]>;
+  summary$!: Observable<FullYearIncomeInfo>;
   recipes$: Observable<CityRecipe[]>;
 
   constructor(private http: HttpClient) {
-    this.monthlyMetas$ = this.baseMeta$.pipe(
-      filter((meta) => meta != null),
-      map((meta) => buildEmptyMetaList(meta)),
-      switchMap((list) => {
-        return this.metaUpdate$.pipe(startWith(null)).pipe(
-          map((update) => {
-            if (update) {
-              list[update.index] = merge({}, list[update.index], update.meta);
-            }
-
-            // 1 月强制新计费周期
-            list[0].newPayCycle = true;
-            return list.slice();
-          })
-        );
-      }),
-      share()
-    );
-
+    // 初始化流
+    this.monthlyMetasSubject$ = new BehaviorSubject<MonthlyIncomeMeta[]>([]);
+    this.monthlyMetas$ = this.monthlyMetasSubject$
+      .asObservable()
+      .pipe(filter((list) => list.length > 0));
     this.monthlyIncomes$ = this.monthlyMetas$.pipe(
       filter((list) => list.length > 0),
-      map((list) => calculateMonthlyIncomes(list)),
+      map((metas) => calculateMonthlyIncomes(metas)),
       shareReplay(1)
     );
-
-    this.summary$ = combineLatest([this.monthlyIncomes$, this.baseMeta$]).pipe(
-      filter(([_, meta]) => meta != null),
-      filter<[MonthlyIncomeInfo[] | null, MonthlyIncomeMeta]>(
-        ([list]) => !!list && list.length > 0
-      ),
-      map(([list, meta]) => {
-        return calculateFullYearIncome(list!, meta.annualBonus);
-      }),
-      catchError((error) => {
-        alert(`计算错误: ${error.message}`);
-        return of(null as any);
+    this.summary$ = combineLatest([
+      this.monthlyIncomes$,
+      this.monthlyMetas$,
+    ]).pipe(
+      map(([list, metas]) => {
+        return calculateFullYearIncome(list, metas[0].annualBonus);
       }),
       shareReplay(1)
     );
-
-    this.metaUpdate$.subscribe(() => {
-      // Form is now managed by child components
-    });
 
     this.recipes$ = this.http
       .get<CityRecipe[]>('assets/city-recipes.json')
@@ -156,27 +130,51 @@ export class CalculatorComponent {
   }
 
   updateMeta(meta: MonthlyInputModel, index: number) {
-    this.metaUpdate$.next({
-      meta: {
-        salary: meta.monthSalary + (meta.monthlyBonus || 0),
-        insuranceBase: meta.insuranceBase,
-        housingFundBase: meta.housingFundBase,
-        housingFundRate: meta.housingFundRate / 100,
-        insuranceRate: {
-          endowment: meta.insuranceRate.endowment / 100,
-          health: meta.insuranceRate.health / 100,
-          unemployment: meta.insuranceRate.unemployment / 100,
-        },
-        extraDeduction: meta.extraDeduction,
-        newPayCycle: meta.newPayCycle,
-        insuranceBaseOnLastMonth: meta.insuranceBaseOnLastMonth,
-      },
-      index,
+    // 获取当前的月度元数据列表
+    this.monthlyMetas$.pipe(take(1)).subscribe((currentMetas) => {
+      if (currentMetas && currentMetas.length > index) {
+        // 更新指定索引的元数据
+        const updatedMetas = [...currentMetas];
+        updatedMetas[index] = {
+          ...updatedMetas[index],
+          salary: meta.monthSalary + (meta.monthlyBonus || 0),
+          insuranceBase: meta.insuranceBase,
+          housingFundBase: meta.housingFundBase,
+          housingFundRate: meta.housingFundRate / 100,
+          insuranceRate: {
+            endowment: meta.insuranceRate.endowment / 100,
+            health: meta.insuranceRate.health / 100,
+            unemployment: meta.insuranceRate.unemployment / 100,
+          },
+          extraDeduction: meta.extraDeduction,
+          insuranceBaseOnLastMonth: meta.insuranceBaseOnLastMonth,
+        };
+
+        // 更新月度数据，其他流会自动重新计算
+        this.monthlyMetasSubject$.next(updatedMetas);
+      }
     });
   }
 
-  calculate(data: RawMeta): void {
-    this.baseMeta$.next(buildBaseMeta(data, this.cityRecipe));
+  calculate(params: CalculateParams): void {
     this.clear = false;
+
+    const monthlyMetas = this.buildMonthlyMetasFromPolicy(params);
+
+    monthlyMetas[0].newPayCycle = true;
+
+    // 更新月度数据，其他流会自动响应
+    this.monthlyMetasSubject$.next(monthlyMetas);
+  }
+
+  private buildMonthlyMetasFromPolicy(
+    params: CalculateParams
+  ): MonthlyIncomeMeta[] {
+    return buildMonthlyMetas(
+      this.cityRecipe,
+      params.year,
+      params,
+      params.useUniformPolicy
+    );
   }
 }
