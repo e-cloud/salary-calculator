@@ -392,6 +392,14 @@
       }}， 生育：{{ income.employerCosts.insurance.birth | number : "0.0-3" }}
     </p>
 
+    <p>
+      累计税前收入：{{ income.accumulatedSalary | number : "0.0-2" }}元，
+      累计扣除：{{ income.accumulatedDeduction | number : "0.0-2" }}元，
+      累计专项附加扣除：{{ income.accumulatedSpecialDeduction | number : "0.0-2" }}元，
+      累计其他扣除：{{ income.accumulatedExtraDeduction | number : "0.0-2" }}元，
+      应纳税所得额：{{ income.accumulatedSalary - income.accumulatedDeduction - income.accumulatedSpecialDeduction - income.accumulatedExtraDeduction | number : "0.0-2" }}元
+    </p>
+
     <div class="mr-3 d-flex justify-content-end">
       <button
         mat-raised-button
