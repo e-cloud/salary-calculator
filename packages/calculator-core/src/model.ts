@@ -131,6 +131,14 @@ export interface MonthlyIncomeMeta {
    */
   housingFundRate: number;
   /**
+   * 上年度月平均工资（7-12月使用）
+   */
+  lastYearAvgSalary?: number;
+  /**
+   * 上上年度月平均工资（1-6月使用）
+   */
+  yearBeforeLastAvgSalary?: number;
+  /**
    * 专项附加扣除
    */
   extraDeduction: {
@@ -344,6 +352,10 @@ export interface RawMeta {
   insuranceBase: number;
   housingFundBase: number;
   housingFundRate: number;
+  // 上年度月平均工资（用于7-12月缴费基数）
+  lastYearAvgSalary?: number;
+  // 上上年度月平均工资（用于1-6月缴费基数）
+  yearBeforeLastAvgSalary?: number;
   extraDeduction: {
     childEducation: number;
     continuingEducation: number;

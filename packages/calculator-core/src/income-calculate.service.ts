@@ -202,6 +202,7 @@ export function calculateMonthIncome(
       : lastMonth.salary,
     current.insuranceBaseRange,
     current.insuranceRate,
+    current.salary,
   );
   // 社保缴纳额
   const insuranceFullCost = sum(values(insuranceDeducted));
@@ -310,12 +311,13 @@ function insuranceCostsForEmployee(
   base: number,
   baseRange: Record<string, [number, number]>,
   meta: MonthlyIncomeMeta['insuranceRate'],
+  currentSalary: number
 ): MonthlyIncomeInfo['insuranceCosts'] {
   return {
     endowment: getValidBase(base, baseRange.endowment) * meta.endowment,
     health: getValidBase(base, baseRange.health) * meta.health,
     unemployment:
-      getValidBase(base, baseRange.unemployment) * meta.unemployment,
+      getValidBase(currentSalary, baseRange.unemployment) * meta.unemployment,
   };
 }
 
@@ -502,6 +504,24 @@ export function buildMonthlyMetas(
 
     // 使用找到的策略来填充当月的计算元数据
     const meta = buildMetaFromPolicy(userInput, policyForThisMonth);
+
+    // 根据月份和用户输入调整缴费基数
+    if (month >= 1 && month <= 6) {
+      // 1-6月使用上上年度月平均工资作为缴费基数（如果用户提供了大于0的值）
+      if (userInput.yearBeforeLastAvgSalary && userInput.yearBeforeLastAvgSalary > 0) {
+        meta.yearBeforeLastAvgSalary = userInput.yearBeforeLastAvgSalary;
+        meta.insuranceBase = userInput.yearBeforeLastAvgSalary;
+        meta.housingFundBase = userInput.yearBeforeLastAvgSalary;
+      }
+    } else if (month >= 7 && month <= 12) {
+      // 7-12月使用上年度月平均工资作为缴费基数（如果用户提供了大于0的值）
+      if (userInput.lastYearAvgSalary && userInput.lastYearAvgSalary > 0) {
+        meta.lastYearAvgSalary = userInput.lastYearAvgSalary;
+        meta.insuranceBase = userInput.lastYearAvgSalary;
+        meta.housingFundBase = userInput.lastYearAvgSalary;
+      }
+    }
+
     metaList.push(meta);
   }
   return metaList;

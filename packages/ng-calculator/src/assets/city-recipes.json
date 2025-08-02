@@ -27,13 +27,13 @@
           }
         },
         "insuranceBaseRange": {
-          "endowment": [4492, 28518],
+          "endowment": [4492, 27501],
           "health": [6733, 33666],
           "birth": [6733, 33666],
-          "unemployment": [2520, 44265],
+          "unemployment": [2520, 43659],
           "occupationalInjury": [2520, 100000]
         },
-        "housingFundBaseRange": [2520, 44265],
+        "housingFundBaseRange": [2520, 43659],
         "references": [
           {
             "link": "http://bsy.sz.bendibao.com/bsyDetail/641292.html",

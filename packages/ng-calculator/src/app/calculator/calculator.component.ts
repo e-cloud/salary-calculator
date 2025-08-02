@@ -19,6 +19,7 @@ import {
   tap,
   take,
   map,
+  debounceTime,
 } from 'rxjs';
 import { MonthlyInputModel } from './types';
 import { CalculateParams } from './calculator-form/calculator-form.component';
@@ -89,6 +90,7 @@ export class CalculatorComponent {
       .asObservable()
       .pipe(filter((list) => list.length > 0));
     this.monthlyIncomes$ = this.monthlyMetas$.pipe(
+      debounceTime(300),
       filter((list) => list.length > 0),
       map((metas) => calculateMonthlyIncomes(metas)),
       shareReplay(1)

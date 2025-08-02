@@ -35,6 +35,7 @@ import { CalculatorFormComponent } from './calculator/calculator-form/calculator
 import { MonthlyResultsComponent } from './calculator/monthly-results/monthly-results.component';
 import { SummaryChartsComponent } from './calculator/summary-charts/summary-charts.component';
 import { SummaryDetailsComponent } from './calculator/summary-details/summary-details.component';
+import { SyncConfirmationDialogComponent } from './calculator/monthly-results/sync-confirmation-dialog.component';
 
 zh[14] = ['#,###0.###', '#,##0%', '¤#,###0.00', '#E0'];
 
@@ -58,6 +59,7 @@ declare global {
     MonthlyResultsComponent,
     SummaryChartsComponent,
     SummaryDetailsComponent,
+    SyncConfirmationDialogComponent,
   ],
   bootstrap: [AppComponent],
   imports: [

@@ -86,6 +86,34 @@
         </mat-form-field>
       </div>
 
+      <div class="row">
+        <mat-form-field class="col-12 col-md-3" appearance="outline">
+          <mat-label>上上年度月平均工资</mat-label>
+          <input
+            matInput
+            type="number"
+            placeholder="0"
+            formControlName="yearBeforeLastAvgSalary"
+            min="0"
+          />
+          <span matTextSuffix>元</span>
+          <mat-hint>用于1-6月缴费基数，0表示使用当前月薪</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field class="col-12 col-md-3" appearance="outline">
+          <mat-label>上年度月平均工资</mat-label>
+          <input
+            matInput
+            type="number"
+            placeholder="0"
+            formControlName="lastYearAvgSalary"
+            min="0"
+          />
+          <span matTextSuffix>元</span>
+          <mat-hint>用于7-12月缴费基数，0表示使用当前月薪</mat-hint>
+        </mat-form-field>
+      </div>
+
       <div class="row mx-0" *ngIf="policyHint">
           <div class="text-muted small my-1">
             {{ policyHint }}

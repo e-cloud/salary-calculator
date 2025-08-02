@@ -76,11 +76,21 @@
         />
         <span matTextSuffix>元</span>
 
-        <mat-autocomplete #insuranceBase2="matAutocomplete" panelWidth="200">
+        <mat-autocomplete #insuranceBase2="matAutocomplete" panelWidth="250">
           <mat-option [value]="form.controls.monthSalary?.value"
-            >全额缴纳：{{ form.controls.monthSalary?.value }}元(不超上限{{
+            >当前月薪：{{ form.controls.monthSalary?.value }}元(不超上限{{
               getInsuranceTopForMonth(idx + 1)
             }}元)
+          </mat-option>
+          <mat-option 
+            *ngIf="form.controls.yearBeforeLastAvgSalary?.value > 0"
+            [value]="form.controls.yearBeforeLastAvgSalary?.value"
+            >上上年度月平均：{{ form.controls.yearBeforeLastAvgSalary?.value }}元
+          </mat-option>
+          <mat-option 
+            *ngIf="form.controls.lastYearAvgSalary?.value > 0"
+            [value]="form.controls.lastYearAvgSalary?.value"
+            >上年度月平均：{{ form.controls.lastYearAvgSalary?.value }}元
           </mat-option>
           <mat-option [value]="getMinimumWageForMonth(idx + 1)"
             >最低工资标准：{{ getMinimumWageForMonth(idx + 1) }}元</mat-option
@@ -141,11 +151,21 @@
         />
         <span matTextSuffix>元</span>
 
-        <mat-autocomplete #housingFundBase2="matAutocomplete" panelWidth="200">
+        <mat-autocomplete #housingFundBase2="matAutocomplete" panelWidth="250">
           <mat-option [value]="form.controls.monthSalary?.value"
-            >全额缴纳：{{ form.controls.monthSalary?.value }}元(不超上限{{
+            >当前月薪：{{ form.controls.monthSalary?.value }}元(不超上限{{
               getHousingFundTopForMonth(idx + 1)
             }}元)
+          </mat-option>
+          <mat-option 
+            *ngIf="form.controls.yearBeforeLastAvgSalary?.value > 0"
+            [value]="form.controls.yearBeforeLastAvgSalary?.value"
+            >上上年度月平均：{{ form.controls.yearBeforeLastAvgSalary?.value }}元
+          </mat-option>
+          <mat-option 
+            *ngIf="form.controls.lastYearAvgSalary?.value > 0"
+            [value]="form.controls.lastYearAvgSalary?.value"
+            >上年度月平均：{{ form.controls.lastYearAvgSalary?.value }}元
           </mat-option>
           <mat-option [value]="getMinimumWageForMonth(idx + 1)"
             >最低工资标准：{{ getMinimumWageForMonth(idx + 1) }}元</mat-option

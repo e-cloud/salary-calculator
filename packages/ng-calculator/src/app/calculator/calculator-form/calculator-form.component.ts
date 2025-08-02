@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {
   Component,
   EventEmitter,
@@ -5,6 +6,7 @@ import {
   Output,
   OnInit,
   OnChanges,
+  OnDestroy,
   SimpleChanges,
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -15,7 +17,7 @@ import {
   findLatestPolicyForYear,
 } from 'calculator-core';
 import { autocompleteTemplates } from '../template-metadata';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { InputForm } from '../types';
 
 export interface CalculateParams extends RawMeta {
@@ -28,9 +30,9 @@ export interface CalculateParams extends RawMeta {
   templateUrl: './calculator-form.component.html',
   styleUrls: ['./calculator-form.component.scss'],
 })
-export class CalculatorFormComponent implements OnInit, OnChanges {
+export class CalculatorFormComponent implements OnInit, OnChanges, OnDestroy {
   @Input() usePredefinedInsurancePercents!: boolean;
-  @Input() cityRecipe!: CityRecipe;
+  @Input() cityRecipe: CityRecipe | null = null;
   @Input() recipes$!: Observable<CityRecipe[]>;
 
   @Output() calculate = new EventEmitter<CalculateParams>();
@@ -48,6 +50,7 @@ export class CalculatorFormComponent implements OnInit, OnChanges {
   useUniformPolicy: boolean = false;
   latestPolicy: Policy | null = null;
   policyHint: string = '';
+  private formSubscriptions: Subscription[] = [];
 
   constructor(private fb: FormBuilder) {}
 
@@ -58,15 +61,22 @@ export class CalculatorFormComponent implements OnInit, OnChanges {
       this.onYearChange(this.selectedYear);
     }
     this.updateFromCache();
+    this.setupFormValueChanges();
+    // 初始化基数值
+    setTimeout(() => this.updateInsuranceBases(), 0);
   }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['cityRecipe'] && !changes['cityRecipe'].firstChange) {
-      this.initializeForm();
       this.updateAvailableYears();
       this.onYearChange(this.selectedYear);
-      this.patchFromRecipe(this.cityRecipe);
+      this.patchFromRecipe(this.cityRecipe!);
     }
+  }
+
+  ngOnDestroy() {
+    // 清理订阅
+    this.formSubscriptions.forEach((sub) => sub.unsubscribe());
   }
 
   get childEducationDeductionOptions() {
@@ -127,6 +137,8 @@ export class CalculatorFormComponent implements OnInit, OnChanges {
       insuranceBase: 10000,
       housingFundBase: 10000,
       housingFundRate: 5,
+      lastYearAvgSalary: 0,
+      yearBeforeLastAvgSalary: 0,
       extraDeduction: {
         childEducation: 0,
         continuingEducation: 0,
@@ -172,7 +184,7 @@ export class CalculatorFormComponent implements OnInit, OnChanges {
   onChangePredefineCondition(val: boolean) {
     this.changePredefineCondition.emit(val);
     if (val) {
-      this.patchFromRecipe(this.cityRecipe);
+      this.patchFromRecipe(this.cityRecipe!);
     }
   }
 
@@ -180,6 +192,74 @@ export class CalculatorFormComponent implements OnInit, OnChanges {
     if (src > 0) {
       form.get(controlName)?.setValue(0);
     }
+  }
+
+  private setupFormValueChanges() {
+    // 清除之前的订阅
+    this.formSubscriptions.forEach((sub) => sub.unsubscribe());
+    this.formSubscriptions = [];
+
+    // 重新设置订阅
+    const lastYearSub = this.baseForm
+      .get('lastYearAvgSalary')
+      ?.valueChanges.subscribe(() => {
+        this.updateInsuranceBases();
+      });
+    if (lastYearSub) this.formSubscriptions.push(lastYearSub);
+
+    const yearBeforeLastSub = this.baseForm
+      .get('yearBeforeLastAvgSalary')
+      ?.valueChanges.subscribe(() => {
+        this.updateInsuranceBases();
+      });
+    if (yearBeforeLastSub) this.formSubscriptions.push(yearBeforeLastSub);
+
+    const monthSalarySub = this.baseForm
+      .get('monthSalary')
+      ?.valueChanges.subscribe(() => {
+        this.updateInsuranceBases();
+      });
+    if (monthSalarySub) this.formSubscriptions.push(monthSalarySub);
+
+    // 企业年金个人缴纳部分变更时同步更新企业部分
+    const enterprisePensionSub = this.baseForm
+      .get('extraDeduction.enterprisePensionFromEmployee')
+      ?.valueChanges.subscribe((value) => {
+        this.baseForm
+          .get('extraDeduction.enterprisePensionFromEmployer')
+          ?.setValue(value || 0, { emitEvent: false });
+      });
+    if (enterprisePensionSub) this.formSubscriptions.push(enterprisePensionSub);
+  }
+
+  private updateInsuranceBases() {
+    const currentMonth = new Date().getMonth() + 1; // 1-12
+    const monthSalary = this.baseForm.get('monthSalary')?.value || 0;
+    const lastYear = this.baseForm.get('lastYearAvgSalary')?.value || 0;
+    const yearBeforeLast =
+      this.baseForm.get('yearBeforeLastAvgSalary')?.value || 0;
+
+    let baseToUse = monthSalary;
+
+    if (currentMonth >= 1 && currentMonth <= 6) {
+      // 1-6月：优先使用上上年度工资
+      if (yearBeforeLast > 0) {
+        baseToUse = yearBeforeLast;
+      }
+    } else if (currentMonth >= 7 && currentMonth <= 12) {
+      // 7-12月：优先使用上年度工资
+      if (lastYear > 0) {
+        baseToUse = lastYear;
+      }
+    }
+
+    this.baseForm.patchValue(
+      {
+        insuranceBase: baseToUse,
+        housingFundBase: baseToUse,
+      },
+      { emitEvent: false }
+    );
   }
 
   private initializeForm() {
@@ -190,6 +270,8 @@ export class CalculatorFormComponent implements OnInit, OnChanges {
       insuranceBase: [10000, Validators.required],
       housingFundBase: [10000, Validators.required],
       housingFundRate: [5, Validators.required],
+      lastYearAvgSalary: [0],
+      yearBeforeLastAvgSalary: [0],
       extraDeduction: this.fb.group({
         childEducation: [0, Validators.required],
         continuingEducation: [0, Validators.required],
@@ -233,6 +315,10 @@ export class CalculatorFormComponent implements OnInit, OnChanges {
         },
         insuranceBaseOnLastMonth: recipe.insuranceBaseOnLastMonth,
       });
+      // 重新设置表单监听器
+      this.setupFormValueChanges();
+      // 更新基数
+      setTimeout(() => this.updateInsuranceBases(), 0);
     }
   }
 
@@ -254,8 +340,9 @@ export class CalculatorFormComponent implements OnInit, OnChanges {
   }
 
   private updateAvailableYears() {
-    const years = this.cityRecipe.policies
-      .map((policy) => new Date(policy.effectiveDate).getFullYear())
+    const years = this.cityRecipe!.policies.map((policy) =>
+      new Date(policy.effectiveDate).getFullYear()
+    )
       .filter(
         (year: number, index: number, arr: number[]) =>
           arr.indexOf(year) === index
@@ -271,7 +358,7 @@ export class CalculatorFormComponent implements OnInit, OnChanges {
 
   private updateLatestPolicy() {
     this.latestPolicy = findLatestPolicyForYear(
-      this.cityRecipe,
+      this.cityRecipe!,
       this.selectedYear
     );
     this.updatePolicyHint();

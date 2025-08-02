@@ -246,6 +246,13 @@ export class SummaryChartsComponent implements OnInit {
                 borderWidth: 1,
               },
               emphasis: {
+                label: {
+                  show: true,
+                  fontSize: 20,
+                  fontWeight: 'bold',
+                },
+              },
+              label: {
                 padding: 4,
                 minMargin: 8,
                 formatter: function (params: any) {

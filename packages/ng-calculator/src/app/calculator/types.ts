@@ -26,6 +26,10 @@ export interface InputModel {
   insuranceBase: number;
   housingFundBase: number;
   housingFundRate: number;
+  // 上年度月平均工资（用于7-12月缴费基数）
+  lastYearAvgSalary?: number;
+  // 上上年度月平均工资（用于1-6月缴费基数）
+  yearBeforeLastAvgSalary?: number;
   extraDeduction: {
     childEducation: number;
     continuingEducation: number;
