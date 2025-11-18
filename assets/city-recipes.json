@@ -264,5 +264,195 @@
         ]
       }
     ]
+  },
+  {
+    "id": 1,
+    "label": "二档(企业)",
+    "city": "深圳",
+    "insuranceBaseOnLastMonth": true,
+    "policies": [
+      {
+        "effectiveDate": "2025-07",
+        "minimumWage": 2520,
+        "avgWage": 9506,
+        "localAvgWage": 14755,
+        "employee": {
+          "insuranceRate": {
+            "endowment": 0.08,
+            "health": 0.005,
+            "unemployment": 0.002
+          }
+        },
+        "employer": {
+          "insuranceRate": {
+            "endowment": 0.15,
+            "health": 0.015,
+            "unemployment": 0.008,
+            "birth": 0.005,
+            "occupationalInjury": 0.008
+          }
+        },
+        "insuranceBaseRange": {
+          "endowment": [4492, 27501],
+          "health": [6733, 33666],
+          "birth": [6733, 33666],
+          "unemployment": [2520, 43659],
+          "occupationalInjury": [2520, 100000]
+        },
+        "housingFundBaseRange": [2520, 43659]
+      },
+      {
+        "effectiveDate": "2024-07",
+        "minimumWage": 2520,
+        "avgWage": 9167,
+        "localAvgWage": 14553,
+        "employee": {
+          "insuranceRate": {
+            "endowment": 0.08,
+            "health": 0.005,
+            "unemployment": 0.002
+          }
+        },
+        "employer": {
+          "insuranceRate": {
+            "endowment": 0.15,
+            "health": 0.015,
+            "unemployment": 0.008,
+            "birth": 0.005,
+            "occupationalInjury": 0.008
+          }
+        },
+        "insuranceBaseRange": {
+          "endowment": [4492, 27501],
+          "health": [6733, 33666],
+          "birth": [6733, 33666],
+          "unemployment": [2520, 43659],
+          "occupationalInjury": [2520, 100000]
+        },
+        "housingFundBaseRange": [2520, 43659]
+      },
+      {
+        "effectiveDate": "2023-07",
+        "minimumWage": 2360,
+        "avgWage": 8807,
+        "localAvgWage": 13730,
+        "employee": {
+          "insuranceRate": {
+            "endowment": 0.08,
+            "health": 0.005,
+            "unemployment": 0.002
+          }
+        },
+        "employer": {
+          "insuranceRate": {
+            "endowment": 0.15,
+            "health": 0.015,
+            "unemployment": 0.008,
+            "birth": 0.005,
+            "occupationalInjury": 0.008
+          }
+        },
+        "insuranceBaseRange": {
+          "endowment": [3523, 26421],
+          "health": [6475, 32376],
+          "birth": [6475, 32376],
+          "unemployment": [2360, 41190],
+          "occupationalInjury": [2360, 100000]
+        },
+        "housingFundBaseRange": [2360, 41190],
+        "insuranceBaseOnLastMonth": true
+      },
+      {
+        "effectiveDate": "2022-07",
+        "minimumWage": 2360,
+        "avgWage": 8310,
+        "localAvgWage": 12964,
+        "employee": {
+          "insuranceRate": {
+            "endowment": 0.08,
+            "health": 0.005,
+            "unemployment": 0.003
+          }
+        },
+        "employer": {
+          "insuranceRate": {
+            "endowment": 0.14,
+            "health": 0.015,
+            "unemployment": 0.007,
+            "birth": 0.0045,
+            "occupationalInjury": 0.007
+          }
+        },
+        "insuranceBaseRange": {
+          "endowment": [2360, 24930],
+          "health": [6972, 38892],
+          "birth": [2360, 38892],
+          "unemployment": [2360, 2360],
+          "occupationalInjury": [2360, 2360]
+        },
+        "housingFundBaseRange": [2360, 38892],
+        "insuranceBaseOnLastMonth": true
+      },
+      {
+        "effectiveDate": "2021-07",
+        "minimumWage": 2200,
+        "avgWage": 7647,
+        "localAvgWage": 11620,
+        "employee": {
+          "insuranceRate": {
+            "endowment": 0.08,
+            "health": 0.005,
+            "unemployment": 0.003
+          }
+        },
+        "employer": {
+          "insuranceRate": {
+            "endowment": 0.14,
+            "health": 0.015,
+            "unemployment": 0.007,
+            "birth": 0.0045,
+            "occupationalInjury": 0.007
+          }
+        },
+        "insuranceBaseRange": {
+          "endowment": [2200, 22941],
+          "health": [6972, 34860],
+          "birth": [2200, 34860],
+          "unemployment": [2200, 2200],
+          "occupationalInjury": [2200, 2200]
+        },
+        "housingFundBaseRange": [2200, 34860],
+        "insuranceBaseOnLastMonth": true
+      },
+      {
+        "effectiveDate": "2020-07",
+        "minimumWage": 2200,
+        "avgWage": 6756,
+        "localAvgWage": 10646,
+        "employee": {
+          "insuranceRate": {
+            "endowment": 0.08,
+            "health": 0.005,
+            "unemployment": 0.003
+          }
+        },
+        "employer": {
+          "insuranceRate": {
+            "endowment": 0.14,
+            "health": 0.015,
+            "unemployment": 0.007,
+            "birth": 0.0045,
+            "occupationalInjury": 0.007
+          }
+        },
+        "insuranceBaseRange": {
+          "endowment": [2200, 20268],
+          "health": [6972, 31938],
+          "unemployment": [2200, 2200]
+        },
+        "housingFundBaseRange": [2200, 31938],
+        "insuranceBaseOnLastMonth": true
+      }
+    ]
   }
 ]
