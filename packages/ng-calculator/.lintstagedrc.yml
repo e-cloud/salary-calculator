@@ -4,8 +4,8 @@
   - node ../../node_modules/prettier/bin/prettier.cjs --write
   - ng lint ng-calculator --lint-file-patterns
 "*.{scss,less,css}":
-  - stylelint --fix
   - node ../../node_modules/prettier/bin/prettier.cjs --write
+  - stylelint --fix
   - stylelint
 "*.json":
   - node ../../node_modules/prettier/bin/prettier.cjs --write

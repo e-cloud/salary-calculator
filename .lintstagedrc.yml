@@ -1,5 +1,5 @@
 ---
-'*.{yml,yaml}':
+'!(*pnpm-lock).{yml,yaml}':
   - node ./node_modules/prettier/bin/prettier.cjs --write
 '*.json':
   - node ./node_modules/prettier/bin/prettier.cjs --write

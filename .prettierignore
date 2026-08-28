@@ -7,3 +7,6 @@ public
 !public/*.js
 dist
 package.json
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
