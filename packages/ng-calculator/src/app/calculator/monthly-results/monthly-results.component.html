@@ -188,7 +188,33 @@
     </div>
 
     <div class="ml-md-3 d-flex flex-wrap" formGroupName="extraDeduction">
-      <mat-form-field [style.width]="templates.childEducation.width">
+      <mat-form-field [style.width]="templates.infantCare.width">
+        <mat-label
+          >{{ templates.infantCare.label }}{{ labelSuffix }}</mat-label
+        >
+        <input
+          matInput
+          type="number"
+          [placeholder]="templates.infantCare.placeholder"
+          formControlName="infantCare"
+          min="0"
+          [matAutocomplete]="infantCare"
+        />
+
+        <mat-autocomplete #infantCare="matAutocomplete" panelWidth="200">
+          <mat-option
+            *ngFor="let item of templates.infantCare.options"
+            [value]="item.value"
+            >{{ item.label }}</mat-option
+          >
+        </mat-autocomplete>
+        <span matTextSuffix>元</span>
+      </mat-form-field>
+
+      <mat-form-field
+        class="ml-3"
+        [style.width]="templates.childEducation.width"
+      >
         <mat-label
           >{{ templates.childEducation.label }}{{ labelSuffix }}</mat-label
         >
@@ -241,13 +267,15 @@
       </mat-form-field>
 
       <mat-form-field class="ml-3" style="width: 120px">
-        <mat-label>大病医疗{{ labelSuffix }}</mat-label>
+        <mat-label>大病医疗(汇算){{ labelSuffix }}</mat-label>
         <input
           matInput
           type="number"
           placeholder="0"
           formControlName="seriousMedicalExpense"
           min="0"
+          matTooltip="大病医疗依法在次年汇算清缴时据实扣除"
+          matTooltipPosition="above"
         />
         <span matTextSuffix>元</span>
       </mat-form-field>
@@ -335,20 +363,22 @@
         <span matTextSuffix>元</span>
       </mat-form-field>
 
-      <mat-form-field class="ml-3" style="width: 120px">
-        <mat-label>企业年金个人缴纳金额</mat-label>
+      <mat-form-field class="ml-3" style="width: 140px">
+        <mat-label>企业年金(个人4%限额)</mat-label>
         <input
           matInput
           type="number"
           placeholder="0"
           formControlName="enterprisePensionFromEmployee"
           min="0"
+          matTooltip="法定税前扣除限额为本人月薪4%且不超社平3倍"
+          matTooltipPosition="above"
         />
         <span matTextSuffix>元</span>
       </mat-form-field>
 
       <mat-form-field class="ml-3" style="width: 120px">
-        <mat-label>企业年金公司缴纳金额</mat-label>
+        <mat-label>企业年金公司缴纳</mat-label>
         <input
           matInput
           type="number"
@@ -356,6 +386,34 @@
           formControlName="enterprisePensionFromEmployer"
           min="0"
         />
+        <span matTextSuffix>元</span>
+      </mat-form-field>
+
+      <mat-form-field
+        class="ml-3"
+        [style.width]="templates.privatePension.width"
+      >
+        <mat-label
+          >{{ templates.privatePension.label }}{{ labelSuffix }}</mat-label
+        >
+        <input
+          matInput
+          type="number"
+          [placeholder]="templates.privatePension.placeholder"
+          formControlName="privatePension"
+          min="0"
+          matTooltip="每年限额12000元(每月1000元)税前据实扣除"
+          matTooltipPosition="above"
+          [matAutocomplete]="privatePension"
+        />
+
+        <mat-autocomplete #privatePension="matAutocomplete" panelWidth="200">
+          <mat-option
+            *ngFor="let item of templates.privatePension.options"
+            [value]="item.value"
+            >{{ item.label }}</mat-option
+          >
+        </mat-autocomplete>
         <span matTextSuffix>元</span>
       </mat-form-field>
 

@@ -6,6 +6,7 @@ import {
   calculateFullYearIncome,
   calculateMonthlyIncomes,
   CityRecipe,
+  CityRecipeIndexItem,
   FullYearIncomeInfo,
   MonthlyIncomeInfo,
   MonthlyIncomeMeta,
@@ -81,7 +82,8 @@ export class CalculatorComponent {
   monthlyMetas$!: Observable<MonthlyIncomeMeta[]>;
   monthlyIncomes$!: Observable<MonthlyIncomeInfo[]>;
   summary$!: Observable<FullYearIncomeInfo>;
-  recipes$: Observable<CityRecipe[]>;
+  recipeIndex$: Observable<CityRecipeIndexItem[]>;
+  private loadedRecipes = new Map<string, CityRecipe>();
 
   constructor(private http: HttpClient) {
     // 初始化流
@@ -105,13 +107,30 @@ export class CalculatorComponent {
       shareReplay(1)
     );
 
-    this.recipes$ = this.http
-      .get<CityRecipe[]>('assets/city-recipes.json')
+    // 配方索引流（统领入口，按需异步加载）
+    this.recipeIndex$ = this.http
+      .get<CityRecipeIndexItem[]>('assets/recipes/index.json')
       .pipe(
-        tap((x) => {
-          this.changeRecipe(x[0]);
-        })
+        tap((items) => {
+          if (items.length > 0 && !this.cityRecipe) {
+            this.selectRecipeItem(items[0]);
+          }
+        }),
+        shareReplay(1)
       );
+  }
+
+  selectRecipeItem(item: CityRecipeIndexItem) {
+    if (this.loadedRecipes.has(item.file)) {
+      this.changeRecipe(this.loadedRecipes.get(item.file)!);
+      return;
+    }
+    this.http
+      .get<CityRecipe>(`assets/recipes/${item.file}`)
+      .subscribe((recipe) => {
+        this.loadedRecipes.set(item.file, recipe);
+        this.changeRecipe(recipe);
+      });
   }
 
   changeChartMonth(month: number) {

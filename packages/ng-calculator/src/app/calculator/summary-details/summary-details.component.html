@@ -186,6 +186,19 @@
     </mat-list-item>
 
     <mat-list-item>
+      <mat-icon 
+        matTooltip="全年个人养老金缴纳总额（个人自愿建立、封闭运行、市场化投资，按年12000元限额税前扣除）"
+        matTooltipClass="summary-tooltip"
+        matTooltipPosition="above"
+        matTooltipShowDelay="300"
+        matListItemIcon>redeem</mat-icon>
+      <div matListItemLine>全年个人养老金缴纳总额</div>
+      <div matListItemLine class="figure">
+        {{ sum.employee.privatePension | currency }}
+      </div>
+    </mat-list-item>
+
+    <mat-list-item>
       <mat-icon matListItemIcon>payments</mat-icon>
       <div matListItemLine>公司成本</div>
       <div matListItemLine class="figure">

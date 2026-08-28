@@ -12,6 +12,7 @@ import {
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {
   CityRecipe,
+  CityRecipeIndexItem,
   RawMeta,
   Policy,
   findLatestPolicyForYear,
@@ -33,11 +34,12 @@ export interface CalculateParams extends RawMeta {
 export class CalculatorFormComponent implements OnInit, OnChanges, OnDestroy {
   @Input() usePredefinedInsurancePercents!: boolean;
   @Input() cityRecipe: CityRecipe | null = null;
-  @Input() recipes$!: Observable<CityRecipe[]>;
+  @Input() recipeIndex$?: Observable<CityRecipeIndexItem[]>;
 
   @Output() calculate = new EventEmitter<CalculateParams>();
   @Output() clearResult = new EventEmitter<void>();
   @Output() changeRecipe = new EventEmitter<CityRecipe>();
+  @Output() selectRecipeItem = new EventEmitter<CityRecipeIndexItem>();
   @Output() changePredefineCondition = new EventEmitter<boolean>();
   @Output() changeSelectedYear = new EventEmitter<number>();
 
@@ -77,6 +79,14 @@ export class CalculatorFormComponent implements OnInit, OnChanges, OnDestroy {
   ngOnDestroy() {
     // 清理订阅
     this.formSubscriptions.forEach((sub) => sub.unsubscribe());
+  }
+
+  get privatePensionOptions() {
+    return this.templates.privatePension.options;
+  }
+
+  get infantCareDeductionOptions() {
+    return this.templates.infantCare.options;
   }
 
   get childEducationDeductionOptions() {
@@ -140,6 +150,7 @@ export class CalculatorFormComponent implements OnInit, OnChanges, OnDestroy {
       lastYearAvgSalary: 0,
       yearBeforeLastAvgSalary: 0,
       extraDeduction: {
+        infantCare: 0,
         childEducation: 0,
         continuingEducation: 0,
         seriousMedicalExpense: 0,
@@ -148,6 +159,7 @@ export class CalculatorFormComponent implements OnInit, OnChanges, OnDestroy {
         elderlyCare: 0,
         enterprisePensionFromEmployee: 0,
         enterprisePensionFromEmployer: 0,
+        privatePension: 0,
         other: 0,
       },
       insuranceRate: {
@@ -169,6 +181,10 @@ export class CalculatorFormComponent implements OnInit, OnChanges, OnDestroy {
   onChangeRecipe(recipe: CityRecipe) {
     this.changeRecipe.emit(recipe);
     this.patchFromRecipe(recipe);
+  }
+
+  onSelectRecipeItem(item: CityRecipeIndexItem) {
+    this.selectRecipeItem.emit(item);
   }
 
   onYearChange(year: number) {
@@ -273,6 +289,7 @@ export class CalculatorFormComponent implements OnInit, OnChanges, OnDestroy {
       lastYearAvgSalary: [0],
       yearBeforeLastAvgSalary: [0],
       extraDeduction: this.fb.group({
+        infantCare: [0, Validators.required],
         childEducation: [0, Validators.required],
         continuingEducation: [0, Validators.required],
         seriousMedicalExpense: [0, Validators.required],
@@ -281,6 +298,7 @@ export class CalculatorFormComponent implements OnInit, OnChanges, OnDestroy {
         elderlyCare: [0, Validators.required],
         enterprisePensionFromEmployee: [0, Validators.required],
         enterprisePensionFromEmployer: [0, Validators.required],
+        privatePension: [0, Validators.required],
         other: [0, Validators.required],
       }),
       insuranceRate: this.fb.group({
@@ -301,7 +319,7 @@ export class CalculatorFormComponent implements OnInit, OnChanges, OnDestroy {
         this.cityRecipe?.insuranceBaseOnLastMonth ?? false,
         Validators.required,
       ],
-    }) as FormGroup<InputForm>;
+    }) as unknown as FormGroup<InputForm>;
   }
 
   private patchFromRecipe(recipe: CityRecipe) {
@@ -330,6 +348,14 @@ export class CalculatorFormComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     if (cache) {
+      if (cache.extraDeduction) {
+        if (cache.extraDeduction.infantCare === undefined) {
+          cache.extraDeduction.infantCare = 0;
+        }
+        if (cache.extraDeduction.privatePension === undefined) {
+          cache.extraDeduction.privatePension = 0;
+        }
+      }
       this.baseForm.patchValue(cache);
     }
   }

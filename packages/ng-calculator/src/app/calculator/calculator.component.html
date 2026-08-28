@@ -2,10 +2,11 @@
 <app-calculator-form
   [usePredefinedInsurancePercents]="usePredefinedInsurancePercents"
   [cityRecipe]="cityRecipe"
-  [recipes$]="recipes$"
+  [recipeIndex$]="recipeIndex$"
   (calculate)="calculate($event)"
   (clearResult)="clearResult()"
   (changeRecipe)="changeRecipe($event)"
+  (selectRecipeItem)="selectRecipeItem($event)"
   (changePredefineCondition)="changePredefineCondition($event)"
   (changeSelectedYear)="selectedYear = $event"
 ></app-calculator-form>

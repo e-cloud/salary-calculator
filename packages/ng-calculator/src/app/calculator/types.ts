@@ -31,6 +31,7 @@ export interface InputModel {
   // 上上年度月平均工资（用于1-6月缴费基数）
   yearBeforeLastAvgSalary?: number;
   extraDeduction: {
+    infantCare: number;
     childEducation: number;
     continuingEducation: number;
     seriousMedicalExpense: number;
@@ -39,6 +40,7 @@ export interface InputModel {
     elderlyCare: number;
     enterprisePensionFromEmployee: number;
     enterprisePensionFromEmployer: number;
+    privatePension: number;
     other: number;
   };
   insuranceRate: {
@@ -47,6 +49,8 @@ export interface InputModel {
     unemployment: number;
   };
   insuranceBaseOnLastMonth: boolean;
+  enterprisePensionEmployeeRateLimit?: number;
+  privatePensionMonthlyQuota?: number;
 }
 
 /**

@@ -332,6 +332,10 @@ export class MonthlyResultsComponent implements OnInit {
         housingFundBase: [meta.housingFundBase, Validators.required],
         housingFundRate: [meta.housingFundRate * 100, Validators.required],
         extraDeduction: this.fb.group({
+          infantCare: [
+            meta.extraDeduction.infantCare || 0,
+            Validators.required,
+          ],
           childEducation: [
             meta.extraDeduction.childEducation,
             Validators.required,
@@ -356,6 +360,10 @@ export class MonthlyResultsComponent implements OnInit {
           ],
           enterprisePensionFromEmployer: [
             meta.extraDeduction.enterprisePensionFromEmployer,
+            Validators.required,
+          ],
+          privatePension: [
+            meta.extraDeduction.privatePension || 0,
             Validators.required,
           ],
           other: [meta.extraDeduction.other, Validators.required],

@@ -12,56 +12,49 @@ export interface AutocompleteTemplate {
   conflictWith?: string;
 }
 
-// 从calculator-core导入的选项数据
-const childEducationDeductionOptions = [
-  { value: 0, label: '不符合：0元' },
-  { value: 500, label: '一个孩子，夫妻双方各自扣除：500元' },
-  { value: 1000, label: '一个孩子，仅有一方扣除：1000元' },
-  { value: 1000, label: '两个个孩子，夫妻双方各自扣除：1000元' },
-  { value: 2000, label: '两个孩子，仅有一方扣除：2000元' },
-];
-
-const continuousEducationDeductionOptions = [
-  { value: 0, label: '不符合：0元' },
-  { value: 400, label: '接受学历教育中，扣除：400元' },
-];
-
-const housingLoanInterestDeductionOptions = [
-  { value: 0, label: '不符合：0元' },
-  { value: 500, label: '夫妻双方各自扣除：500元' },
-  { value: 1000, label: '仅有一方扣除：1000元' },
-];
-
-const rentingDeductionOptions = [
-  { value: 0, label: '不符合：0元' },
-  { value: 800, label: '人口少于100万城市，扣除：800元' },
-  { value: 1100, label: '人口大于100万城市，扣除：1100元' },
-  { value: 1500, label: '省会，直辖市等，扣除：1500元' },
-];
-
-const elderlyCareDeductionOptions = [
-  { value: 0, label: '不符合：0元' },
-  { value: 2000, label: '独生子女，扣除：2000元' },
-  { value: 1000, label: '两个子女，均摊扣除：1000元' },
-  { value: 666.7, label: '三个子女，均摊扣除：666.7元' },
-  { value: 500, label: '四个子女，均摊扣除：500元' },
-  { value: 400, label: '五个子女，均摊扣除：400元' },
-];
+import {
+  childEducationDeductionOptions,
+  continuousEducationDeductionOptions,
+  elderlyCareDeductionOptions,
+  housingLoanInterestDeductionOptions,
+  infantCareDeductionOptions,
+  rentingDeductionOptions,
+} from 'calculator-core';
 
 /**
  * 自动完成模板集合接口
  */
 export interface AutocompleteTemplates {
+  infantCare: AutocompleteTemplate;
   childEducation: AutocompleteTemplate;
   continuingEducation: AutocompleteTemplate;
   housingLoanInterest: AutocompleteTemplate;
   renting: AutocompleteTemplate;
   elderlyCare: AutocompleteTemplate;
+  privatePension: AutocompleteTemplate;
   insuranceBase: AutocompleteTemplate;
   housingFundBase: AutocompleteTemplate;
 }
 
 export const autocompleteTemplates: AutocompleteTemplates = {
+  privatePension: {
+    id: 'privatePension',
+    label: '个人养老金',
+    placeholder: '0',
+    options: [
+      { value: 0, label: '不缴纳：0元' },
+      { value: 500, label: '每月缴纳：500元 (年6000元)' },
+      { value: 1000, label: '顶格缴纳：1000元 (年12000元)' },
+    ],
+    width: '120px',
+  },
+  infantCare: {
+    id: 'infantCare',
+    label: '3岁以下婴幼儿照护',
+    placeholder: '0',
+    options: infantCareDeductionOptions,
+    width: '120px',
+  },
   childEducation: {
     id: 'childEducation',
     label: '子女教育',
