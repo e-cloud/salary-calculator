@@ -4,18 +4,18 @@
   "description": "a monorepo for salary calculator with various frontend solutions",
   "scripts": {
     "format": "prettier --config-precedence file-override --write",
-    "format:all": "prettier --loglevel error --config-precedence file-override --write ./**/*.{ts,tsx,js,json,jsx,vue,scss,css}",
-    "release": "standard-version -a",
-    "postinstall": "husky install"
+    "format:all": "prettier --loglevel error --config-precedence file-override --write ./**/*.{ts,tsx,js,json,jsx,vue,scss,css,yml,yaml}",
+    "release": "commit-and-tag-version -a",
+    "prepare": "husky"
   },
   "private": true,
   "devDependencies": {
-    "@commitlint/cli": "^16.2.3",
-    "@commitlint/config-conventional": "^16.2.1",
+    "@commitlint/cli": "^21.2.2",
+    "@commitlint/config-conventional": "^21.2.2",
+    "commit-and-tag-version": "^13.1.2",
     "cross-env": "^7.0.3",
-    "husky": "^7.0.4",
-    "lint-staged": "^12.3.7",
-    "prettier": "^2.6.2",
-    "standard-version": "^9.3.2"
+    "husky": "^9.1.7",
+    "lint-staged": "^17.4.1",
+    "prettier": "^3.9.6"
   }
 }
