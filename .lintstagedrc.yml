@@ -1,6 +1,6 @@
 ---
-'*.yml':
-  - npm run format
+'*.{yml,yaml}':
+  - node ./node_modules/prettier/bin/prettier.cjs --write
 '*.json':
-  - npm run format
+  - node ./node_modules/prettier/bin/prettier.cjs --write
 # NOTE: lint-staged find the closest config file to perform operations, but would not inherit from parent.

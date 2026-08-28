@@ -5,3 +5,15 @@ packages:
   # exclude packages that are inside test directories
   - '!**/test/**'
   - '!**/example/**'
+
+onlyBuiltDependencies:
+  - esbuild
+  - lmdb
+  - msgpackr-extract
+
+minimumReleaseAge: 0
+
+allowBuilds:
+  esbuild: true
+  lmdb: true
+  msgpackr-extract: true

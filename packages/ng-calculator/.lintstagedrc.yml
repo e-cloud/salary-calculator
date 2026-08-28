@@ -1,11 +1,11 @@
 ---
 "*.ts":
   - ng lint ng-calculator --fix --force --lint-file-patterns
-  - npm run format
+  - node ../../node_modules/prettier/bin/prettier.cjs --write
   - ng lint ng-calculator --lint-file-patterns
 "*.{scss,less,css}":
   - stylelint --fix
-  - npm run format
+  - node ../../node_modules/prettier/bin/prettier.cjs --write
   - stylelint
 "*.json":
-  - npm run format
+  - node ../../node_modules/prettier/bin/prettier.cjs --write
