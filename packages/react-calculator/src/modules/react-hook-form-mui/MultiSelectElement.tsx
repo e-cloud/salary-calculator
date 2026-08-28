@@ -217,40 +217,40 @@ const MultiSelectElement = forwardRef(function MultiSelectElement<
           typeof rest.renderValue === 'function'
             ? rest.renderValue
             : showChips
-            ? selected => (
-                <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                  {(preserveOrder
-                    ? options.filter(option =>
-                        (selected as any[]).includes(option),
-                      )
-                    : (selected as any[]) || []
-                  ).map(selectedValue => (
-                    <Chip
-                      key={selectedValue}
-                      label={renderLabel(selectedValue)}
-                      style={{ display: 'flex', flexWrap: 'wrap' }}
-                      onDelete={() => {
-                        onChange(
-                          (Array.isArray(value) ? value : []).filter(
-                            (i: any) => i !== selectedValue,
-                          ),
-                        );
-                      }}
-                      deleteIcon={
-                        <CloseIcon
-                          onMouseDown={ev => {
-                            ev.stopPropagation();
-                          }}
-                        />
-                      }
-                    />
-                  ))}
-                </div>
-              )
-            : selected =>
-                Array.isArray(selected)
-                  ? selected.map(renderLabel).join(', ')
-                  : ''
+              ? selected => (
+                  <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                    {(preserveOrder
+                      ? options.filter(option =>
+                          (selected as any[]).includes(option),
+                        )
+                      : (selected as any[]) || []
+                    ).map(selectedValue => (
+                      <Chip
+                        key={selectedValue}
+                        label={renderLabel(selectedValue)}
+                        style={{ display: 'flex', flexWrap: 'wrap' }}
+                        onDelete={() => {
+                          onChange(
+                            (Array.isArray(value) ? value : []).filter(
+                              (i: any) => i !== selectedValue,
+                            ),
+                          );
+                        }}
+                        deleteIcon={
+                          <CloseIcon
+                            onMouseDown={ev => {
+                              ev.stopPropagation();
+                            }}
+                          />
+                        }
+                      />
+                    ))}
+                  </div>
+                )
+              : selected =>
+                  Array.isArray(selected)
+                    ? selected.map(renderLabel).join(', ')
+                    : ''
         }
         inputRef={handleInputRef}
       >

@@ -88,7 +88,7 @@ export function calculateFullYearIncome(
     sumBy(list, 'extraDeduction.enterprisePensionFromEmployee') -
     sumBy(list, 'extraDeduction.privatePension');
   /** 全年到手现金收入（分开计税） */
-  const referenceCashIncome = sumBy(list, 'cashIncome') + full.postTaxBonus
+  const referenceCashIncome = sumBy(list, 'cashIncome') + full.postTaxBonus;
   full.cashIncomeDeprecated =
     full.taxedIncomeDeprecated -
     sumBy(list, 'insuranceFullCost') -
@@ -98,7 +98,6 @@ export function calculateFullYearIncome(
 
   /** 全年个人社保总额 */
   full.fullInsurance = sumBy(list, 'insuranceFullCost');
-
 
   /** 全年个人养老保险 */
   full.employee.endowmentInsurance = sumBy(list, 'insuranceCosts.endowment');
@@ -112,16 +111,12 @@ export function calculateFullYearIncome(
   /** 全年个人公积金 */
   full.employee.housingFund = sumBy(list, 'housingFund');
   /** 全年个人养老金 */
-  full.employee.privatePension = sumBy(
-    list,
-    'extraDeduction.privatePension',
-  );
+  full.employee.privatePension = sumBy(list, 'extraDeduction.privatePension');
 
   /** 全年企业年金总额（个人+公司） */
   full.employee.enterprisePensionFull =
     sumBy(list, 'extraDeduction.enterprisePensionFromEmployee') +
     sumBy(list, 'extraDeduction.enterprisePensionFromEmployer');
-
 
   /** 全年个人总收入（现金收入 + 公积金 + 企业年金 + 个人养老金） */
   full.totalIncome =
@@ -136,7 +131,6 @@ export function calculateFullYearIncome(
     full.employee.enterprisePensionFull +
     full.employee.privatePension;
 
-
   /** 全年雇主总成本 */
   full.employerCosts.full = sumBy(list, 'employerCosts.full') + full.bonus;
   /** 全年雇主企业年金成本 */
@@ -150,7 +144,10 @@ export function calculateFullYearIncome(
     health: sumBy(list, 'employerCosts.insurance.health'),
     unemployment: sumBy(list, 'employerCosts.insurance.unemployment'),
     birth: sumBy(list, 'employerCosts.insurance.birth'),
-    occupationalInjury: sumBy(list, 'employerCosts.insurance.occupationalInjury'),
+    occupationalInjury: sumBy(
+      list,
+      'employerCosts.insurance.occupationalInjury',
+    ),
   };
 
   return full;
@@ -258,9 +255,11 @@ export function calculateMonthIncome(
     (newPayCycle || !lastMonth ? 0 : lastMonth.accumulatedSpecialDeduction) +
     specialDeduction;
   const accumulatedExtraDeduction =
-    (newPayCycle || !lastMonth ? 0 : lastMonth.accumulatedExtraDeduction) + extraDeducted;
+    (newPayCycle || !lastMonth ? 0 : lastMonth.accumulatedExtraDeduction) +
+    extraDeducted;
   const accumulatedSalary =
-    (newPayCycle || !lastMonth ? 0 : lastMonth.accumulatedSalary) + current.salary;
+    (newPayCycle || !lastMonth ? 0 : lastMonth.accumulatedSalary) +
+    current.salary;
   // 预扣预缴应纳税所得额
   const accumulatedTaxQuota = Math.max(
     accumulatedSalary -
@@ -350,7 +349,7 @@ function insuranceCostsForEmployee(
   base: number,
   baseRange: Record<string, [number, number]>,
   meta: MonthlyIncomeMeta['insuranceRate'],
-  _currentSalary?: number
+  _currentSalary?: number,
 ): MonthlyIncomeInfo['insuranceCosts'] {
   return {
     endowment: getValidBase(base, baseRange.endowment) * meta.endowment,
@@ -378,7 +377,8 @@ function insuranceCostsForEmployer(
       getValidBase(base, baseRange.unemployment) * meta.unemployment,
     birth: getValidBase(base, baseRange.birth) * meta.birth,
     occupationalInjury:
-      getValidBase(base, baseRange.occupationalInjury) * meta.occupationalInjury,
+      getValidBase(base, baseRange.occupationalInjury) *
+      meta.occupationalInjury,
   };
 }
 
@@ -419,12 +419,18 @@ function findTaxRate(
  * @param month 计算月份 (1-12)
  * @returns 该时间点有效的政策对象 (Policy)
  */
-export function findPolicyForMonth(recipe: CityRecipe, year: number, month: number): Policy {
+export function findPolicyForMonth(
+  recipe: CityRecipe,
+  year: number,
+  month: number,
+): Policy {
   const targetDateStr = `${year}-${month.toString().padStart(2, '0')}`;
 
   // 由于 CityRecipe.policies 已按日期降序排列，
   // 找到的第一个生效日期小于或等于目标日期的策略，就是当前有效的策略。
-  const effectivePolicy = recipe.policies.find(p => p.effectiveDate <= targetDateStr);
+  const effectivePolicy = recipe.policies.find(
+    p => p.effectiveDate <= targetDateStr,
+  );
 
   if (!effectivePolicy) {
     // 降级处理：如果找不到策略（例如查询一个非常早的年份），
@@ -445,11 +451,16 @@ export function findPolicyForMonth(recipe: CityRecipe, year: number, month: numb
  * @param year 年份
  * @returns 该年份的最新政策
  */
-export function findLatestPolicyForYear(recipe: CityRecipe, year: number): Policy {
+export function findLatestPolicyForYear(
+  recipe: CityRecipe,
+  year: number,
+): Policy {
   const yearStr = year.toString();
 
   // 找到该年份内的所有政策
-  const policiesInYear = recipe.policies.filter(p => p.effectiveDate.startsWith(yearStr));
+  const policiesInYear = recipe.policies.filter(p =>
+    p.effectiveDate.startsWith(yearStr),
+  );
 
   if (policiesInYear.length > 0) {
     // 返回该年份内最新的政策（由于已按降序排列，第一个就是最新的）
@@ -557,7 +568,10 @@ export function buildMonthlyMetas(
     // 根据月份和用户输入调整缴费基数
     if (month >= 1 && month <= 6) {
       // 1-6月使用上上年度月平均工资作为缴费基数（如果用户提供了大于0的值）
-      if (userInput.yearBeforeLastAvgSalary && userInput.yearBeforeLastAvgSalary > 0) {
+      if (
+        userInput.yearBeforeLastAvgSalary &&
+        userInput.yearBeforeLastAvgSalary > 0
+      ) {
         meta.yearBeforeLastAvgSalary = userInput.yearBeforeLastAvgSalary;
         meta.insuranceBase = userInput.yearBeforeLastAvgSalary;
         meta.housingFundBase = userInput.yearBeforeLastAvgSalary;
