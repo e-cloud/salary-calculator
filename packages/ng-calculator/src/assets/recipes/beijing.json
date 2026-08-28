@@ -1,0 +1,215 @@
+{
+  "id": 2,
+  "label": "标准(企业)",
+  "city": "北京",
+  "insuranceBaseOnLastMonth": false,
+  "policies": [
+    {
+      "effectiveDate": "2026-07",
+      "minimumWage": 2540,
+      "avgWage": 12116,
+      "employee": {
+        "insuranceRate": {
+          "endowment": 0.08,
+          "health": 0.02,
+          "unemployment": 0.005
+        }
+      },
+      "employer": {
+        "insuranceRate": {
+          "endowment": 0.16,
+          "health": 0.098,
+          "unemployment": 0.005,
+          "birth": 0.0,
+          "occupationalInjury": 0.004
+        }
+      },
+      "insuranceBaseRange": {
+        "endowment": [7270, 36348],
+        "health": [7270, 36348],
+        "unemployment": [7270, 36348],
+        "birth": [7270, 36348],
+        "occupationalInjury": [7270, 36348]
+      },
+      "housingFundBaseRange": [2540, 36348],
+      "references": [
+        {
+          "link": "https://rsj.beijing.gov.cn",
+          "description": "北京市人社局等三部门《关于2026年度各项社会保险缴费工资基数上下限的通告》"
+        },
+        {
+          "link": "https://gjj.beijing.gov.cn",
+          "description": "北京公积金管委会《关于2026住房公积金年度缴存有关问题的通知》(京房公积金管委会办〔2026〕6号)"
+        }
+      ]
+    },
+    {
+      "effectiveDate": "2025-07",
+      "minimumWage": 2540,
+      "avgWage": 11937,
+      "employee": {
+        "insuranceRate": {
+          "endowment": 0.08,
+          "health": 0.02,
+          "unemployment": 0.005
+        }
+      },
+      "employer": {
+        "insuranceRate": {
+          "endowment": 0.16,
+          "health": 0.098,
+          "unemployment": 0.005,
+          "birth": 0.0,
+          "occupationalInjury": 0.004
+        }
+      },
+      "insuranceBaseRange": {
+        "endowment": [7162, 35811],
+        "health": [7162, 35811],
+        "unemployment": [7162, 35811],
+        "birth": [7162, 35811],
+        "occupationalInjury": [7162, 35811]
+      },
+      "housingFundBaseRange": [2540, 35811],
+      "references": [
+        {
+          "link": "https://rsj.beijing.gov.cn",
+          "description": "北京市人社局等三部门《关于2025年度各项社会保险缴费工资基数上下限的通告》"
+        },
+        {
+          "link": "https://gjj.beijing.gov.cn",
+          "description": "北京公积金管委会《关于2025住房公积金年度缴存有关问题的通知》(京房公积金管委会办〔2025〕13号)"
+        },
+        {
+          "link": "https://rsj.beijing.gov.cn",
+          "description": "北京市人社局《关于调整北京市2025年最低工资标准的通知》"
+        }
+      ]
+    },
+    {
+      "effectiveDate": "2024-07",
+      "minimumWage": 2420,
+      "avgWage": 11761,
+      "employee": {
+        "insuranceRate": {
+          "endowment": 0.08,
+          "health": 0.02,
+          "unemployment": 0.005
+        }
+      },
+      "employer": {
+        "insuranceRate": {
+          "endowment": 0.16,
+          "health": 0.098,
+          "unemployment": 0.005,
+          "birth": 0.0,
+          "occupationalInjury": 0.004
+        }
+      },
+      "insuranceBaseRange": {
+        "endowment": [6821, 35283],
+        "health": [6821, 35283],
+        "unemployment": [6821, 35283],
+        "birth": [6821, 35283],
+        "occupationalInjury": [6821, 35283]
+      },
+      "housingFundBaseRange": [2420, 35283],
+      "references": [
+        {
+          "link": "https://rsj.beijing.gov.cn",
+          "description": "北京市人社局等三部门《关于统一2024年度各项社会保险缴费工资基数上下限的通告》(京人社发〔2024〕12号)"
+        },
+        {
+          "link": "https://gjj.beijing.gov.cn",
+          "description": "北京公积金管委会《关于2024住房公积金年度住房公积金缴存有关问题的通知》(京房公积金管委会办〔2024〕11号)"
+        }
+      ]
+    },
+    {
+      "effectiveDate": "2023-07",
+      "minimumWage": 2420,
+      "avgWage": 11297,
+      "employee": {
+        "insuranceRate": {
+          "endowment": 0.08,
+          "health": 0.02,
+          "unemployment": 0.005
+        }
+      },
+      "employer": {
+        "insuranceRate": {
+          "endowment": 0.16,
+          "health": 0.098,
+          "unemployment": 0.005,
+          "birth": 0.0,
+          "occupationalInjury": 0.004
+        }
+      },
+      "insuranceBaseRange": {
+        "endowment": [6326, 33891],
+        "health": [6326, 33891],
+        "unemployment": [6326, 33891],
+        "birth": [6326, 33891],
+        "occupationalInjury": [6326, 33891]
+      },
+      "housingFundBaseRange": [2420, 33891],
+      "references": [
+        {
+          "link": "https://rsj.beijing.gov.cn",
+          "description": "北京市人社局等三部门《关于统一2023年度各项社会保险缴费工资基数上下限的通告》(京人社发〔2023〕8号)"
+        },
+        {
+          "link": "https://gjj.beijing.gov.cn",
+          "description": "北京公积金管委会《关于2023住房公积金年度缴存有关问题的通知》(京房公积金管委会办〔2023〕8号)"
+        },
+        {
+          "link": "https://rsj.beijing.gov.cn",
+          "description": "北京市人社局《关于调整北京市2023年最低工资标准的通知》"
+        }
+      ]
+    },
+    {
+      "effectiveDate": "2022-07",
+      "minimumWage": 2320,
+      "avgWage": 10628,
+      "employee": {
+        "insuranceRate": {
+          "endowment": 0.08,
+          "health": 0.02,
+          "unemployment": 0.005
+        }
+      },
+      "employer": {
+        "insuranceRate": {
+          "endowment": 0.16,
+          "health": 0.098,
+          "unemployment": 0.005,
+          "birth": 0.0,
+          "occupationalInjury": 0.004
+        }
+      },
+      "insuranceBaseRange": {
+        "endowment": [5869, 31884],
+        "health": [5869, 31884],
+        "unemployment": [5869, 31884],
+        "birth": [5869, 31884],
+        "occupationalInjury": [5869, 31884]
+      },
+      "housingFundBaseRange": [2320, 31884],
+      "references": [
+        {
+          "link": "https://rsj.beijing.gov.cn",
+          "description": "北京市人社局等三部门《关于统一2022年度各项社会保险缴费工资基数上下限的通告》(京人社保发〔2022〕30号)"
+        },
+        {
+          "link": "https://gjj.beijing.gov.cn",
+          "description": "北京公积金管委会《关于2022住房公积金年度住房公积金缴存有关问题的通知》(京房公积金管委会办〔2022〕7号)"
+        },
+        {
+          "link": "https://rsj.beijing.gov.cn",
+          "description": "北京市人社局《关于调整北京市2021年最低工资标准的通知》(京人社劳发〔2021〕27号)"
+        }
+      ]
+    }
+  ]
+}

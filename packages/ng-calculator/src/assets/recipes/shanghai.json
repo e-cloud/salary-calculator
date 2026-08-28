@@ -1,0 +1,231 @@
+{
+  "id": 3,
+  "label": "标准(企业)",
+  "city": "上海",
+  "insuranceBaseOnLastMonth": true,
+  "policies": [
+    {
+      "effectiveDate": "2026-07",
+      "minimumWage": 2740,
+      "avgWage": 12577,
+      "employee": {
+        "insuranceRate": {
+          "endowment": 0.08,
+          "health": 0.02,
+          "unemployment": 0.005
+        }
+      },
+      "employer": {
+        "insuranceRate": {
+          "endowment": 0.16,
+          "health": 0.09,
+          "unemployment": 0.005,
+          "birth": 0,
+          "occupationalInjury": 0.002
+        }
+      },
+      "insuranceBaseRange": {
+        "endowment": [7546, 37731],
+        "health": [7546, 37731],
+        "birth": [7546, 37731],
+        "unemployment": [7546, 37731],
+        "occupationalInjury": [7546, 37731]
+      },
+      "housingFundBaseRange": [2740, 37731],
+      "references": [
+        {
+          "link": "https://rsj.sh.gov.cn",
+          "description": "上海市人力资源和社会保障局关于公布2025年度本市全口径城镇单位就业人员平均工资及2026年度社保缴费基数上下限的通告"
+        },
+        {
+          "link": "https://www.shgjj.org.cn",
+          "description": "上海市住房公积金管理委员会关于2026年度上海市调整住房公积金缴存基数、比例以及月缴存额上下限的通知"
+        },
+        {
+          "link": "https://ybj.sh.gov.cn",
+          "description": "上海市医疗保障局等关于继续阶段性降低本市职工基本医疗保险费费率的通知（沪医保规〔2026〕2号）"
+        }
+      ]
+    },
+    {
+      "effectiveDate": "2025-07",
+      "minimumWage": 2740,
+      "avgWage": 12434,
+      "employee": {
+        "insuranceRate": {
+          "endowment": 0.08,
+          "health": 0.02,
+          "unemployment": 0.005
+        }
+      },
+      "employer": {
+        "insuranceRate": {
+          "endowment": 0.16,
+          "health": 0.09,
+          "unemployment": 0.005,
+          "birth": 0,
+          "occupationalInjury": 0.002
+        }
+      },
+      "insuranceBaseRange": {
+        "endowment": [7460, 37302],
+        "health": [7460, 37302],
+        "birth": [7460, 37302],
+        "unemployment": [7460, 37302],
+        "occupationalInjury": [7460, 37302]
+      },
+      "housingFundBaseRange": [2690, 37302],
+      "references": [
+        {
+          "link": "https://rsj.sh.gov.cn",
+          "description": "上海市人力资源和社会保障局关于公布2024年度本市全口径城镇单位就业人员平均工资及2025年度社保缴费基数上下限的通告"
+        },
+        {
+          "link": "https://www.shgjj.org.cn",
+          "description": "上海市住房公积金管理委员会关于2025年度上海市调整住房公积金缴存基数、比例以及月缴存额上下限的通知（沪公积金管委会〔2025〕8号）"
+        },
+        {
+          "link": "https://ybj.sh.gov.cn",
+          "description": "上海市医疗保障局等关于继续阶段性降低本市职工基本医疗保险费费率的通知（沪医保规〔2025〕2号）"
+        },
+        {
+          "link": "https://rsj.sh.gov.cn",
+          "description": "上海市人力资源和社会保障局关于调整本市最低工资标准的通知（2025年7月1日起调整至2740元）"
+        }
+      ]
+    },
+    {
+      "effectiveDate": "2024-07",
+      "minimumWage": 2690,
+      "avgWage": 12307,
+      "employee": {
+        "insuranceRate": {
+          "endowment": 0.08,
+          "health": 0.02,
+          "unemployment": 0.005
+        }
+      },
+      "employer": {
+        "insuranceRate": {
+          "endowment": 0.16,
+          "health": 0.09,
+          "unemployment": 0.005,
+          "birth": 0,
+          "occupationalInjury": 0.0016
+        }
+      },
+      "insuranceBaseRange": {
+        "endowment": [7384, 36921],
+        "health": [7384, 36921],
+        "birth": [7384, 36921],
+        "unemployment": [7384, 36921],
+        "occupationalInjury": [7384, 36921]
+      },
+      "housingFundBaseRange": [2690, 36921],
+      "references": [
+        {
+          "link": "https://rsj.sh.gov.cn",
+          "description": "上海市人力资源和社会保障局关于公布2023年度本市全口径城镇单位就业人员平均工资及2024年度社保缴费基数上下限的通告"
+        },
+        {
+          "link": "https://www.shgjj.org.cn",
+          "description": "上海市住房公积金管理委员会关于2024年度上海市调整住房公积金缴存基数、比例以及月缴存额上下限的通知（沪公积金管委会〔2024〕5号）"
+        },
+        {
+          "link": "https://ybj.sh.gov.cn",
+          "description": "上海市医疗保障局等关于阶段性调整本市职工基本医疗保险费费率的通知（沪医保规〔2024〕1号）"
+        }
+      ]
+    },
+    {
+      "effectiveDate": "2023-07",
+      "minimumWage": 2690,
+      "avgWage": 12183,
+      "employee": {
+        "insuranceRate": {
+          "endowment": 0.08,
+          "health": 0.02,
+          "unemployment": 0.005
+        }
+      },
+      "employer": {
+        "insuranceRate": {
+          "endowment": 0.16,
+          "health": 0.1,
+          "unemployment": 0.005,
+          "birth": 0,
+          "occupationalInjury": 0.0016
+        }
+      },
+      "insuranceBaseRange": {
+        "endowment": [7310, 36549],
+        "health": [7310, 36549],
+        "birth": [7310, 36549],
+        "unemployment": [7310, 36549],
+        "occupationalInjury": [7310, 36549]
+      },
+      "housingFundBaseRange": [2590, 36549],
+      "references": [
+        {
+          "link": "https://rsj.sh.gov.cn",
+          "description": "上海市人力资源和社会保障局关于公布2022年度本市全口径城镇单位就业人员平均工资及2023年度社保缴费基数上下限的通告"
+        },
+        {
+          "link": "https://www.shgjj.org.cn",
+          "description": "上海市住房公积金管理委员会关于2023年度上海市调整住房公积金缴存基数、比例以及月缴存额上下限的通知（沪公积金管委会〔2023〕9号）"
+        },
+        {
+          "link": "https://rsj.sh.gov.cn",
+          "description": "上海市人力资源和社会保障局关于调整本市最低工资标准的通知（沪人社规〔2023〕19号）"
+        },
+        {
+          "link": "https://ybj.sh.gov.cn",
+          "description": "上海市医疗保障局等关于调整本市职工基本医疗保险费费率的通知（沪医保规〔2022〕6号）"
+        }
+      ]
+    },
+    {
+      "effectiveDate": "2022-07",
+      "minimumWage": 2590,
+      "avgWage": 11396,
+      "employee": {
+        "insuranceRate": {
+          "endowment": 0.08,
+          "health": 0.02,
+          "unemployment": 0.005
+        }
+      },
+      "employer": {
+        "insuranceRate": {
+          "endowment": 0.16,
+          "health": 0.1,
+          "unemployment": 0.005,
+          "birth": 0,
+          "occupationalInjury": 0.0016
+        }
+      },
+      "insuranceBaseRange": {
+        "endowment": [6520, 34188],
+        "health": [6520, 34188],
+        "birth": [6520, 34188],
+        "unemployment": [6520, 34188],
+        "occupationalInjury": [6520, 34188]
+      },
+      "housingFundBaseRange": [2590, 34188],
+      "references": [
+        {
+          "link": "https://rsj.sh.gov.cn",
+          "description": "上海市人力资源和社会保障局、市医保局、市税务局关于公布2021年度全口径城镇单位就业人员平均工资及2022年度社保缴费基数上下限的通告"
+        },
+        {
+          "link": "https://www.shgjj.org.cn",
+          "description": "上海市住房公积金管理委员会关于2022年度上海市调整住房公积金缴存基数、比例以及月缴存额上下限的通知（沪公积金管委会〔2022〕3号）"
+        },
+        {
+          "link": "https://ybj.sh.gov.cn",
+          "description": "上海市医疗保障局等关于调整本市职工基本医疗保险费费率的通知（沪医保规〔2022〕6号）"
+        }
+      ]
+    }
+  ]
+}
