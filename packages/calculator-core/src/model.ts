@@ -57,6 +57,8 @@ export interface MonthlyIncomeInfo {
    * 专项附加扣除
    */
   extraDeduction: {
+    // 3岁以下婴幼儿照护
+    infantCare: number;
     childEducation: number;
     continuingEducation: number;
     seriousMedicalExpense: number;
@@ -65,6 +67,8 @@ export interface MonthlyIncomeInfo {
     elderlyCare: number;
     enterprisePensionFromEmployee: number;
     enterprisePensionFromEmployer: number;
+    // 个人养老金（每年限额12000元，每月1000元）
+    privatePension: number;
     other: number;
   };
   fullExtraDeduction: number;
@@ -142,6 +146,8 @@ export interface MonthlyIncomeMeta {
    * 专项附加扣除
    */
   extraDeduction: {
+    // 3岁以下婴幼儿照护
+    infantCare: number;
     // 子女教育
     childEducation: number;
     // 继续教育
@@ -158,6 +164,8 @@ export interface MonthlyIncomeMeta {
     enterprisePensionFromEmployee: number;
     // 企业年金（企业）
     enterprisePensionFromEmployer: number;
+    // 个人养老金（每年限额12000元，每月1000元）
+    privatePension: number;
     // 其他扣除
     other: number;
   };
@@ -181,6 +189,14 @@ export interface MonthlyIncomeMeta {
    * 公积金缴纳基数上下限
    */
   housingFundBaseRange: [number, number];
+  /**
+   * 企业年金个人免税扣除比例上限（默认 0.04，即 4%）
+   */
+  enterprisePensionEmployeeRateLimit?: number;
+  /**
+   * 个人养老金月度免税扣除限额（默认 1000 元/月，即全年 12000 元）
+   */
+  privatePensionMonthlyQuota?: number;
   /**
    * 是否属于新的计薪周期，每年1月都为 true
    * 一般跳槽后第一月也是，因为新公司算税是从零开始的
@@ -274,6 +290,8 @@ export interface FullYearIncomeInfo {
     housingFund: number;
     enterprisePension: number;
     enterprisePensionFull: number;
+    // 全年个人养老金
+    privatePension: number;
   };
 
   /**
@@ -296,6 +314,11 @@ export interface FullYearIncomeInfo {
  * [新增] Policy 接口
  * 用于封装在特定时间点生效的一整套缴费规则。
  */
+export interface Reference {
+  link: string;
+  description: string;
+}
+
 export interface Policy {
   /**
    * 政策生效的起始年月, 格式 "YYYY-MM"
@@ -305,6 +328,7 @@ export interface Policy {
   // 所有可能随时间变化的参数
   minimumWage: number;
   avgWage: number;
+  localAvgWage?: number;
   employee: {
     insuranceRate: {
       endowment: number;
@@ -331,7 +355,19 @@ export interface Policy {
       }
     | [number, number];
   housingFundBaseRange: [number, number];
-  references?: string[];
+  enterprisePensionEmployeeRateLimit?: number;
+  privatePensionMonthlyQuota?: number;
+  references?: (string | Reference)[];
+}
+
+/**
+ * 城市配方索引项（用于索引按需加载）
+ */
+export interface CityRecipeIndexItem {
+  id: number;
+  label: string;
+  city: string;
+  file: string;
 }
 
 /**
@@ -356,7 +392,11 @@ export interface RawMeta {
   lastYearAvgSalary?: number;
   // 上上年度月平均工资（用于1-6月缴费基数）
   yearBeforeLastAvgSalary?: number;
+  enterprisePensionEmployeeRateLimit?: number;
+  privatePensionMonthlyQuota?: number;
   extraDeduction: {
+    // 3岁以下婴幼儿照护
+    infantCare: number;
     childEducation: number;
     continuingEducation: number;
     seriousMedicalExpense: number;
@@ -365,6 +405,8 @@ export interface RawMeta {
     elderlyCare: number;
     enterprisePensionFromEmployee: number;
     enterprisePensionFromEmployer: number;
+    // 个人养老金（每年限额12000元，每月1000元）
+    privatePension: number;
     other: number;
   };
   insuranceRate: {

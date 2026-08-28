@@ -64,10 +64,12 @@ export function calculateFullYearIncome(
     );
 
   /** 理论应纳税总额（合并计税） */
-  full.theoreticalTax = calculateTax(full.bookIncome - totalDeduction);
+  full.theoreticalTax = calculateTax(
+    Math.max(full.bookIncome - totalDeduction, 0),
+  );
   /** 分开计税应纳税总额 */
   full.totalSeparatedTax =
-    calculateTax(full.bookSalary - totalDeduction) + full.bonusTax;
+    calculateTax(Math.max(full.bookSalary - totalDeduction, 0)) + full.bonusTax;
 
   /** 全年税后工资 */
   full.postTaxSalary = sumBy(list, 'cashIncome');
@@ -83,14 +85,16 @@ export function calculateFullYearIncome(
     full.taxedIncome -
     sumBy(list, 'insuranceFullCost') -
     sumBy(list, 'housingFund') -
-    sumBy(list, 'extraDeduction.enterprisePensionFromEmployee');
+    sumBy(list, 'extraDeduction.enterprisePensionFromEmployee') -
+    sumBy(list, 'extraDeduction.privatePension');
   /** 全年到手现金收入（分开计税） */
   const referenceCashIncome = sumBy(list, 'cashIncome') + full.postTaxBonus
   full.cashIncomeDeprecated =
     full.taxedIncomeDeprecated -
     sumBy(list, 'insuranceFullCost') -
     sumBy(list, 'housingFund') -
-    sumBy(list, 'extraDeduction.enterprisePensionFromEmployee');
+    sumBy(list, 'extraDeduction.enterprisePensionFromEmployee') -
+    sumBy(list, 'extraDeduction.privatePension');
 
   /** 全年个人社保总额 */
   full.fullInsurance = sumBy(list, 'insuranceFullCost');
@@ -107,6 +111,11 @@ export function calculateFullYearIncome(
   );
   /** 全年个人公积金 */
   full.employee.housingFund = sumBy(list, 'housingFund');
+  /** 全年个人养老金 */
+  full.employee.privatePension = sumBy(
+    list,
+    'extraDeduction.privatePension',
+  );
 
   /** 全年企业年金总额（个人+公司） */
   full.employee.enterprisePensionFull =
@@ -114,11 +123,18 @@ export function calculateFullYearIncome(
     sumBy(list, 'extraDeduction.enterprisePensionFromEmployer');
 
 
-  /** 全年个人总收入 */
-  full.totalIncome = full.cashIncome + full.fullHousingFund + full.employee.enterprisePensionFull;
+  /** 全年个人总收入（现金收入 + 公积金 + 企业年金 + 个人养老金） */
+  full.totalIncome =
+    full.cashIncome +
+    full.fullHousingFund +
+    full.employee.enterprisePensionFull +
+    full.employee.privatePension;
   /** 全年个人总收入（分开计税） */
   full.totalIncomeDeprecated =
-    full.cashIncomeDeprecated + full.fullHousingFund + full.employee.enterprisePensionFull;
+    full.cashIncomeDeprecated +
+    full.fullHousingFund +
+    full.employee.enterprisePensionFull +
+    full.employee.privatePension;
 
 
   /** 全年雇主总成本 */
@@ -208,13 +224,35 @@ export function calculateMonthIncome(
   const insuranceFullCost = sum(values(insuranceDeducted));
 
   const enterprisePension =
-    current.extraDeduction.enterprisePensionFromEmployee;
+    current.extraDeduction.enterprisePensionFromEmployee || 0;
+  const privatePension = current.extraDeduction.privatePension || 0;
 
-  // 专项扣除额
+  // 1. 个人企业年金税前扣除限额：动态从 meta 读取扣除比例上限，默认 0.04 (4%)
+  const rateLimit = current.enterprisePensionEmployeeRateLimit ?? 0.04;
+  const endowmentTop = Array.isArray(current.insuranceBaseRange)
+    ? current.insuranceBaseRange[1]
+    : current.insuranceBaseRange.endowment[1];
+  const validPensionBase = Math.min(
+    current.salary,
+    endowmentTop || current.salary,
+  );
+  const maxDeductibleEnterprisePension = validPensionBase * rateLimit;
+  const deductibleEnterprisePension = Math.min(
+    enterprisePension,
+    maxDeductibleEnterprisePension,
+  );
+
+  // 2. 个人养老金税前扣除限额：动态从 meta 读取月度扣除额上限，默认 1,000 元/月 (年 12,000 元)
+  const monthlyQuota = current.privatePensionMonthlyQuota ?? 1000;
+  const deductiblePrivatePension = Math.min(privatePension, monthlyQuota);
+
+  // 专项附加扣除与法定其他扣除额
   const extraDeducted =
-    sumExtraDeduction(current.extraDeduction) + enterprisePension;
+    sumExtraDeduction(current.extraDeduction) +
+    deductibleEnterprisePension +
+    deductiblePrivatePension;
 
-  const accumulatedDeduction = newMonthInfo.actualMonth * current.freeTaxQuota;
+  const accumulatedDeduction = newMonthInfo.month * current.freeTaxQuota;
   const specialDeduction = insuranceFullCost + personalHousingFund;
   const accumulatedSpecialDeduction =
     (newPayCycle || !lastMonth ? 0 : lastMonth.accumulatedSpecialDeduction) +
@@ -248,7 +286,8 @@ export function calculateMonthIncome(
     insuranceFullCost -
     personalHousingFund -
     tax -
-    enterprisePension;
+    enterprisePension -
+    privatePension;
   newMonthInfo.accumulatedSalary = accumulatedSalary;
   newMonthInfo.accumulatedTaxQuota = accumulatedTaxQuota;
   newMonthInfo.accumulatedDeduction = accumulatedDeduction;
@@ -311,13 +350,13 @@ function insuranceCostsForEmployee(
   base: number,
   baseRange: Record<string, [number, number]>,
   meta: MonthlyIncomeMeta['insuranceRate'],
-  currentSalary: number
+  _currentSalary?: number
 ): MonthlyIncomeInfo['insuranceCosts'] {
   return {
     endowment: getValidBase(base, baseRange.endowment) * meta.endowment,
     health: getValidBase(base, baseRange.health) * meta.health,
     unemployment:
-      getValidBase(currentSalary, baseRange.unemployment) * meta.unemployment,
+      getValidBase(base, baseRange.unemployment) * meta.unemployment,
   };
 }
 
@@ -338,7 +377,8 @@ function insuranceCostsForEmployer(
     unemployment:
       getValidBase(base, baseRange.unemployment) * meta.unemployment,
     birth: getValidBase(base, baseRange.birth) * meta.birth,
-    occupationalInjury: base * meta.occupationalInjury,
+    occupationalInjury:
+      getValidBase(base, baseRange.occupationalInjury) * meta.occupationalInjury,
   };
 }
 
@@ -352,6 +392,7 @@ function sumExtraDeduction(meta: MonthlyIncomeMeta['extraDeduction']): number {
       omit(meta, [
         'enterprisePensionFromEmployee',
         'enterprisePensionFromEmployer',
+        'privatePension',
       ]),
     ),
   );
@@ -441,6 +482,14 @@ export function buildMetaFromPolicy(
     annualBonus: data.annualBonus,
     insuranceBaseRange: normalizePolicyInsuranceBaseRange(policy),
     housingFundBaseRange: policy.housingFundBaseRange,
+    enterprisePensionEmployeeRateLimit:
+      data.enterprisePensionEmployeeRateLimit ??
+      policy.enterprisePensionEmployeeRateLimit ??
+      0.04,
+    privatePensionMonthlyQuota:
+      data.privatePensionMonthlyQuota ??
+      policy.privatePensionMonthlyQuota ??
+      1000,
     insuranceBaseOnLastMonth: data.insuranceBaseOnLastMonth,
     newPayCycle: false,
     employer: {

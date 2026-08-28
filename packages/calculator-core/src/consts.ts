@@ -37,12 +37,24 @@ export const TaxRateTableForBonus: TaxRateModel[] = [
   { start: 80000, end: Infinity, rate: 0.45, minus: 15160 },
 ];
 
+export const infantCareDeductionOptions = [
+  { value: 0, label: '不符合：0元' },
+  { value: 1000, label: '一个婴幼儿，夫妻双方各自扣除：1000元' },
+  { value: 2000, label: '一个婴幼儿，仅有一方扣除：2000元' },
+  { value: 2000, label: '两个婴幼儿，夫妻双方各自扣除：2000元' },
+  { value: 4000, label: '两个婴幼儿，仅有一方扣除：4000元' },
+  { value: 3000, label: '三个婴幼儿，夫妻双方各自扣除：3000元' },
+  { value: 6000, label: '三个婴幼儿，仅有一方扣除：6000元' },
+];
+
 export const childEducationDeductionOptions = [
   { value: 0, label: '不符合：0元' },
-  { value: 500, label: '一个孩子，夫妻双方各自扣除：500元' },
-  { value: 1000, label: '一个孩子，仅有一方扣除：1000元' },
-  { value: 1000, label: '两个个孩子，夫妻双方各自扣除：1000元' },
-  { value: 2000, label: '两个孩子，仅有一方扣除：2000元' },
+  { value: 1000, label: '一个孩子，夫妻双方各自扣除：1000元' },
+  { value: 2000, label: '一个孩子，仅有一方扣除：2000元' },
+  { value: 2000, label: '两个孩子，夫妻双方各自扣除：2000元' },
+  { value: 4000, label: '两个孩子，仅有一方扣除：4000元' },
+  { value: 3000, label: '三个孩子，夫妻双方各自扣除：3000元' },
+  { value: 6000, label: '三个孩子，仅有一方扣除：6000元' },
 ];
 
 export const continuousEducationDeductionOptions = [
@@ -65,11 +77,11 @@ export const rentingDeductionOptions = [
 
 export const elderlyCareDeductionOptions = [
   { value: 0, label: '不符合：0元' },
-  { value: 2000, label: '独生子女，扣除：2000元' },
-  { value: 1000, label: '两个子女，均摊扣除：1000元' },
-  { value: 666.7, label: '三个子女，均摊扣除：666.7元' },
-  { value: 500, label: '四个子女，均摊扣除：500元' },
-  { value: 400, label: '五个子女，均摊扣除：400元' },
+  { value: 3000, label: '独生子女，全额扣除：3000元' },
+  { value: 1500, label: '两个子女，均摊扣除：1500元' },
+  { value: 1000, label: '三个子女，均摊扣除：1000元' },
+  { value: 750, label: '四个子女，均摊扣除：750元' },
+  { value: 600, label: '五个子女，均摊扣除：600元' },
 ];
 
 export const nonMergeTaxCalculationEndDate = '2027.12.31';
