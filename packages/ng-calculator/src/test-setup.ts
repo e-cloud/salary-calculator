@@ -1,6 +1,4 @@
 import '@angular/compiler';
-import 'zone.js';
-import 'zone.js/testing';
 import { getTestBed } from '@angular/core/testing';
 import {
   BrowserDynamicTestingModule,
@@ -11,3 +9,15 @@ getTestBed().initTestEnvironment(
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting(),
 );
+
+// Polyfill ResizeObserver for JSDOM testing
+globalThis.ResizeObserver = class {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+};
+
+// Mock scrollIntoView for JSDOM
+if (typeof Element !== 'undefined') {
+  Element.prototype.scrollIntoView = () => {};
+}

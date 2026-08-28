@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import {
   Component,
   EventEmitter,
@@ -8,8 +7,26 @@ import {
   OnChanges,
   OnDestroy,
   SimpleChanges,
+  inject,
 } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatMenuModule } from '@angular/material/menu';
 import {
   CityRecipe,
   CityRecipeIndexItem,
@@ -28,7 +45,22 @@ export interface CalculateParams extends RawMeta {
 
 @Component({
   selector: 'app-calculator-form',
-  standalone: false,
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatSlideToggleModule,
+    MatButtonModule,
+    MatIconModule,
+    MatAutocompleteModule,
+    MatExpansionModule,
+    MatMenuModule,
+  ],
   templateUrl: './calculator-form.component.html',
   styleUrls: ['./calculator-form.component.scss'],
 })
@@ -54,11 +86,13 @@ export class CalculatorFormComponent implements OnInit, OnChanges, OnDestroy {
   latestPolicy: Policy | null = null;
   policyHint: string = '';
   private formSubscriptions: Subscription[] = [];
+  private fb = inject(FormBuilder);
 
-  constructor(private fb: FormBuilder) {}
+  constructor() {
+    this.initializeForm();
+  }
 
   ngOnInit() {
-    this.initializeForm();
     if (this.cityRecipe) {
       this.updateAvailableYears();
       this.onYearChange(this.selectedYear);
@@ -70,10 +104,10 @@ export class CalculatorFormComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['cityRecipe'] && !changes['cityRecipe'].firstChange) {
+    if (changes['cityRecipe'] && this.cityRecipe) {
       this.updateAvailableYears();
       this.onYearChange(this.selectedYear);
-      this.patchFromRecipe(this.cityRecipe!);
+      this.patchFromRecipe(this.cityRecipe);
     }
   }
 

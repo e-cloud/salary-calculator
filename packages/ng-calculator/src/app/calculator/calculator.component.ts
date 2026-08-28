@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion,@typescript-eslint/no-explicit-any */
 import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import {
   buildMonthlyMetas,
   calculateFullYearIncome,
@@ -17,63 +18,41 @@ import {
   combineLatest,
   filter,
   shareReplay,
-  tap,
   take,
   map,
   debounceTime,
+  delay,
 } from 'rxjs';
 import { MonthlyInputModel } from './types';
-import { CalculateParams } from './calculator-form/calculator-form.component';
-
-// 默认城市的示例数据，不应该在实际应用中使用
-const sampleRecipe: CityRecipe = {
-  id: 1,
-  label: '默认城市',
-  city: '默认城市',
-  policies: [
-    {
-      effectiveDate: '2024-07',
-      minimumWage: 2360,
-      avgWage: 11620,
-      employee: {
-        insuranceRate: {
-          endowment: 0.08,
-          health: 0.02,
-          unemployment: 0.003,
-        },
-      },
-      employer: {
-        insuranceRate: {
-          endowment: 0.13,
-          health: 0.045,
-          unemployment: 0.007,
-          birth: 0.0045,
-          occupationalInjury: 0.0014,
-        },
-      },
-      insuranceBaseRange: {
-        endowment: [2360, 34860],
-        health: [6972, 34860],
-        unemployment: [2360, 34860],
-        birth: [6972, 34860],
-        occupationalInjury: [6972, 34860],
-      },
-      housingFundBaseRange: [2360, 34860],
-    },
-  ],
-  insuranceBaseOnLastMonth: true,
-};
+import {
+  CalculateParams,
+  CalculatorFormComponent,
+} from './calculator-form/calculator-form.component';
+import { MonthlyResultsComponent } from './monthly-results/monthly-results.component';
+import { SummaryChartsComponent } from './summary-charts/summary-charts.component';
+import { SummaryDetailsComponent } from './summary-details/summary-details.component';
+import { SalaryCalculatorStore } from './salary-calculator.store';
 
 @Component({
   selector: 'app-calculator',
-  standalone: false,
+  standalone: true,
+  imports: [
+    CommonModule,
+    CalculatorFormComponent,
+    MonthlyResultsComponent,
+    SummaryChartsComponent,
+    SummaryDetailsComponent,
+  ],
   templateUrl: './calculator.component.html',
   styleUrls: ['./calculator.component.scss'],
 })
-export class CalculatorComponent {
-  usePredefinedInsurancePercents = true;
-  cityRecipe: CityRecipe = null!;
-  clear = false;
+export class CalculatorComponent implements OnInit {
+  readonly store = inject(SalaryCalculatorStore);
+  private http = inject(HttpClient);
+
+  readonly usePredefinedInsurancePercents = signal<boolean>(true);
+  readonly cityRecipe = signal<CityRecipe | null>(null);
+  readonly clear = signal<boolean>(false);
   selectedYear = new Date().getFullYear();
 
   selectedMonth$ = new BehaviorSubject<number>(1);
@@ -83,10 +62,10 @@ export class CalculatorComponent {
   monthlyMetas$!: Observable<MonthlyIncomeMeta[]>;
   monthlyIncomes$!: Observable<MonthlyIncomeInfo[]>;
   summary$!: Observable<FullYearIncomeInfo>;
-  recipeIndex$: Observable<CityRecipeIndexItem[]>;
+  recipeIndex$!: Observable<CityRecipeIndexItem[]>;
   private loadedRecipes = new Map<string, CityRecipe>();
 
-  constructor(private http: HttpClient) {
+  ngOnInit() {
     // 初始化流
     this.monthlyMetasSubject$ = new BehaviorSubject<MonthlyIncomeMeta[]>([]);
     this.monthlyMetas$ = this.monthlyMetasSubject$
@@ -108,17 +87,17 @@ export class CalculatorComponent {
       shareReplay(1),
     );
 
-    // 配方索引流（统领入口，按需异步加载）
+    // 配方索引流（统领入口，通过 delay(0) 自动调度解耦至下一事件循环）
     this.recipeIndex$ = this.http
       .get<CityRecipeIndexItem[]>('assets/recipes/index.json')
-      .pipe(
-        tap((items) => {
-          if (items.length > 0 && !this.cityRecipe) {
-            this.selectRecipeItem(items[0]);
-          }
-        }),
-        shareReplay(1),
-      );
+      .pipe(delay(0), shareReplay(1));
+
+    // 主动订阅触发配方加载，避免 mat-menu 懒渲染导致不发请求
+    this.recipeIndex$.subscribe((items) => {
+      if (items.length > 0 && !this.cityRecipe()) {
+        this.selectRecipeItem(items[0]);
+      }
+    });
   }
 
   selectRecipeItem(item: CityRecipeIndexItem) {
@@ -128,6 +107,7 @@ export class CalculatorComponent {
     }
     this.http
       .get<CityRecipe>(`assets/recipes/${item.file}`)
+      .pipe(delay(0))
       .subscribe((recipe) => {
         this.loadedRecipes.set(item.file, recipe);
         this.changeRecipe(recipe);
@@ -140,15 +120,15 @@ export class CalculatorComponent {
   }
 
   changeRecipe(recipe: CityRecipe) {
-    this.cityRecipe = recipe;
+    this.cityRecipe.set(recipe);
   }
 
   changePredefineCondition(val: boolean) {
-    this.usePredefinedInsurancePercents = val;
+    this.usePredefinedInsurancePercents.set(val);
   }
 
   clearResult() {
-    this.clear = true;
+    this.clear.set(true);
   }
 
   updateMeta(meta: MonthlyInputModel, index: number) {
@@ -179,7 +159,7 @@ export class CalculatorComponent {
   }
 
   calculate(params: CalculateParams): void {
-    this.clear = false;
+    this.clear.set(false);
 
     const monthlyMetas = this.buildMonthlyMetasFromPolicy(params);
 
@@ -193,7 +173,7 @@ export class CalculatorComponent {
     params: CalculateParams,
   ): MonthlyIncomeMeta[] {
     return buildMonthlyMetas(
-      this.cityRecipe,
+      this.cityRecipe()!,
       params.year,
       params,
       params.useUniformPolicy,

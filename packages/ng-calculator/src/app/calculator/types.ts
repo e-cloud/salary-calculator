@@ -12,8 +12,8 @@ export type TypedFormControls<T extends Record<any, any>> = {
           : FormControl<R>
       >
     : T[K] extends Record<any, any>
-    ? FormGroup<TypedFormControls<T[K]>>
-    : FormControl<T[K]>;
+      ? FormGroup<TypedFormControls<T[K]>>
+      : FormControl<T[K]>;
 };
 
 /**

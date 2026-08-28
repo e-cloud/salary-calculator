@@ -33,28 +33,36 @@
         color="primary"
         [matMenuTriggerFor]="menu"
       >
-        {{ cityRecipe?.city }}: {{ cityRecipe?.label }}
+        @if (cityRecipe) {
+          {{ cityRecipe.city }}: {{ cityRecipe.label }}
+        } @else {
+          选择城市配方
+        }
         <mat-icon>arrow_drop_down</mat-icon>
       </button>
       <mat-menu #menu="matMenu">
-        <button
-          mat-menu-item
-          *ngFor="let item of recipeIndex$ | async"
-          (click)="onSelectRecipeItem(item)"
-        >
-          {{ item.city }}: {{ item.label }}
-        </button>
+        @for (item of recipeIndex$ | async; track item.file) {
+          <button mat-menu-item (click)="onSelectRecipeItem(item)">
+            {{ item.city }}: {{ item.label }}
+          </button>
+        }
       </mat-menu>
 
-      <mat-form-field class="ml-3 dense-xs" style="width: 120px" appearance="outline">
+      <mat-form-field
+        class="ml-3 dense-xs"
+        style="width: 120px"
+        appearance="outline"
+      >
         <mat-label>计算年份</mat-label>
         <mat-select
           [(value)]="selectedYear"
           (selectionChange)="onYearChange($event.value)"
         >
-          <mat-option *ngFor="let year of availableYears" [value]="year">
-            {{ year }}
-          </mat-option>
+          @for (year of availableYears; track year) {
+            <mat-option [value]="year">
+              {{ year }}
+            </mat-option>
+          }
         </mat-select>
       </mat-form-field>
     </div>
@@ -116,11 +124,13 @@
         </mat-form-field>
       </div>
 
-      <div class="row mx-0" *ngIf="policyHint">
+      @if (policyHint) {
+        <div class="row mx-0">
           <div class="text-muted small my-1">
             {{ policyHint }}
           </div>
-      </div>
+        </div>
+      }
 
       <div class="row mx-0">
         <div>
@@ -205,18 +215,10 @@
             />
             <span matTextSuffix>元</span>
 
-            <mat-autocomplete
-              #infantCare="matAutocomplete"
-              panelWidth="200"
-            >
-              <mat-option
-                *ngFor="
-                  let item of infantCareDeductionOptions;
-                  trackBy: trackByValue
-                "
-                [value]="item.value"
-                >{{ item.label }}</mat-option
-              >
+            <mat-autocomplete #infantCare="matAutocomplete" panelWidth="200">
+              @for (item of infantCareDeductionOptions; track item.label) {
+                <mat-option [value]="item.value">{{ item.label }}</mat-option>
+              }
             </mat-autocomplete>
           </mat-form-field>
 
@@ -239,14 +241,9 @@
               #childEducation="matAutocomplete"
               panelWidth="200"
             >
-              <mat-option
-                *ngFor="
-                  let item of childEducationDeductionOptions;
-                  trackBy: trackByValue
-                "
-                [value]="item.value"
-                >{{ item.label }}</mat-option
-              >
+              @for (item of childEducationDeductionOptions; track item.label) {
+                <mat-option [value]="item.value">{{ item.label }}</mat-option>
+              }
             </mat-autocomplete>
           </mat-form-field>
 
@@ -269,14 +266,12 @@
               #continuingEducation="matAutocomplete"
               panelWidth="200"
             >
-              <mat-option
-                *ngFor="
-                  let item of continuousEducationDeductionOptions;
-                  trackBy: trackByValue
-                "
-                [value]="item.value"
-                >{{ item.label }}</mat-option
-              >
+              @for (
+                item of continuousEducationDeductionOptions;
+                track item.label
+              ) {
+                <mat-option [value]="item.value">{{ item.label }}</mat-option>
+              }
             </mat-autocomplete>
           </mat-form-field>
 
@@ -318,14 +313,12 @@
               #housingLoanInterest="matAutocomplete"
               panelWidth="200"
             >
-              <mat-option
-                *ngFor="
-                  let item of housingLoanInterestDeductionOptions;
-                  trackBy: trackByValue
-                "
-                [value]="item.value"
-                >{{ item.label }}</mat-option
-              >
+              @for (
+                item of housingLoanInterestDeductionOptions;
+                track item.label
+              ) {
+                <mat-option [value]="item.value">{{ item.label }}</mat-option>
+              }
             </mat-autocomplete>
           </mat-form-field>
 
@@ -349,14 +342,9 @@
             <span matTextSuffix>元</span>
 
             <mat-autocomplete #renting="matAutocomplete" panelWidth="200">
-              <mat-option
-                *ngFor="
-                  let item of rentingDeductionOptions;
-                  trackBy: trackByValue
-                "
-                [value]="item.value"
-                >{{ item.label }}</mat-option
-              >
+              @for (item of rentingDeductionOptions; track item.label) {
+                <mat-option [value]="item.value">{{ item.label }}</mat-option>
+              }
             </mat-autocomplete>
           </mat-form-field>
 
@@ -376,14 +364,9 @@
             <span matTextSuffix>元</span>
 
             <mat-autocomplete #elderlyCare="matAutocomplete" panelWidth="200">
-              <mat-option
-                *ngFor="
-                  let item of elderlyCareDeductionOptions;
-                  trackBy: trackByValue
-                "
-                [value]="item.value"
-                >{{ item.label }}</mat-option
-              >
+              @for (item of elderlyCareDeductionOptions; track item.label) {
+                <mat-option [value]="item.value">{{ item.label }}</mat-option>
+              }
             </mat-autocomplete>
           </mat-form-field>
 
@@ -434,14 +417,9 @@
               #privatePension="matAutocomplete"
               panelWidth="200"
             >
-              <mat-option
-                *ngFor="
-                  let item of privatePensionOptions;
-                  trackBy: trackByValue
-                "
-                [value]="item.value"
-                >{{ item.label }}</mat-option
-              >
+              @for (item of privatePensionOptions; track item.label) {
+                <mat-option [value]="item.value">{{ item.label }}</mat-option>
+              }
             </mat-autocomplete>
           </mat-form-field>
 
@@ -459,54 +437,56 @@
         </div>
       </div>
 
-      <div class="row mx-0" *ngIf="!usePredefinedInsurancePercents">
-        <div formGroupName="insuranceRate">
-          <mat-form-field style="width: 120px">
-            <mat-label>养老保险个人缴纳比例</mat-label>
-            <input
-              matInput
-              type="number"
-              placeholder="0"
-              formControlName="endowment"
-              min="0"
-            />
-            <span matTextSuffix>%</span>
-          </mat-form-field>
+      @if (!usePredefinedInsurancePercents) {
+        <div class="row mx-0">
+          <div formGroupName="insuranceRate">
+            <mat-form-field style="width: 120px">
+              <mat-label>养老保险个人缴纳比例</mat-label>
+              <input
+                matInput
+                type="number"
+                placeholder="0"
+                formControlName="endowment"
+                min="0"
+              />
+              <span matTextSuffix>%</span>
+            </mat-form-field>
 
-          <mat-form-field class="ml-3" style="width: 120px">
-            <mat-label>医疗保险个人缴纳比例</mat-label>
-            <input
-              matInput
-              type="number"
-              placeholder="0"
-              formControlName="health"
-              min="0"
-            />
-            <span matTextSuffix>%</span>
-          </mat-form-field>
+            <mat-form-field class="ml-3" style="width: 120px">
+              <mat-label>医疗保险个人缴纳比例</mat-label>
+              <input
+                matInput
+                type="number"
+                placeholder="0"
+                formControlName="health"
+                min="0"
+              />
+              <span matTextSuffix>%</span>
+            </mat-form-field>
 
-          <mat-form-field class="ml-3" style="width: 120px">
-            <mat-label>失业保险个人缴纳比例</mat-label>
-            <input
-              matInput
-              type="number"
-              placeholder="0"
-              formControlName="unemployment"
-              min="0"
-            />
-            <span matTextSuffix>%</span>
-          </mat-form-field>
+            <mat-form-field class="ml-3" style="width: 120px">
+              <mat-label>失业保险个人缴纳比例</mat-label>
+              <input
+                matInput
+                type="number"
+                placeholder="0"
+                formControlName="unemployment"
+                min="0"
+              />
+              <span matTextSuffix>%</span>
+            </mat-form-field>
+          </div>
+
+          <mat-slide-toggle
+            class="ml-3 mb-2 mb-md-0"
+            color="primary"
+            formControlName="insuranceBaseOnLastMonth"
+            style="align-self: center"
+          >
+            按上月收入缴纳社保
+          </mat-slide-toggle>
         </div>
-
-        <mat-slide-toggle
-          class="ml-3 mb-2 mb-md-0"
-          color="primary"
-          formControlName="insuranceBaseOnLastMonth"
-          style="align-self: center"
-        >
-          按上月收入缴纳社保
-        </mat-slide-toggle>
-      </div>
+      }
     </form>
   </mat-card-content>
 

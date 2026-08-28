@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "description": "a monorepo for salary calculator with various frontend solutions",
   "scripts": {
+    "build": "pnpm -r run build",
+    "lint": "pnpm -r run lint",
+    "test": "pnpm -r run test",
+    "test:coverage": "pnpm -r run test:coverage",
     "format": "prettier --config-precedence file-override --write",
     "format:all": "prettier --loglevel error --config-precedence file-override --write ./**/*.{ts,tsx,js,json,jsx,vue,scss,css,yml,yaml}",
     "release": "commit-and-tag-version -a",

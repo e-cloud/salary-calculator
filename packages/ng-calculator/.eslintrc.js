@@ -41,8 +41,6 @@ module.exports = {
             style: "camelCase",
           },
         ],
-        "@angular-eslint/prefer-standalone": "off",
-        "@angular-eslint/prefer-inject": "off",
       },
       plugins: ["unused-imports"],
       extends: [

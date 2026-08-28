@@ -1,473 +1,491 @@
-<div *ngIf="!clear && (monthlyIncomes$ | async) as incomeList">
-  <mat-accordion
-    [@listAnimation]="incomeList.length"
-    (animationend)="scrollToChart()"
-  >
-    <mat-expansion-panel
-      *ngFor="let item of incomeList; let idx = index; trackBy: trackIncome"
-      #panel
-      (opened)="onChangeChartMonth(idx)"
+@if (!clear && (monthlyIncomes$ | async); as incomeList) {
+  <div>
+    <mat-accordion
+      [@listAnimation]="incomeList.length"
+      (animationend)="scrollToChart()"
     >
-      <mat-expansion-panel-header>
-        {{ item.actualMonth - 1 | month }} 实收：
-        {{ item.cashIncome | currency }}，公积金：{{
-          item.housingFund * 2 | currency
-        }}
-        ，个税：{{ item.tax | currency }}，公司成本：{{
-          item.employerCosts.full | currency
-        }}
-      </mat-expansion-panel-header>
+      @for (item of incomeList; track item.id; let idx = $index) {
+        <mat-expansion-panel #panel (opened)="onChangeChartMonth(idx)">
+          <mat-expansion-panel-header>
+            {{ item.actualMonth - 1 | month }} 实收：
+            {{ item.cashIncome | currency }}，公积金：{{
+              item.housingFund * 2 | currency
+            }}
+            ，个税：{{ item.tax | currency }}，公司成本：{{
+              item.employerCosts.full | currency
+            }}
+          </mat-expansion-panel-header>
 
-      <ng-container
-        [ngTemplateOutlet]="detailForm"
-        [ngTemplateOutletContext]="{
-          form: detailForms[idx],
-          income: item,
-          index: idx
-        }"
-        *ngIf="detailForms[idx]"
-      ></ng-container>
-    </mat-expansion-panel>
-  </mat-accordion>
-</div>
+          @if (detailForms[idx]) {
+            <ng-container
+              [ngTemplateOutlet]="detailForm"
+              [ngTemplateOutletContext]="{
+                form: detailForms[idx],
+                income: item,
+                index: idx,
+              }"
+            ></ng-container>
+          }
+        </mat-expansion-panel>
+      }
+    </mat-accordion>
+  </div>
+}
 
 <ng-template #detailForm let-form="form" let-income="income" let-idx="index">
-  <form class="d-flex flex-column" [formGroup]="form" *ngIf="form">
-    <div class="ml-md-3 d-flex flex-wrap align-items-center">
-      <mat-form-field>
-        <mat-label>月薪</mat-label>
-        <input
-          matInput
-          type="number"
-          placeholder="10000"
-          formControlName="monthSalary"
-          min="0"
-        />
-        <span matTextSuffix>元</span>
-      </mat-form-field>
+  @if (form) {
+    <form class="d-flex flex-column" [formGroup]="form">
+      <div class="ml-md-3 d-flex flex-wrap align-items-center">
+        <mat-form-field>
+          <mat-label>月薪</mat-label>
+          <input
+            matInput
+            type="number"
+            placeholder="10000"
+            formControlName="monthSalary"
+            min="0"
+          />
+          <span matTextSuffix>元</span>
+        </mat-form-field>
 
-      <mat-form-field class="ml-3">
-        <mat-label>月度奖金</mat-label>
-        <input
-          matInput
-          type="number"
-          placeholder="0"
-          formControlName="monthlyBonus"
-          min="0"
-        />
-        <span matTextSuffix>元</span>
-      </mat-form-field>
+        <mat-form-field class="ml-3">
+          <mat-label>月度奖金</mat-label>
+          <input
+            matInput
+            type="number"
+            placeholder="0"
+            formControlName="monthlyBonus"
+            min="0"
+          />
+          <span matTextSuffix>元</span>
+        </mat-form-field>
 
-      <mat-slide-toggle class="ml-3" formControlName="newPayCycle"
-        >入职新公司（新计费周期）？</mat-slide-toggle
-      >
-    </div>
+        <mat-slide-toggle class="ml-3" formControlName="newPayCycle"
+          >入职新公司（新计费周期）？</mat-slide-toggle
+        >
+      </div>
 
-    <div class="ml-md-3 d-flex flex-wrap">
-      <mat-form-field>
-        <mat-label>{{ templates.insuranceBase.label }}</mat-label>
-        <input
-          matInput
-          type="number"
-          [placeholder]="templates.insuranceBase.placeholder"
-          formControlName="insuranceBase"
-          min="0"
-          [matAutocomplete]="insuranceBase2"
-        />
-        <span matTextSuffix>元</span>
+      <div class="ml-md-3 d-flex flex-wrap">
+        <mat-form-field>
+          <mat-label>{{ templates.insuranceBase.label }}</mat-label>
+          <input
+            matInput
+            type="number"
+            [placeholder]="templates.insuranceBase.placeholder"
+            formControlName="insuranceBase"
+            min="0"
+            [matAutocomplete]="insuranceBase2"
+          />
+          <span matTextSuffix>元</span>
 
-        <mat-autocomplete #insuranceBase2="matAutocomplete" panelWidth="250">
-          <mat-option [value]="form.controls.monthSalary?.value"
-            >当前月薪：{{ form.controls.monthSalary?.value }}元(不超上限{{
-              getInsuranceTopForMonth(idx + 1)
-            }}元)
-          </mat-option>
-          <mat-option 
-            *ngIf="form.controls.yearBeforeLastAvgSalary?.value > 0"
-            [value]="form.controls.yearBeforeLastAvgSalary?.value"
-            >上上年度月平均：{{ form.controls.yearBeforeLastAvgSalary?.value }}元
-          </mat-option>
-          <mat-option 
-            *ngIf="form.controls.lastYearAvgSalary?.value > 0"
-            [value]="form.controls.lastYearAvgSalary?.value"
-            >上年度月平均：{{ form.controls.lastYearAvgSalary?.value }}元
-          </mat-option>
-          <mat-option [value]="getMinimumWageForMonth(idx + 1)"
-            >最低工资标准：{{ getMinimumWageForMonth(idx + 1) }}元</mat-option
+          <mat-autocomplete #insuranceBase2="matAutocomplete" panelWidth="250">
+            <mat-option [value]="form.controls.monthSalary?.value"
+              >当前月薪：{{ form.controls.monthSalary?.value }}元(不超上限{{
+                getInsuranceTopForMonth(idx + 1)
+              }}元)
+            </mat-option>
+            @if (form.controls.yearBeforeLastAvgSalary?.value > 0) {
+              <mat-option
+                [value]="form.controls.yearBeforeLastAvgSalary?.value"
+              >
+                上上年度月平均：{{
+                  form.controls.yearBeforeLastAvgSalary?.value
+                }}元
+              </mat-option>
+            }
+            @if (form.controls.lastYearAvgSalary?.value > 0) {
+              <mat-option [value]="form.controls.lastYearAvgSalary?.value">
+                上年度月平均：{{ form.controls.lastYearAvgSalary?.value }}元
+              </mat-option>
+            }
+            <mat-option [value]="getMinimumWageForMonth(idx + 1)"
+              >最低工资标准：{{ getMinimumWageForMonth(idx + 1) }}元</mat-option
+            >
+            <mat-option [value]="0">不缴纳：0元</mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+
+        <div class="ml-3" formGroupName="insuranceRate">
+          <mat-form-field style="width: 120px">
+            <mat-label>养老保险个人缴纳比例</mat-label>
+            <input
+              matInput
+              type="number"
+              placeholder="0"
+              formControlName="endowment"
+              min="0"
+            />
+            <span matTextSuffix>%</span>
+          </mat-form-field>
+
+          <mat-form-field class="ml-3" style="width: 120px">
+            <mat-label>医疗保险个人缴纳比例</mat-label>
+            <input
+              matInput
+              type="number"
+              placeholder="0"
+              formControlName="health"
+              min="0"
+            />
+            <span matTextSuffix>%</span>
+          </mat-form-field>
+
+          <mat-form-field class="ml-3" style="width: 120px">
+            <mat-label>失业保险个人缴纳比例</mat-label>
+            <input
+              matInput
+              type="number"
+              placeholder="0"
+              formControlName="unemployment"
+              min="0"
+            />
+            <span matTextSuffix>%</span>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="ml-md-3 d-flex flex-wrap">
+        <mat-form-field>
+          <mat-label>{{ templates.housingFundBase.label }}</mat-label>
+          <input
+            matInput
+            type="number"
+            [placeholder]="templates.housingFundBase.placeholder"
+            formControlName="housingFundBase"
+            min="0"
+            [matAutocomplete]="housingFundBase2"
+          />
+          <span matTextSuffix>元</span>
+
+          <mat-autocomplete
+            #housingFundBase2="matAutocomplete"
+            panelWidth="250"
           >
-          <mat-option [value]="0">不缴纳：0元</mat-option>
-        </mat-autocomplete>
-      </mat-form-field>
-
-      <div class="ml-3" formGroupName="insuranceRate">
-        <mat-form-field style="width: 120px">
-          <mat-label>养老保险个人缴纳比例</mat-label>
-          <input
-            matInput
-            type="number"
-            placeholder="0"
-            formControlName="endowment"
-            min="0"
-          />
-          <span matTextSuffix>%</span>
+            <mat-option [value]="form.controls.monthSalary?.value"
+              >当前月薪：{{ form.controls.monthSalary?.value }}元(不超上限{{
+                getHousingFundTopForMonth(idx + 1)
+              }}元)
+            </mat-option>
+            @if (form.controls.yearBeforeLastAvgSalary?.value > 0) {
+              <mat-option
+                [value]="form.controls.yearBeforeLastAvgSalary?.value"
+              >
+                上上年度月平均：{{
+                  form.controls.yearBeforeLastAvgSalary?.value
+                }}元
+              </mat-option>
+            }
+            @if (form.controls.lastYearAvgSalary?.value > 0) {
+              <mat-option [value]="form.controls.lastYearAvgSalary?.value">
+                上年度月平均：{{ form.controls.lastYearAvgSalary?.value }}元
+              </mat-option>
+            }
+            <mat-option [value]="getMinimumWageForMonth(idx + 1)"
+              >最低工资标准：{{ getMinimumWageForMonth(idx + 1) }}元</mat-option
+            >
+            <mat-option [value]="0">不缴纳：0元</mat-option>
+          </mat-autocomplete>
         </mat-form-field>
 
         <mat-form-field class="ml-3" style="width: 120px">
-          <mat-label>医疗保险个人缴纳比例</mat-label>
+          <mat-label>公积金个人缴纳比例</mat-label>
           <input
             matInput
             type="number"
             placeholder="0"
-            formControlName="health"
-            min="0"
-          />
-          <span matTextSuffix>%</span>
-        </mat-form-field>
-
-        <mat-form-field class="ml-3" style="width: 120px">
-          <mat-label>失业保险个人缴纳比例</mat-label>
-          <input
-            matInput
-            type="number"
-            placeholder="0"
-            formControlName="unemployment"
+            formControlName="housingFundRate"
             min="0"
           />
           <span matTextSuffix>%</span>
         </mat-form-field>
       </div>
-    </div>
 
-    <div class="ml-md-3 d-flex flex-wrap">
-      <mat-form-field>
-        <mat-label>{{ templates.housingFundBase.label }}</mat-label>
-        <input
-          matInput
-          type="number"
-          [placeholder]="templates.housingFundBase.placeholder"
-          formControlName="housingFundBase"
-          min="0"
-          [matAutocomplete]="housingFundBase2"
-        />
-        <span matTextSuffix>元</span>
-
-        <mat-autocomplete #housingFundBase2="matAutocomplete" panelWidth="250">
-          <mat-option [value]="form.controls.monthSalary?.value"
-            >当前月薪：{{ form.controls.monthSalary?.value }}元(不超上限{{
-              getHousingFundTopForMonth(idx + 1)
-            }}元)
-          </mat-option>
-          <mat-option 
-            *ngIf="form.controls.yearBeforeLastAvgSalary?.value > 0"
-            [value]="form.controls.yearBeforeLastAvgSalary?.value"
-            >上上年度月平均：{{ form.controls.yearBeforeLastAvgSalary?.value }}元
-          </mat-option>
-          <mat-option 
-            *ngIf="form.controls.lastYearAvgSalary?.value > 0"
-            [value]="form.controls.lastYearAvgSalary?.value"
-            >上年度月平均：{{ form.controls.lastYearAvgSalary?.value }}元
-          </mat-option>
-          <mat-option [value]="getMinimumWageForMonth(idx + 1)"
-            >最低工资标准：{{ getMinimumWageForMonth(idx + 1) }}元</mat-option
+      <div class="ml-md-3 d-flex flex-wrap" formGroupName="extraDeduction">
+        <mat-form-field [style.width]="templates.infantCare.width">
+          <mat-label
+            >{{ templates.infantCare.label }}{{ labelSuffix }}</mat-label
           >
-          <mat-option [value]="0">不缴纳：0元</mat-option>
-        </mat-autocomplete>
-      </mat-form-field>
+          <input
+            matInput
+            type="number"
+            [placeholder]="templates.infantCare.placeholder"
+            formControlName="infantCare"
+            min="0"
+            [matAutocomplete]="infantCare"
+          />
 
-      <mat-form-field class="ml-3" style="width: 120px">
-        <mat-label>公积金个人缴纳比例</mat-label>
-        <input
-          matInput
-          type="number"
-          placeholder="0"
-          formControlName="housingFundRate"
-          min="0"
-        />
-        <span matTextSuffix>%</span>
-      </mat-form-field>
-    </div>
+          <mat-autocomplete #infantCare="matAutocomplete" panelWidth="200">
+            @for (item of templates.infantCare.options; track item.label) {
+              <mat-option [value]="item.value">{{ item.label }}</mat-option>
+            }
+          </mat-autocomplete>
+          <span matTextSuffix>元</span>
+        </mat-form-field>
 
-    <div class="ml-md-3 d-flex flex-wrap" formGroupName="extraDeduction">
-      <mat-form-field [style.width]="templates.infantCare.width">
-        <mat-label
-          >{{ templates.infantCare.label }}{{ labelSuffix }}</mat-label
+        <mat-form-field
+          class="ml-3"
+          [style.width]="templates.childEducation.width"
         >
-        <input
-          matInput
-          type="number"
-          [placeholder]="templates.infantCare.placeholder"
-          formControlName="infantCare"
-          min="0"
-          [matAutocomplete]="infantCare"
-        />
-
-        <mat-autocomplete #infantCare="matAutocomplete" panelWidth="200">
-          <mat-option
-            *ngFor="let item of templates.infantCare.options"
-            [value]="item.value"
-            >{{ item.label }}</mat-option
+          <mat-label
+            >{{ templates.childEducation.label }}{{ labelSuffix }}</mat-label
           >
-        </mat-autocomplete>
-        <span matTextSuffix>元</span>
-      </mat-form-field>
+          <input
+            matInput
+            type="number"
+            [placeholder]="templates.childEducation.placeholder"
+            formControlName="childEducation"
+            min="0"
+            [matAutocomplete]="childEducation"
+          />
 
-      <mat-form-field
-        class="ml-3"
-        [style.width]="templates.childEducation.width"
-      >
-        <mat-label
-          >{{ templates.childEducation.label }}{{ labelSuffix }}</mat-label
+          <mat-autocomplete #childEducation="matAutocomplete" panelWidth="200">
+            @for (item of templates.childEducation.options; track item.label) {
+              <mat-option [value]="item.value">{{ item.label }}</mat-option>
+            }
+          </mat-autocomplete>
+          <span matTextSuffix>元</span>
+        </mat-form-field>
+
+        <mat-form-field
+          class="ml-3"
+          [style.width]="templates.continuingEducation.width"
         >
-        <input
-          matInput
-          type="number"
-          [placeholder]="templates.childEducation.placeholder"
-          formControlName="childEducation"
-          min="0"
-          [matAutocomplete]="childEducation"
-        />
-
-        <mat-autocomplete #childEducation="matAutocomplete" panelWidth="200">
-          <mat-option
-            *ngFor="let item of templates.childEducation.options"
-            [value]="item.value"
-            >{{ item.label }}</mat-option
+          <mat-label
+            >{{ templates.continuingEducation.label
+            }}{{ labelSuffix }}</mat-label
           >
-        </mat-autocomplete>
-        <span matTextSuffix>元</span>
-      </mat-form-field>
+          <input
+            matInput
+            type="number"
+            [placeholder]="templates.continuingEducation.placeholder"
+            formControlName="continuingEducation"
+            min="0"
+            [matAutocomplete]="continuingEducation"
+          />
 
-      <mat-form-field
-        class="ml-3"
-        [style.width]="templates.continuingEducation.width"
-      >
-        <mat-label
-          >{{ templates.continuingEducation.label }}{{ labelSuffix }}</mat-label
-        >
-        <input
-          matInput
-          type="number"
-          [placeholder]="templates.continuingEducation.placeholder"
-          formControlName="continuingEducation"
-          min="0"
-          [matAutocomplete]="continuingEducation"
-        />
-
-        <mat-autocomplete
-          #continuingEducation="matAutocomplete"
-          panelWidth="200"
-        >
-          <mat-option
-            *ngFor="let item of templates.continuingEducation.options"
-            [value]="item.value"
-            >{{ item.label }}</mat-option
+          <mat-autocomplete
+            #continuingEducation="matAutocomplete"
+            panelWidth="200"
           >
-        </mat-autocomplete>
-        <span matTextSuffix>元</span>
-      </mat-form-field>
+            @for (
+              item of templates.continuingEducation.options;
+              track item.label
+            ) {
+              <mat-option [value]="item.value">{{ item.label }}</mat-option>
+            }
+          </mat-autocomplete>
+          <span matTextSuffix>元</span>
+        </mat-form-field>
 
-      <mat-form-field class="ml-3" style="width: 120px">
-        <mat-label>大病医疗(汇算){{ labelSuffix }}</mat-label>
-        <input
-          matInput
-          type="number"
-          placeholder="0"
-          formControlName="seriousMedicalExpense"
-          min="0"
-          matTooltip="大病医疗依法在次年汇算清缴时据实扣除"
-          matTooltipPosition="above"
-        />
-        <span matTextSuffix>元</span>
-      </mat-form-field>
+        <mat-form-field class="ml-3" style="width: 120px">
+          <mat-label>大病医疗(汇算){{ labelSuffix }}</mat-label>
+          <input
+            matInput
+            type="number"
+            placeholder="0"
+            formControlName="seriousMedicalExpense"
+            min="0"
+            matTooltip="大病医疗依法在次年汇算清缴时据实扣除"
+            matTooltipPosition="above"
+          />
+          <span matTextSuffix>元</span>
+        </mat-form-field>
 
-      <mat-form-field
-        class="ml-3"
-        [style.width]="templates.housingLoanInterest.width"
-      >
-        <mat-label
-          >{{ templates.housingLoanInterest.label }}{{ labelSuffix }}</mat-label
+        <mat-form-field
+          class="ml-3"
+          [style.width]="templates.housingLoanInterest.width"
         >
-        <input
-          matInput
-          type="number"
-          [placeholder]="templates.housingLoanInterest.placeholder"
-          formControlName="housingLoanInterest"
-          min="0"
-          (ngModelChange)="
-            resetConflict(
-              $event,
-              form,
-              templates.housingLoanInterest.conflictWith || ''
-            )
-          "
-          [matAutocomplete]="housingLoanInterest"
-        />
+          <mat-label
+            >{{ templates.housingLoanInterest.label
+            }}{{ labelSuffix }}</mat-label
+          >
+          <input
+            matInput
+            type="number"
+            [placeholder]="templates.housingLoanInterest.placeholder"
+            formControlName="housingLoanInterest"
+            min="0"
+            (ngModelChange)="
+              resetConflict(
+                $event,
+                form,
+                templates.housingLoanInterest.conflictWith || ''
+              )
+            "
+            [matAutocomplete]="housingLoanInterest"
+          />
 
-        <mat-autocomplete
-          #housingLoanInterest="matAutocomplete"
-          panelWidth="200"
+          <mat-autocomplete
+            #housingLoanInterest="matAutocomplete"
+            panelWidth="200"
+          >
+            @for (
+              item of templates.housingLoanInterest.options;
+              track item.label
+            ) {
+              <mat-option [value]="item.value">{{ item.label }}</mat-option>
+            }
+          </mat-autocomplete>
+          <span matTextSuffix>元</span>
+        </mat-form-field>
+
+        <mat-form-field class="ml-3" [style.width]="templates.renting.width">
+          <mat-label>{{ templates.renting.label }}{{ labelSuffix }}</mat-label>
+          <input
+            matInput
+            type="number"
+            [placeholder]="templates.renting.placeholder"
+            formControlName="renting"
+            min="0"
+            (ngModelChange)="
+              resetConflict($event, form, templates.renting.conflictWith || '')
+            "
+            [matAutocomplete]="renting"
+          />
+
+          <mat-autocomplete #renting="matAutocomplete" panelWidth="200">
+            @for (item of templates.renting.options; track item.label) {
+              <mat-option [value]="item.value">{{ item.label }}</mat-option>
+            }
+          </mat-autocomplete>
+          <span matTextSuffix>元</span>
+        </mat-form-field>
+
+        <mat-form-field
+          class="ml-3"
+          [style.width]="templates.elderlyCare.width"
         >
-          <mat-option
-            *ngFor="let item of templates.housingLoanInterest.options"
-            [value]="item.value"
-            >{{ item.label }}</mat-option
+          <mat-label
+            >{{ templates.elderlyCare.label }}{{ labelSuffix }}</mat-label
           >
-        </mat-autocomplete>
-        <span matTextSuffix>元</span>
-      </mat-form-field>
+          <input
+            matInput
+            type="number"
+            [placeholder]="templates.elderlyCare.placeholder"
+            formControlName="elderlyCare"
+            min="0"
+            [matAutocomplete]="elderlyCare"
+          />
 
-      <mat-form-field class="ml-3" [style.width]="templates.renting.width">
-        <mat-label>{{ templates.renting.label }}{{ labelSuffix }}</mat-label>
-        <input
-          matInput
-          type="number"
-          [placeholder]="templates.renting.placeholder"
-          formControlName="renting"
-          min="0"
-          (ngModelChange)="
-            resetConflict($event, form, templates.renting.conflictWith || '')
-          "
-          [matAutocomplete]="renting"
-        />
+          <mat-autocomplete #elderlyCare="matAutocomplete" panelWidth="200">
+            @for (item of templates.elderlyCare.options; track item.label) {
+              <mat-option [value]="item.value">{{ item.label }}</mat-option>
+            }
+          </mat-autocomplete>
+          <span matTextSuffix>元</span>
+        </mat-form-field>
 
-        <mat-autocomplete #renting="matAutocomplete" panelWidth="200">
-          <mat-option
-            *ngFor="let item of templates.renting.options"
-            [value]="item.value"
-            >{{ item.label }}</mat-option
-          >
-        </mat-autocomplete>
-        <span matTextSuffix>元</span>
-      </mat-form-field>
+        <mat-form-field class="ml-3" style="width: 140px">
+          <mat-label>企业年金(个人4%限额)</mat-label>
+          <input
+            matInput
+            type="number"
+            placeholder="0"
+            formControlName="enterprisePensionFromEmployee"
+            min="0"
+            matTooltip="法定税前扣除限额为本人月薪4%且不超社平3倍"
+            matTooltipPosition="above"
+          />
+          <span matTextSuffix>元</span>
+        </mat-form-field>
 
-      <mat-form-field class="ml-3" [style.width]="templates.elderlyCare.width">
-        <mat-label
-          >{{ templates.elderlyCare.label }}{{ labelSuffix }}</mat-label
+        <mat-form-field class="ml-3" style="width: 120px">
+          <mat-label>企业年金公司缴纳</mat-label>
+          <input
+            matInput
+            type="number"
+            placeholder="0"
+            formControlName="enterprisePensionFromEmployer"
+            min="0"
+          />
+          <span matTextSuffix>元</span>
+        </mat-form-field>
+
+        <mat-form-field
+          class="ml-3"
+          [style.width]="templates.privatePension.width"
         >
-        <input
-          matInput
-          type="number"
-          [placeholder]="templates.elderlyCare.placeholder"
-          formControlName="elderlyCare"
-          min="0"
-          [matAutocomplete]="elderlyCare"
-        />
-
-        <mat-autocomplete #elderlyCare="matAutocomplete" panelWidth="200">
-          <mat-option
-            *ngFor="let item of templates.elderlyCare.options"
-            [value]="item.value"
-            >{{ item.label }}</mat-option
+          <mat-label
+            >{{ templates.privatePension.label }}{{ labelSuffix }}</mat-label
           >
-        </mat-autocomplete>
-        <span matTextSuffix>元</span>
-      </mat-form-field>
+          <input
+            matInput
+            type="number"
+            [placeholder]="templates.privatePension.placeholder"
+            formControlName="privatePension"
+            min="0"
+            matTooltip="每年限额12000元(每月1000元)税前据实扣除"
+            matTooltipPosition="above"
+            [matAutocomplete]="privatePension"
+          />
 
-      <mat-form-field class="ml-3" style="width: 140px">
-        <mat-label>企业年金(个人4%限额)</mat-label>
-        <input
-          matInput
-          type="number"
-          placeholder="0"
-          formControlName="enterprisePensionFromEmployee"
-          min="0"
-          matTooltip="法定税前扣除限额为本人月薪4%且不超社平3倍"
-          matTooltipPosition="above"
-        />
-        <span matTextSuffix>元</span>
-      </mat-form-field>
+          <mat-autocomplete #privatePension="matAutocomplete" panelWidth="200">
+            @for (item of templates.privatePension.options; track item.label) {
+              <mat-option [value]="item.value">{{ item.label }}</mat-option>
+            }
+          </mat-autocomplete>
+          <span matTextSuffix>元</span>
+        </mat-form-field>
 
-      <mat-form-field class="ml-3" style="width: 120px">
-        <mat-label>企业年金公司缴纳</mat-label>
-        <input
-          matInput
-          type="number"
-          placeholder="0"
-          formControlName="enterprisePensionFromEmployer"
-          min="0"
-        />
-        <span matTextSuffix>元</span>
-      </mat-form-field>
+        <mat-form-field class="ml-3" style="width: 120px">
+          <mat-label>其他扣除项</mat-label>
+          <input
+            matInput
+            type="number"
+            placeholder="0"
+            formControlName="other"
+            min="0"
+          />
+          <span matTextSuffix>元</span>
+        </mat-form-field>
+      </div>
 
-      <mat-form-field
-        class="ml-3"
-        [style.width]="templates.privatePension.width"
-      >
-        <mat-label
-          >{{ templates.privatePension.label }}{{ labelSuffix }}</mat-label
+      <p>
+        个人三险总费：{{ income.insuranceFullCost | number: "0.0-3" }}，
+        社保：{{ income.insuranceCosts.endowment | number: "0.0-3" }}， 医保：{{
+          income.insuranceCosts.health | number: "0.0-3"
+        }}， 失业：{{ income.insuranceCosts.unemployment | number: "0.0-3" }}
+      </p>
+      <p>
+        公司五险总费：{{
+          income.employerCosts.insuranceFull | number: "0.0-3"
+        }}， 社保：{{
+          income.employerCosts.insurance.endowment | number: "0.0-3"
+        }}， 医保：{{
+          income.employerCosts.insurance.health | number: "0.0-3"
+        }}， 失业：{{
+          income.employerCosts.insurance.unemployment | number: "0.0-3"
+        }}， 工伤：{{
+          income.employerCosts.insurance.occupationalInjury | number: "0.0-3"
+        }}， 生育：{{ income.employerCosts.insurance.birth | number: "0.0-3" }}
+      </p>
+
+      <p>
+        累计税前收入：{{ income.accumulatedSalary | number: "0.0-2" }}元，
+        累计扣除：{{ income.accumulatedDeduction | number: "0.0-2" }}元，
+        累计专项附加扣除：{{
+          income.accumulatedSpecialDeduction | number: "0.0-2"
+        }}元， 累计其他扣除：{{
+          income.accumulatedExtraDeduction | number: "0.0-2"
+        }}元， 应纳税所得额：{{
+          income.accumulatedSalary -
+            income.accumulatedDeduction -
+            income.accumulatedSpecialDeduction -
+            income.accumulatedExtraDeduction | number: "0.0-2"
+        }}元
+      </p>
+
+      <div class="mr-3 d-flex justify-content-end">
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="form.invalid"
+          (click)="onUpdateMeta(form.value, idx)"
         >
-        <input
-          matInput
-          type="number"
-          [placeholder]="templates.privatePension.placeholder"
-          formControlName="privatePension"
-          min="0"
-          matTooltip="每年限额12000元(每月1000元)税前据实扣除"
-          matTooltipPosition="above"
-          [matAutocomplete]="privatePension"
-        />
-
-        <mat-autocomplete #privatePension="matAutocomplete" panelWidth="200">
-          <mat-option
-            *ngFor="let item of templates.privatePension.options"
-            [value]="item.value"
-            >{{ item.label }}</mat-option
-          >
-        </mat-autocomplete>
-        <span matTextSuffix>元</span>
-      </mat-form-field>
-
-      <mat-form-field class="ml-3" style="width: 120px">
-        <mat-label>其他扣除项</mat-label>
-        <input
-          matInput
-          type="number"
-          placeholder="0"
-          formControlName="other"
-          min="0"
-        />
-        <span matTextSuffix>元</span>
-      </mat-form-field>
-    </div>
-
-    <p>
-      个人三险总费：{{ income.insuranceFullCost | number : "0.0-3" }}， 社保：{{
-        income.insuranceCosts.endowment | number : "0.0-3"
-      }}， 医保：{{ income.insuranceCosts.health | number : "0.0-3" }}，
-      失业：{{ income.insuranceCosts.unemployment | number : "0.0-3" }}
-    </p>
-    <p>
-      公司五险总费：{{
-        income.employerCosts.insuranceFull | number : "0.0-3"
-      }}， 社保：{{
-        income.employerCosts.insurance.endowment | number : "0.0-3"
-      }}， 医保：{{
-        income.employerCosts.insurance.health | number : "0.0-3"
-      }}， 失业：{{
-        income.employerCosts.insurance.unemployment | number : "0.0-3"
-      }}， 工伤：{{
-        income.employerCosts.insurance.occupationalInjury | number : "0.0-3"
-      }}， 生育：{{ income.employerCosts.insurance.birth | number : "0.0-3" }}
-    </p>
-
-    <p>
-      累计税前收入：{{ income.accumulatedSalary | number : "0.0-2" }}元，
-      累计扣除：{{ income.accumulatedDeduction | number : "0.0-2" }}元，
-      累计专项附加扣除：{{ income.accumulatedSpecialDeduction | number : "0.0-2" }}元，
-      累计其他扣除：{{ income.accumulatedExtraDeduction | number : "0.0-2" }}元，
-      应纳税所得额：{{ income.accumulatedSalary - income.accumulatedDeduction - income.accumulatedSpecialDeduction - income.accumulatedExtraDeduction | number : "0.0-2" }}元
-    </p>
-
-    <div class="mr-3 d-flex justify-content-end">
-      <button
-        mat-raised-button
-        color="primary"
-        type="submit"
-        [disabled]="form.invalid"
-        (click)="onUpdateMeta(form.value, idx)"
-      >
-        更新
-      </button>
-    </div>
-  </form>
+          更新
+        </button>
+      </div>
+    </form>
+  }
 </ng-template>

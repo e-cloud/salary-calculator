@@ -6,11 +6,21 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  inject,
+} from '@angular/core';
+import { CommonModule } from '@angular/common';
 import {
   AbstractControl,
   FormBuilder,
   FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
 import {
@@ -25,7 +35,16 @@ import {
 } from '../template-metadata';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { MonthlyInputForm, MonthlyInputModel } from '../types';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatListModule } from '@angular/material/list';
+import { MonthPipe } from '../month.pipe';
 import {
   SyncConfirmationDialogComponent,
   SyncConfirmationData,
@@ -33,7 +52,22 @@ import {
 
 @Component({
   selector: 'app-monthly-results',
-  standalone: false,
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatExpansionModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+    MatSlideToggleModule,
+    MatAutocompleteModule,
+    MatListModule,
+    MatDialogModule,
+    MonthPipe,
+  ],
   templateUrl: './monthly-results.component.html',
   styleUrls: ['./monthly-results.component.scss'],
   animations: [
@@ -59,7 +93,7 @@ export class MonthlyResultsComponent implements OnInit {
   @Input() clear!: boolean;
   @Input() monthlyIncomes$!: Observable<MonthlyIncomeInfo[]>;
   @Input() monthlyMetas$!: Observable<MonthlyIncomeMeta[]>;
-  @Input() cityRecipe!: CityRecipe;
+  @Input() cityRecipe: CityRecipe | null = null;
   @Input() calculationYear!: number;
   @Input() scroll$!: BehaviorSubject<void>;
 
@@ -71,11 +105,8 @@ export class MonthlyResultsComponent implements OnInit {
 
   detailForms: FormGroup<MonthlyInputForm>[] = [];
   private previousValues: { [key: string]: Record<string, unknown> }[] = [];
-
-  constructor(
-    private fb: FormBuilder,
-    private dialog: MatDialog,
-  ) {}
+  private fb = inject(FormBuilder);
+  private dialog = inject(MatDialog);
 
   ngOnInit() {
     this.monthlyMetas$.subscribe((metaList) => {
@@ -298,7 +329,7 @@ export class MonthlyResultsComponent implements OnInit {
 
   private buildDetailForms(
     metaList: MonthlyIncomeMeta[],
-    cityRecipe: CityRecipe,
+    cityRecipe: CityRecipe | null,
   ) {
     const forms = metaList.map((meta, index) => {
       const month = index + 1;

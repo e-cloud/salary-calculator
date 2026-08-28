@@ -8,20 +8,34 @@ import {
   ViewChild,
   ElementRef,
 } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatCardModule } from '@angular/material/card';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { NgxEchartsDirective } from 'ngx-echarts';
 import type { EChartsOption } from 'echarts';
 import { FullYearIncomeInfo, MonthlyIncomeInfo } from 'calculator-core';
 import { BehaviorSubject, Observable, combineLatest, filter, map } from 'rxjs';
 
 @Component({
   selector: 'app-summary-charts',
-  standalone: false,
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatCardModule,
+    MatTabsModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    NgxEchartsDirective,
+  ],
   templateUrl: './summary-charts.component.html',
   styleUrls: ['./summary-charts.component.scss'],
 })
 export class SummaryChartsComponent implements OnInit {
   @Input() clear!: boolean;
   @Input() monthlyIncomes$!: Observable<MonthlyIncomeInfo[]>;
-  @Input() summary$!: Observable<FullYearIncomeInfo>;
+  @Input() summary$!: Observable<FullYearIncomeInfo | null>;
   @Input() selectedMonth$!: BehaviorSubject<number>;
   @Input() scroll$!: Observable<void>;
 
@@ -134,6 +148,7 @@ export class SummaryChartsComponent implements OnInit {
     );
 
     this.annualDeductionChartOption$ = this.summary$.pipe(
+      filter((s): s is FullYearIncomeInfo => !!s),
       map((summary) => {
         const data = [
           { value: summary.cashIncomeDeprecated, name: '全年税后' },
@@ -205,6 +220,7 @@ export class SummaryChartsComponent implements OnInit {
     );
 
     this.annualIncomeChartOption$ = this.summary$.pipe(
+      filter((s): s is FullYearIncomeInfo => !!s),
       map((summary) => {
         const data = [
           { value: summary.postTaxSalary, name: '全年工资现金收入' },

@@ -28,16 +28,28 @@
               "base": "dist/ng-calculator"
             },
             "index": "src/index.html",
-            "polyfills": ["zone.js"],
+            "polyfills": [],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "preserveSymlinks": true,
             "assets": ["src/favicon.ico", "src/assets"],
             "styles": ["src/styles.scss"],
             "scripts": [],
             "browser": "src/main.ts",
+            "allowedCommonJsDependencies": [
+              "echarts",
+              "zrender",
+              "lodash-es",
+              "lodash"
+            ],
             "stylePreprocessorOptions": {
-              "includePaths": ["."]
+              "includePaths": ["."],
+              "sass": {
+                "silenceDeprecations": [
+                  "import",
+                  "global-builtin",
+                  "color-functions"
+                ]
+              }
             }
           },
           "configurations": {

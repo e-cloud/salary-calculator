@@ -9,7 +9,7 @@
  * limitations under the License.
  */
 
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material/icon';
 
@@ -19,10 +19,8 @@ import { IconRegistryItem } from '../icon-registry-config';
   providedIn: 'root',
 })
 export class IconRegistryInitService {
-  constructor(
-    private iconService: MatIconRegistry,
-    private domSanitize: DomSanitizer
-  ) {}
+  private iconService = inject(MatIconRegistry);
+  private domSanitize = inject(DomSanitizer);
 
   init(registry: IconRegistryItem[]) {
     if (!Array.isArray(registry)) {
@@ -35,12 +33,12 @@ export class IconRegistryInitService {
           this.iconService.addSvgIconLiteralInNamespace(
             item.namespace,
             item.name,
-            this.domSanitize.bypassSecurityTrustHtml(item.literal)
+            this.domSanitize.bypassSecurityTrustHtml(item.literal),
           );
         } else {
           this.iconService.addSvgIconLiteral(
             item.name,
-            this.domSanitize.bypassSecurityTrustHtml(item.literal)
+            this.domSanitize.bypassSecurityTrustHtml(item.literal),
           );
         }
       }
@@ -50,12 +48,12 @@ export class IconRegistryInitService {
           this.iconService.addSvgIconInNamespace(
             item.namespace,
             item.name,
-            this.domSanitize.bypassSecurityTrustResourceUrl(item.url)
+            this.domSanitize.bypassSecurityTrustResourceUrl(item.url),
           );
         } else {
           this.iconService.addSvgIcon(
             item.name,
-            this.domSanitize.bypassSecurityTrustResourceUrl(item.url)
+            this.domSanitize.bypassSecurityTrustResourceUrl(item.url),
           );
         }
       }

@@ -4,7 +4,7 @@ import { DatePipe } from '@angular/common';
 
 @Pipe({
   name: 'month',
-  standalone: false,
+  standalone: true,
 })
 export class MonthPipe extends DatePipe implements PipeTransform {
   override transform(
