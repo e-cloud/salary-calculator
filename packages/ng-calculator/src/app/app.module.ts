@@ -5,7 +5,7 @@ import { registerLocaleData } from '@angular/common';
 import { NgxEchartsModule } from 'ngx-echarts';
 
 import { AppComponent } from './app.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { MatSliderModule } from '@angular/material/slider';
 import { NavbarComponent } from './navbar/navbar.component';
 import { MatButtonModule } from '@angular/material/button';
@@ -59,12 +59,10 @@ declare global {
     MonthlyResultsComponent,
     SummaryChartsComponent,
     SummaryDetailsComponent,
-    SyncConfirmationDialogComponent,
   ],
   bootstrap: [AppComponent],
   imports: [
     BrowserModule,
-    BrowserAnimationsModule,
     MatSliderModule,
     MatButtonModule,
     MatCardModule,
@@ -82,6 +80,7 @@ declare global {
     MatDialogModule,
     MatTabsModule,
     MatTooltipModule,
+    SyncConfirmationDialogComponent,
     NgxEchartsModule.forRoot({
       /**
        * Using ECharts from CDN
@@ -100,6 +99,7 @@ declare global {
       useValue: '¥',
     },
     provideHttpClient(withInterceptorsFromDi()),
+    provideAnimationsAsync(),
   ],
 })
 export class AppModule {}

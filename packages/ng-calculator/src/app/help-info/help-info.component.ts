@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-help-info',
+  standalone: false,
   templateUrl: './help-info.component.html',
   styleUrls: ['./help-info.component.scss'],
 })

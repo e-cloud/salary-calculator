@@ -4,6 +4,7 @@ import { ICON_REGISTRY_CONFIG } from './icon-registry-config';
 
 @Component({
   selector: 'app-root',
+  standalone: false,
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })

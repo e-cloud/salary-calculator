@@ -4,6 +4,7 @@ import { HelpInfoComponent } from '../help-info/help-info.component';
 
 @Component({
   selector: 'app-navbar',
+  standalone: false,
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss'],
 })

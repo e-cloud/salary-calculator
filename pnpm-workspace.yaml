@@ -7,6 +7,7 @@ packages:
   - '!**/example/**'
 
 onlyBuiltDependencies:
+  - '@parcel/watcher'
   - esbuild
   - lmdb
   - msgpackr-extract
@@ -14,6 +15,7 @@ onlyBuiltDependencies:
 minimumReleaseAge: 0
 
 allowBuilds:
+  '@parcel/watcher': true
   esbuild: true
   lmdb: true
   msgpackr-extract: true

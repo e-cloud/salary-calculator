@@ -1,6 +1,12 @@
 module.exports = {
   root: true,
-  ignorePatterns: ["dist", "environment.prod.ts", "dedupe-lodash-es.ts", "e2e"],
+  ignorePatterns: [
+    "dist",
+    "environment.prod.ts",
+    "dedupe-lodash-es.ts",
+    "e2e",
+    "vitest.config.ts",
+  ],
   overrides: [
     {
       files: ["*.ts"],
@@ -35,6 +41,8 @@ module.exports = {
             style: "camelCase",
           },
         ],
+        "@angular-eslint/prefer-standalone": "off",
+        "@angular-eslint/prefer-inject": "off",
       },
       plugins: ["unused-imports"],
       extends: [

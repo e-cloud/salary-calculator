@@ -347,7 +347,7 @@ function calculateBonusTax(num: number): number {
 
 function insuranceCostsForEmployee(
   base: number,
-  baseRange: Record<string, [number, number]>,
+  baseRange: MonthlyIncomeMeta['insuranceBaseRange'],
   meta: MonthlyIncomeMeta['insuranceRate'],
   _currentSalary?: number,
 ): MonthlyIncomeInfo['insuranceCosts'] {
@@ -361,7 +361,7 @@ function insuranceCostsForEmployee(
 
 function insuranceCostsForEmployer(
   base: number,
-  baseRange: Record<string, [number, number]>,
+  baseRange: MonthlyIncomeMeta['insuranceBaseRange'],
   meta: {
     endowment: number;
     health: number;

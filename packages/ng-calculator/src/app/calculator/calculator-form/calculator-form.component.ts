@@ -28,6 +28,7 @@ export interface CalculateParams extends RawMeta {
 
 @Component({
   selector: 'app-calculator-form',
+  standalone: false,
   templateUrl: './calculator-form.component.html',
   styleUrls: ['./calculator-form.component.scss'],
 })
@@ -274,7 +275,7 @@ export class CalculatorFormComponent implements OnInit, OnChanges, OnDestroy {
         insuranceBase: baseToUse,
         housingFundBase: baseToUse,
       },
-      { emitEvent: false }
+      { emitEvent: false },
     );
   }
 
@@ -366,12 +367,12 @@ export class CalculatorFormComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private updateAvailableYears() {
-    const years = this.cityRecipe!.policies.map((policy) =>
-      new Date(policy.effectiveDate).getFullYear()
+    const years = this.cityRecipe!.policies.map((policy: Policy) =>
+      new Date(policy.effectiveDate).getFullYear(),
     )
       .filter(
         (year: number, index: number, arr: number[]) =>
-          arr.indexOf(year) === index
+          arr.indexOf(year) === index,
       )
       .sort((a: number, b: number) => b - a); // 降序排列
     this.availableYears = years;
@@ -385,7 +386,7 @@ export class CalculatorFormComponent implements OnInit, OnChanges, OnDestroy {
   private updateLatestPolicy() {
     this.latestPolicy = findLatestPolicyForYear(
       this.cityRecipe!,
-      this.selectedYear
+      this.selectedYear,
     );
     this.updatePolicyHint();
     this.updateBasePlaceholders();

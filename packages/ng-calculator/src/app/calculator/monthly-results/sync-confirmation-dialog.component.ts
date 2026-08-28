@@ -1,5 +1,12 @@
-import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogRef,
+  MatDialogModule,
+} from '@angular/material/dialog';
+import { MatListModule } from '@angular/material/list';
+import { MatButtonModule } from '@angular/material/button';
 
 export interface SyncConfirmationData {
   monthIndex: number;
@@ -8,6 +15,8 @@ export interface SyncConfirmationData {
 
 @Component({
   selector: 'app-sync-confirmation-dialog',
+  standalone: true,
+  imports: [CommonModule, MatDialogModule, MatListModule, MatButtonModule],
   template: `
     <h2 mat-dialog-title>同步确认</h2>
     <mat-dialog-content>
@@ -17,14 +26,16 @@ export interface SyncConfirmationData {
         }}月的数据，是否要将以下变更同步到后续月份？
       </p>
       <mat-list>
-        <mat-list-item *ngFor="let field of data.changedFields">
-          <div matListItemTitle>
-            {{ getFieldDisplayName(field.fieldPath) }}
-          </div>
-          <div matListItemLine>
-            新值：{{ formatValue(field.value, field.fieldPath) }}
-          </div>
-        </mat-list-item>
+        @for (field of data.changedFields; track field.fieldPath) {
+          <mat-list-item>
+            <div matListItemTitle>
+              {{ getFieldDisplayName(field.fieldPath) }}
+            </div>
+            <div matListItemLine>
+              新值：{{ formatValue(field.value, field.fieldPath) }}
+            </div>
+          </mat-list-item>
+        }
       </mat-list>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
@@ -41,10 +52,8 @@ export interface SyncConfirmationData {
   ],
 })
 export class SyncConfirmationDialogComponent {
-  constructor(
-    public dialogRef: MatDialogRef<SyncConfirmationDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: SyncConfirmationData
-  ) {}
+  readonly dialogRef = inject(MatDialogRef<SyncConfirmationDialogComponent>);
+  readonly data: SyncConfirmationData = inject(MAT_DIALOG_DATA);
 
   onCancel(): void {
     this.dialogRef.close(false);

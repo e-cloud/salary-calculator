@@ -14,6 +14,7 @@ import { BehaviorSubject, Observable, combineLatest, filter, map } from 'rxjs';
 
 @Component({
   selector: 'app-summary-charts',
+  standalone: false,
   templateUrl: './summary-charts.component.html',
   styleUrls: ['./summary-charts.component.scss'],
 })
@@ -129,7 +130,7 @@ export class SummaryChartsComponent implements OnInit {
             },
           ],
         } as EChartsOption;
-      })
+      }),
     );
 
     this.annualDeductionChartOption$ = this.summary$.pipe(
@@ -200,7 +201,7 @@ export class SummaryChartsComponent implements OnInit {
             },
           ],
         } as EChartsOption;
-      })
+      }),
     );
 
     this.annualIncomeChartOption$ = this.summary$.pipe(
@@ -270,7 +271,7 @@ export class SummaryChartsComponent implements OnInit {
             },
           ],
         } as EChartsOption;
-      })
+      }),
     );
   }
 

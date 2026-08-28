@@ -33,6 +33,7 @@ import {
 
 @Component({
   selector: 'app-monthly-results',
+  standalone: false,
   templateUrl: './monthly-results.component.html',
   styleUrls: ['./monthly-results.component.scss'],
   animations: [
@@ -46,7 +47,7 @@ import {
               animate(300, style({ opacity: 1, transform: 'translateX(0)' })),
             ]),
           ],
-          { optional: true }
+          { optional: true },
         ),
       ]),
     ]),
@@ -71,7 +72,10 @@ export class MonthlyResultsComponent implements OnInit {
   detailForms: FormGroup<MonthlyInputForm>[] = [];
   private previousValues: { [key: string]: Record<string, unknown> }[] = [];
 
-  constructor(private fb: FormBuilder, private dialog: MatDialog) {}
+  constructor(
+    private fb: FormBuilder,
+    private dialog: MatDialog,
+  ) {}
 
   ngOnInit() {
     this.monthlyMetas$.subscribe((metaList) => {
@@ -90,7 +94,7 @@ export class MonthlyResultsComponent implements OnInit {
       const policy = findPolicyForMonth(
         this.cityRecipe,
         this.calculationYear,
-        month
+        month,
       );
       if (policy) {
         return Array.isArray(policy.insuranceBaseRange)
@@ -106,7 +110,7 @@ export class MonthlyResultsComponent implements OnInit {
       const policy = findPolicyForMonth(
         this.cityRecipe,
         this.calculationYear,
-        month
+        month,
       );
       if (policy) {
         return policy.housingFundBaseRange[1];
@@ -120,7 +124,7 @@ export class MonthlyResultsComponent implements OnInit {
       const policy = findPolicyForMonth(
         this.cityRecipe,
         this.calculationYear,
-        month
+        month,
       );
       if (policy) {
         return policy.minimumWage;
@@ -143,7 +147,7 @@ export class MonthlyResultsComponent implements OnInit {
     // 检查哪些字段发生了变化
     const changedFieldPaths = this.getChangedFields(
       currentValues,
-      previousValues
+      previousValues,
     );
 
     if (
@@ -181,8 +185,8 @@ export class MonthlyResultsComponent implements OnInit {
           ...this.getChangedFields(
             current[key],
             previous[key] || {},
-            currentPath
-          )
+            currentPath,
+          ),
         );
       } else if (current[key] !== previous[key]) {
         // 排除不需要同步的字段
@@ -221,7 +225,7 @@ export class MonthlyResultsComponent implements OnInit {
 
   private showBatchSyncConfirmation(
     monthIndex: number,
-    changedFields: { fieldPath: string; value: unknown }[]
+    changedFields: { fieldPath: string; value: unknown }[],
   ): void {
     const dialogRef = this.dialog.open(SyncConfirmationDialogComponent, {
       width: '500px',
@@ -244,7 +248,7 @@ export class MonthlyResultsComponent implements OnInit {
   private syncToSubsequentMonths(
     fromIndex: number,
     fieldPath: string,
-    value: unknown
+    value: unknown,
   ) {
     // 从下一个月开始同步到所有后续月份
     for (let i = fromIndex + 1; i < this.detailForms.length; i++) {
@@ -294,7 +298,7 @@ export class MonthlyResultsComponent implements OnInit {
 
   private buildDetailForms(
     metaList: MonthlyIncomeMeta[],
-    cityRecipe: CityRecipe
+    cityRecipe: CityRecipe,
   ) {
     const forms = metaList.map((meta, index) => {
       const month = index + 1;

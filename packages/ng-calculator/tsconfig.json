@@ -13,7 +13,7 @@
     "sourceMap": true,
     "declaration": false,
     "experimentalDecorators": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "importHelpers": true,
     "target": "ES2022",
     "module": "ES2022",
@@ -21,7 +21,7 @@
     "skipLibCheck": true,
     "lib": ["ES2022", "dom"],
     "paths": {
-      "calculator-core": ["./node_modules/calculator-core"]
+      "calculator-core": ["../calculator-core/src/index.ts"]
     }
   },
   "angularCompilerOptions": {

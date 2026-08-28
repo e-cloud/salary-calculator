@@ -66,6 +66,7 @@ const sampleRecipe: CityRecipe = {
 
 @Component({
   selector: 'app-calculator',
+  standalone: false,
   templateUrl: './calculator.component.html',
   styleUrls: ['./calculator.component.scss'],
 })
@@ -95,7 +96,7 @@ export class CalculatorComponent {
       debounceTime(300),
       filter((list) => list.length > 0),
       map((metas) => calculateMonthlyIncomes(metas)),
-      shareReplay(1)
+      shareReplay(1),
     );
     this.summary$ = combineLatest([
       this.monthlyIncomes$,
@@ -104,7 +105,7 @@ export class CalculatorComponent {
       map(([list, metas]) => {
         return calculateFullYearIncome(list, metas[0].annualBonus);
       }),
-      shareReplay(1)
+      shareReplay(1),
     );
 
     // 配方索引流（统领入口，按需异步加载）
@@ -116,7 +117,7 @@ export class CalculatorComponent {
             this.selectRecipeItem(items[0]);
           }
         }),
-        shareReplay(1)
+        shareReplay(1),
       );
   }
 
@@ -189,13 +190,13 @@ export class CalculatorComponent {
   }
 
   private buildMonthlyMetasFromPolicy(
-    params: CalculateParams
+    params: CalculateParams,
   ): MonthlyIncomeMeta[] {
     return buildMonthlyMetas(
       this.cityRecipe,
       params.year,
       params,
-      params.useUniformPolicy
+      params.useUniformPolicy,
     );
   }
 }

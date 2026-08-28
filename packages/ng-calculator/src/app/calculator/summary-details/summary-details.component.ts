@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-summary-details',
+  standalone: false,
   templateUrl: './summary-details.component.html',
   styleUrls: ['./summary-details.component.scss'],
 })
