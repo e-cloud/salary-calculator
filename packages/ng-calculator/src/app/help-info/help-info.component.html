@@ -1,46 +1,120 @@
-<h1 mat-dialog-title data-testid="help-dialog-title">使用指南</h1>
+<div
+  class="help-dialog-header d-flex justify-content-between align-items-center"
+>
+  <h2
+    mat-dialog-title
+    class="m-0 font-weight-bold text-dark"
+    data-testid="help-dialog-title"
+  >
+    使用指南
+  </h2>
+  <button
+    mat-icon-button
+    mat-dialog-close
+    aria-label="关闭使用指南"
+    class="btn-close-header"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
 
 <article
   mat-dialog-content
   data-testid="help-dialog-content"
-  class="mat-typography"
+  class="mat-typography help-dialog-content"
 >
-  <h2>基本声明</h2>
+  <section class="mb-3">
+    <h3 class="section-title text-dark">
+      <mat-icon class="section-icon text-primary">location_city</mat-icon>
+      <span>支持城市与政策标准</span>
+    </h3>
+    <p class="text-muted small mb-2">
+      系统内置各主流城市的历年社保公积金缴纳标准与官方政策依据，目前已动态支持：
+    </p>
+    <div class="city-chips-container" data-testid="supported-cities-container">
+      @for (city of supportedCities(); track city) {
+        <span class="city-badge" data-testid="supported-city-chip">
+          <mat-icon class="extra-small-icon">check_circle</mat-icon>
+          <span>{{ city }}</span>
+        </span>
+      }
+    </div>
+    <div
+      class="guide-tip-box p-2 px-3 rounded small text-muted d-flex align-items-start mb-2"
+    >
+      <mat-icon class="tip-icon text-warning mr-2">lightbulb</mat-icon>
+      <div>
+        <strong>提示：</strong
+        >在计算器表单中选择城市后，点击旁边的【政策参数】按钮，即可查阅选定城市各年度社保公积金基数、比例及官方出处公文。
+      </div>
+    </div>
+  </section>
 
-  <p>本计算器目前只针对普通工薪阶层的收入计算有效，其他报酬类暂不支持。</p>
-  <p>
-    本计算器不能保证与个税app计算结果 100%
-    吻合，但保证计算规则绝大部分情况是正确的，计算结果只做参考。
-  </p>
-  <p>误差原因包括计算精度、公司申报汇缴参数错误等。</p>
-  <p>本工具不收集任何个人信息。</p>
+  <section class="mb-3">
+    <h3 class="section-title text-dark">
+      <mat-icon class="section-icon text-primary">featured_play_list</mat-icon>
+      <span>核心功能速览</span>
+    </h3>
+    <ul class="guide-feature-list pl-3 mb-0 small text-muted">
+      <li>
+        <strong>综合薪税核算</strong
+        >：精准模拟月度到手收入、累计预扣预缴个税、五险一金个人与企业负担，支持年终奖单独计税。
+      </li>
+      <li>
+        <strong>专项附加扣除</strong
+        >：支持子女教育、住房贷款利息、住房租金（自动互斥校验）等全项依法抵扣。
+      </li>
+      <li>
+        <strong>政策分段与基数核算</strong
+        >：支持年中7月政策调基台阶核算，并支持深圳依据上月工资核算等城市专属规则。
+      </li>
+      <li>
+        <strong>月度微调与级联同步</strong
+        >：支持单月独立改薪、年中换工作重置累计周期，修改时支持智能向后级联同步。
+      </li>
+      <li>
+        <strong>多维图表可视化</strong
+        >：提供月度趋势图、收入构成比例饼图及全年累计趋势图。
+      </li>
+    </ul>
+  </section>
 
-  <h2>功能简介</h2>
+  <section class="mb-3">
+    <h3 class="section-title text-dark">
+      <mat-icon class="section-icon text-primary">shield</mat-icon>
+      <span>基本声明与隐私</span>
+    </h3>
+    <p class="text-muted small mb-1">
+      • 纯前端本地安全计算，不收集、不存储、不上报任何个人薪资隐私数据。
+    </p>
+    <p class="text-muted small mb-0">
+      • 计算结果依据最新税法与各地官方政策公文仿真测算，供个人测算与规划参考。
+    </p>
+  </section>
 
-  <p>本计算机根据个税计算规则，提供了个人年收入的仿真计算。</p>
-  <ul>
-    <li>支持输入各项基础收入参数，以灵活支持全国各省市的缴纳标准</li>
-    <li>
-      提供了预设的城市个税缴纳配方，目前只提供深圳，其他城市有意者可联系作者添加。
-    </li>
-    <li>
-      支持灵活调整单一月份的收入参数，以适应每月动态收入的情况以及换工作的情况（注：月度奖金理论上会合并计算为当月收入）
-    </li>
-  </ul>
-  <p></p>
-
-  <p>注：每年7月1日各项缴费基数会进行调整，如发现计算有误，请通知作者</p>
-  <h2>反馈</h2>
-  <p>如有疑问请 <a href="mailto:jujiang.he@hotmail.com">联系作者</a>。</p>
+  <section class="mb-1">
+    <h3 class="section-title text-dark">
+      <mat-icon class="section-icon text-primary">mail_outline</mat-icon>
+      <span>反馈与联系作者</span>
+    </h3>
+    <p class="text-muted small mb-0">
+      如发现计算规则有误、基数需更新或有意愿协助添加新城市，欢迎通过邮箱
+      <a
+        href="mailto:jujiang.he@hotmail.com"
+        class="text-primary font-weight-medium"
+        >联系作者</a
+      >。
+    </p>
+  </section>
 </article>
 
-<div mat-dialog-actions align="end">
+<div mat-dialog-actions align="end" class="help-dialog-actions">
   <button
-    mat-raised-button
+    mat-flat-button
     color="primary"
     mat-dialog-close
     data-testid="help-dialog-close-btn"
   >
-    关闭
+    我知道了
   </button>
 </div>

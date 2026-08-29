@@ -22,7 +22,7 @@ describe('NavbarComponent 顶部导航栏测试', () => {
     await setup();
 
     // Act & Assert
-    expect(screen.getByText('Calculator')).toBeDefined();
+    expect(screen.getByText('个税与薪资计算器')).toBeDefined();
   });
 
   it('用户点击帮助按钮时，应通过 MatDialog 打开 HelpInfoComponent', async () => {
@@ -36,6 +36,9 @@ describe('NavbarComponent 顶部导航栏测试', () => {
 
     // Assert
     expect(mockDialog.open).toHaveBeenCalledTimes(1);
-    expect(mockDialog.open).toHaveBeenCalledWith(HelpInfoComponent);
+    expect(mockDialog.open).toHaveBeenCalledWith(
+      HelpInfoComponent,
+      expect.objectContaining({ width: '720px' }),
+    );
   });
 });

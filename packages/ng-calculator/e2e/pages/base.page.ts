@@ -8,8 +8,14 @@ export class BasePage {
 
   /**
    * 导航至计算器首页
+   * @param preventAutoGuide 是否预设已读状态以防止首次自动弹出遮挡（默认为 true，保证常规测试稳定）
    */
-  async goto(): Promise<void> {
+  async goto(preventAutoGuide = true): Promise<void> {
+    if (preventAutoGuide) {
+      await this.page.addInitScript(() => {
+        localStorage.setItem('salary_calculator_guide_shown', 'true');
+      });
+    }
     await this.page.goto('/');
     await this.page.waitForLoadState('networkidle');
   }

@@ -14,6 +14,8 @@ export class NavbarHelpPage extends BasePage {
   readonly dialogTitle: Locator;
   readonly dialogContent: Locator;
   readonly dialogCloseButton: Locator;
+  readonly supportedCitiesContainer: Locator;
+  readonly supportedCityChips: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -25,6 +27,10 @@ export class NavbarHelpPage extends BasePage {
     this.dialogTitle = page.getByTestId('help-dialog-title');
     this.dialogContent = page.getByTestId('help-dialog-content');
     this.dialogCloseButton = page.getByTestId('help-dialog-close-btn');
+    this.supportedCitiesContainer = page.getByTestId(
+      'supported-cities-container',
+    );
+    this.supportedCityChips = page.getByTestId('supported-city-chip');
   }
 
   /**

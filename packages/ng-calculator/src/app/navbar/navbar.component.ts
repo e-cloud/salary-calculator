@@ -15,6 +15,9 @@ export class NavbarComponent {
   private dialog = inject(MatDialog);
 
   openHelpDialog() {
-    this.dialog.open(HelpInfoComponent);
+    this.dialog.open(HelpInfoComponent, {
+      width: '720px',
+      maxWidth: '92vw',
+    });
   }
 }
