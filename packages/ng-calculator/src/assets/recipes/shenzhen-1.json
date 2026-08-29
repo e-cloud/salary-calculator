@@ -35,20 +35,20 @@
       "housingFundBaseRange": [2700, 48471],
       "references": [
         {
-          "link": "https://hrss.sz.gov.cn/xxgk/zcfgjjd/zcfg/shbx/index.html",
-          "description": "深圳市人力资源和社会保障局关于调整深圳市最低工资标准的通告（2026年9月1日起月最低工资2700元）"
+          "link": "https://tjj.sz.gov.cn/zwgk/zfxxgkml/tjsj/tjgb/content/post_12907747.html",
+          "description": "深圳市统计局《2025年深圳市城镇单位就业人员年平均工资情况》（在岗职工月平均工资16157元）"
         },
         {
-          "link": "https://hsa.sz.gov.cn/zwgk/zcfgjjd/zcfg/yb/content/post_10852899.html",
-          "description": "深圳市医疗保障局关于阶段性降费政策到期恢复法定费率（单位6%）及2026自然年度医保缴费基数上下限的通知"
+          "link": "https://zjj.sz.gov.cn/hdjl/ywzs/gjj/content/post_12893588.html",
+          "description": "深圳市住房和建设局关于单位缴存职工公积金缴存基数调整规定"
         },
         {
-          "link": "http://zjj.sz.gov.cn/zfbz/xxgk/tzgg/",
-          "description": "深圳市住房公积金管理中心关于做好2026年住房公积金缴存基数和缴存比例调整工作的通知"
+          "link": "http://bsy.sz.bendibao.com/bsyDetail/608251.html",
+          "description": "深圳住房公积金缴存基数与比例调整（本地宝办事易指南）"
         },
         {
-          "link": "http://tjj.sz.gov.cn/tjsj/tjgb/content/post_11466821.html",
-          "description": "深圳市统计局《2025年深圳市城镇单位就业人员年平均工资情况》（在岗职工月均16157元）"
+          "link": "http://bsy.sz.bendibao.com/bsyDetail/636403.html",
+          "description": "深圳最低工资标准调整"
         }
       ]
     },
@@ -83,20 +83,20 @@
       "housingFundBaseRange": [2520, 44265],
       "references": [
         {
-          "link": "https://hrss.gd.gov.cn/zwgk/gsgg/content/post_4615619.html",
-          "description": "广东省人力资源和社会保障厅等《关于公布2025年职工基本养老保险缴费基数上下限和基本养老金计发基数等有关问题的通知》（粤人社发〔2025〕32号）"
+          "link": "https://hrss.gd.gov.cn/zwgk/gsgg/content/post_4789648.html",
+          "description": "广东省人力资源和社会保障厅关于公布2025年职工基本养老保险缴费基数上下限和基本养老金计发基数有关问题的通知"
         },
         {
-          "link": "https://hsa.sz.gov.cn/zwgk/zcfgjjd/zcfg/yb/index.html",
-          "description": "深圳市医疗保障局关于公布2025年深圳市职工基本医疗保险缴费基数上下限的通知"
+          "link": "https://tjj.sz.gov.cn/zwgk/zfxxgkml/tjsj/tjgb/content/post_12253352.html",
+          "description": "深圳市统计局《2024年深圳市城镇单位就业人员年平均工资情况》（在岗职工月平均工资14755元）"
         },
         {
-          "link": "http://zjj.sz.gov.cn/zfbz/xxgk/tzgg/content/post_11400234.html",
-          "description": "深圳市住房公积金管理中心关于做好2025年住房公积金缴存基数和缴存比例调整工作的通知"
+          "link": "http://bsy.sz.bendibao.com/bsyDetail/641292.html",
+          "description": "深圳社平工资标准16-25年汇总"
         },
         {
-          "link": "http://tjj.sz.gov.cn/tjsj/tjgb/content/post_11388912.html",
-          "description": "深圳市统计局《2024年深圳市城镇单位就业人员年平均工资情况》（在岗职工月均14755元）"
+          "link": "http://bsy.sz.bendibao.com/bsyDetail/636403.html",
+          "description": "最低工资标准调整2025"
         }
       ]
     },
@@ -131,20 +131,12 @@
       "housingFundBaseRange": [2520, 43659],
       "references": [
         {
-          "link": "https://hrss.gd.gov.cn/zwgk/gsgg/content/post_4458921.html",
-          "description": "广东省人力资源和社会保障厅等《关于公布2023年全省全口径城镇单位就业人员月平均工资和2024年职工基本养老保险缴费基数上下限有关问题的通知》（粤人社发〔2024〕33号）"
+          "link": "http://bsy.sz.bendibao.com/bsyDetail/3352.html",
+          "description": "2024社会保险缴费基数调整"
         },
         {
           "link": "https://hrss.sz.gov.cn/xxgk/zcfgjjd/zcfg/shbx/content/post_11052262.html",
-          "description": "深圳市人力资源和社会保障局等《关于企业职工基本养老保险缴费基数下限有关调整的通知》（深人社规〔2023〕9号）"
-        },
-        {
-          "link": "http://zjj.sz.gov.cn/zfbz/xxgk/tzgg/content/post_11355012.html",
-          "description": "深圳市住房公积金管理中心关于做好2024年住房公积金缴存基数和缴存比例调整工作的通知"
-        },
-        {
-          "link": "http://tjj.sz.gov.cn/tjsj/tjgb/content/post_11322041.html",
-          "description": "深圳市统计局《2023年深圳市城镇单位就业人员年平均工资公报》（在岗职工月均14553元）"
+          "description": "深圳市人力资源和社会保障局 深圳市财政局 国家税务总局深圳市税务局关于企业职工基本养老保险缴费基数下限有关调整的通知（深人社规〔2023〕9号）"
         }
       ]
     },
@@ -179,20 +171,16 @@
       "housingFundBaseRange": [2360, 41190],
       "references": [
         {
-          "link": "https://hrss.gd.gov.cn/zwgk/gsgg/content/post_4210982.html",
-          "description": "广东省人力资源和社会保障厅等《关于公布2022年全省全口径城镇单位就业人员月平均工资和2023年职工基本养老保险缴费基数上下限有关问题的通知》（粤人社规〔2023〕18号）"
-        },
-        {
-          "link": "https://www.sz.gov.cn/zfgb/2023/gb1293/content/post_10842521.html",
-          "description": "《深圳市医疗保障办法》（深圳市人民政府令第358号，自2023年10月1日起施行）"
+          "link": "http://bsy.sz.bendibao.com/bsyDetail/3352.html",
+          "description": "社会保险缴费基数调整"
         },
         {
           "link": "https://hrss.sz.gov.cn/xxgk/zcfgjjd/zcfg/shbx/content/post_11052262.html",
-          "description": "《深圳市人力资源和社会保障局 深圳市财政局 国家税务总局深圳市税务局关于企业职工基本养老保险缴费基数下限有关调整的通知》（深人社规〔2023〕9号）"
+          "description": "2023缴费基数下限有关调整的通知（深人社规〔2023〕9号）"
         },
         {
-          "link": "http://zjj.sz.gov.cn/zfbz/xxgk/tzgg/content/post_10688231.html",
-          "description": "深圳市住房公积金管理中心《关于做好2023年住房公积金缴存基数和缴存比例调整工作的通知》（深公积金〔2023〕24号）"
+          "link": "https://guangdong.chinatax.gov.cn/gdsw/ssfggds/2023-07/03/content_91fdee38b92b4846b1367faec23da41a.shtml",
+          "description": "关于公布2022年全省全口径城镇单位就业人员月平均工资和2023年职工基本养老保险缴费基数上下限有关问题的通知（粤人社发〔2023〕22号）"
         }
       ]
     },
@@ -228,19 +216,11 @@
       "references": [
         {
           "link": "https://guangdong.chinatax.gov.cn/gdsw/ssfggds/2022-10/12/content_6113677738ad4935af9875d391bd60cd.shtml",
-          "description": "广东省人社厅等《关于公布2021年全省全口径城镇单位就业人员月平均工资和2022年职工基本养老保险缴费基数上下限、基本养老金计发基数有关问题的通知》（粤人社发〔2022〕34号）"
+          "description": "公布2021年全省全口径城镇单位就业人员月平均工资和2022年职工基本养老保险缴费基数上下限、基本养老金计发基数有关问题的通知（粤人社发〔2022〕34号）"
         },
         {
-          "link": "https://hrss.sz.gov.cn/xxgk/zcfgjjd/zcfg/jycy/content/post_9410294.html",
-          "description": "《深圳市人民政府关于调整我市最低工资标准的通知》（深府函〔2021〕102号，自2022年1月1日起施行月最低工资2360元）"
-        },
-        {
-          "link": "http://zjj.sz.gov.cn/zfbz/xxgk/tzgg/content/post_9912093.html",
-          "description": "深圳市住房公积金管理中心《关于做好2022年住房公积金缴存基数和缴存比例调整工作的通知》"
-        },
-        {
-          "link": "http://tjj.sz.gov.cn/tjsj/tjgb/content/post_9883192.html",
-          "description": "深圳市统计局《2021年深圳市城镇单位就业人员年平均工资数据公报》（在岗职工月均12964元）"
+          "link": "http://bsy.sz.bendibao.com/bsyDetail/608251.html",
+          "description": "深圳住房公积金缴费基数"
         }
       ]
     },
@@ -275,12 +255,12 @@
       "housingFundBaseRange": [2200, 34860],
       "references": [
         {
-          "link": "https://hrss.gd.gov.cn/gkmlpt/content/3/3367/mpost_3367738.html",
-          "description": "广东省关于公布2020年从业人员月平均工资和职工基本养老保险缴费基数上下限有关问题的通知"
-        },
-        {
           "link": "https://hrss.sz.gov.cn/szsi/sbjxxgk/tzgg/simtgg/content/post_9016230.html",
           "description": "深圳市职工社会保险缴费比例及缴费基数表（2021年7月起执行）"
+        },
+        {
+          "link": "https://www.sznews.com/news/content/2021-06/28/content_24337815.htm",
+          "description": "2020年深圳市在岗职工月平均工资11620元，医保缴费标准调整"
         }
       ]
     },
@@ -315,12 +295,12 @@
       "housingFundBaseRange": [2200, 31938],
       "references": [
         {
-          "link": "https://guangdong.chinatax.gov.cn/gdsw/sffgjys/2020-07/07/content_53c13ba343f8481d87009f47f9e7742b.shtml",
-          "description": "关于公布2019年全省从业人员月平均工资和职工基本养老保险缴费基数上下限有关问题的通知"
+          "link": "http://tjj.sz.gov.cn/zwgk/zfxxgkml/tjsj/tjgb/content/post_8844535.html",
+          "description": "深圳市统计局《2020年深圳市城镇单位就业人员年平均工资数据公报》"
         },
         {
-          "link": "http://tjj.sz.gov.cn/zwgk/zfxxgkml/tjsj/tjgb/content/post_8844535.html",
-          "description": "2020年深圳市城镇单位就业人员年平均工资数据公报"
+          "link": "https://guangdong.chinatax.gov.cn/gdsw/sffgjys/2020-07/07/content_53c13ba343f8481d87009f47f9e7742b.shtml",
+          "description": "关于公布2019年全省从业人员月平均工资和职工基本养老保险缴费基数上下限有关问题的通知（粤人社发〔2020〕118号）"
         }
       ]
     }
