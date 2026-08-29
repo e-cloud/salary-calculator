@@ -1,0 +1,32 @@
+[
+  {
+    "id": 0,
+    "label": "一档(企业)",
+    "city": "深圳",
+    "file": "shenzhen-1.json"
+  },
+  {
+    "id": 1,
+    "label": "二档(企业)",
+    "city": "深圳",
+    "file": "shenzhen-2.json"
+  },
+  {
+    "id": 2,
+    "label": "标准(企业)",
+    "city": "北京",
+    "file": "beijing.json"
+  },
+  {
+    "id": 3,
+    "label": "标准(企业)",
+    "city": "上海",
+    "file": "shanghai.json"
+  },
+  {
+    "id": 4,
+    "label": "标准(企业)",
+    "city": "广州",
+    "file": "guangzhou.json"
+  }
+]

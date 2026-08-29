@@ -1,0 +1,308 @@
+{
+  "id": 0,
+  "label": "一档(企业)",
+  "city": "深圳",
+  "insuranceBaseOnLastMonth": true,
+  "policies": [
+    {
+      "effectiveDate": "2026-07",
+      "minimumWage": 2700,
+      "avgWage": 9183,
+      "localAvgWage": 16157,
+      "employee": {
+        "insuranceRate": {
+          "endowment": 0.08,
+          "health": 0.02,
+          "unemployment": 0.002
+        }
+      },
+      "employer": {
+        "insuranceRate": {
+          "endowment": 0.15,
+          "health": 0.06,
+          "unemployment": 0.008,
+          "birth": 0.005,
+          "occupationalInjury": 0.008
+        }
+      },
+      "insuranceBaseRange": {
+        "endowment": [4775, 27549],
+        "health": [6727, 33633],
+        "birth": [6727, 33633],
+        "unemployment": [2700, 48471],
+        "occupationalInjury": [2700, 48471]
+      },
+      "housingFundBaseRange": [2700, 48471],
+      "references": [
+        {
+          "link": "https://tjj.sz.gov.cn/zwgk/zfxxgkml/tjsj/tjgb/content/post_12907747.html",
+          "description": "深圳市统计局《2025年深圳市城镇单位就业人员年平均工资情况》（在岗职工月平均工资16157元）"
+        },
+        {
+          "link": "https://zjj.sz.gov.cn/hdjl/ywzs/gjj/content/post_12893588.html",
+          "description": "深圳市住房和建设局关于单位缴存职工公积金缴存基数调整规定"
+        },
+        {
+          "link": "http://bsy.sz.bendibao.com/bsyDetail/608251.html",
+          "description": "深圳住房公积金缴存基数与比例调整（本地宝办事易指南）"
+        },
+        {
+          "link": "http://bsy.sz.bendibao.com/bsyDetail/636403.html",
+          "description": "深圳最低工资标准调整"
+        }
+      ]
+    },
+    {
+      "effectiveDate": "2025-07",
+      "minimumWage": 2520,
+      "avgWage": 9183,
+      "localAvgWage": 14755,
+      "employee": {
+        "insuranceRate": {
+          "endowment": 0.08,
+          "health": 0.02,
+          "unemployment": 0.002
+        }
+      },
+      "employer": {
+        "insuranceRate": {
+          "endowment": 0.15,
+          "health": 0.05,
+          "unemployment": 0.008,
+          "birth": 0.005,
+          "occupationalInjury": 0.008
+        }
+      },
+      "insuranceBaseRange": {
+        "endowment": [4775, 27549],
+        "health": [6733, 33666],
+        "birth": [6733, 33666],
+        "unemployment": [2520, 44265],
+        "occupationalInjury": [2520, 44265]
+      },
+      "housingFundBaseRange": [2520, 44265],
+      "references": [
+        {
+          "link": "https://hrss.gd.gov.cn/zwgk/gsgg/content/post_4789648.html",
+          "description": "广东省人力资源和社会保障厅关于公布2025年职工基本养老保险缴费基数上下限和基本养老金计发基数有关问题的通知"
+        },
+        {
+          "link": "https://tjj.sz.gov.cn/zwgk/zfxxgkml/tjsj/tjgb/content/post_12253352.html",
+          "description": "深圳市统计局《2024年深圳市城镇单位就业人员年平均工资情况》（在岗职工月平均工资14755元）"
+        },
+        {
+          "link": "http://bsy.sz.bendibao.com/bsyDetail/641292.html",
+          "description": "深圳社平工资标准16-25年汇总"
+        },
+        {
+          "link": "http://bsy.sz.bendibao.com/bsyDetail/636403.html",
+          "description": "最低工资标准调整2025"
+        }
+      ]
+    },
+    {
+      "effectiveDate": "2024-07",
+      "minimumWage": 2520,
+      "avgWage": 9167,
+      "localAvgWage": 14553,
+      "employee": {
+        "insuranceRate": {
+          "endowment": 0.08,
+          "health": 0.02,
+          "unemployment": 0.002
+        }
+      },
+      "employer": {
+        "insuranceRate": {
+          "endowment": 0.15,
+          "health": 0.05,
+          "unemployment": 0.008,
+          "birth": 0.005,
+          "occupationalInjury": 0.008
+        }
+      },
+      "insuranceBaseRange": {
+        "endowment": [4492, 27501],
+        "health": [6733, 33666],
+        "birth": [6733, 33666],
+        "unemployment": [2520, 43659],
+        "occupationalInjury": [2520, 43659]
+      },
+      "housingFundBaseRange": [2520, 43659],
+      "references": [
+        {
+          "link": "http://bsy.sz.bendibao.com/bsyDetail/3352.html",
+          "description": "2024社会保险缴费基数调整"
+        },
+        {
+          "link": "https://hrss.sz.gov.cn/xxgk/zcfgjjd/zcfg/shbx/content/post_11052262.html",
+          "description": "深圳市人力资源和社会保障局 深圳市财政局 国家税务总局深圳市税务局关于企业职工基本养老保险缴费基数下限有关调整的通知（深人社规〔2023〕9号）"
+        }
+      ]
+    },
+    {
+      "effectiveDate": "2023-07",
+      "minimumWage": 2360,
+      "avgWage": 8807,
+      "localAvgWage": 13730,
+      "employee": {
+        "insuranceRate": {
+          "endowment": 0.08,
+          "health": 0.02,
+          "unemployment": 0.002
+        }
+      },
+      "employer": {
+        "insuranceRate": {
+          "endowment": 0.15,
+          "health": 0.05,
+          "unemployment": 0.008,
+          "birth": 0.005,
+          "occupationalInjury": 0.008
+        }
+      },
+      "insuranceBaseRange": {
+        "endowment": [3523, 26421],
+        "health": [6475, 32376],
+        "birth": [6475, 32376],
+        "unemployment": [2360, 41190],
+        "occupationalInjury": [2360, 41190]
+      },
+      "housingFundBaseRange": [2360, 41190],
+      "references": [
+        {
+          "link": "http://bsy.sz.bendibao.com/bsyDetail/3352.html",
+          "description": "社会保险缴费基数调整"
+        },
+        {
+          "link": "https://hrss.sz.gov.cn/xxgk/zcfgjjd/zcfg/shbx/content/post_11052262.html",
+          "description": "2023缴费基数下限有关调整的通知（深人社规〔2023〕9号）"
+        },
+        {
+          "link": "https://guangdong.chinatax.gov.cn/gdsw/ssfggds/2023-07/03/content_91fdee38b92b4846b1367faec23da41a.shtml",
+          "description": "关于公布2022年全省全口径城镇单位就业人员月平均工资和2023年职工基本养老保险缴费基数上下限有关问题的通知（粤人社发〔2023〕22号）"
+        }
+      ]
+    },
+    {
+      "effectiveDate": "2022-07",
+      "minimumWage": 2360,
+      "avgWage": 8310,
+      "localAvgWage": 12964,
+      "employee": {
+        "insuranceRate": {
+          "endowment": 0.08,
+          "health": 0.02,
+          "unemployment": 0.003
+        }
+      },
+      "employer": {
+        "insuranceRate": {
+          "endowment": 0.14,
+          "health": 0.052,
+          "unemployment": 0.007,
+          "birth": 0.0045,
+          "occupationalInjury": 0.007
+        }
+      },
+      "insuranceBaseRange": {
+        "endowment": [2360, 24930],
+        "health": [6972, 38892],
+        "birth": [2360, 38892],
+        "unemployment": [2360, 2360],
+        "occupationalInjury": [2360, 2360]
+      },
+      "housingFundBaseRange": [2360, 38892],
+      "references": [
+        {
+          "link": "https://guangdong.chinatax.gov.cn/gdsw/ssfggds/2022-10/12/content_6113677738ad4935af9875d391bd60cd.shtml",
+          "description": "公布2021年全省全口径城镇单位就业人员月平均工资和2022年职工基本养老保险缴费基数上下限、基本养老金计发基数有关问题的通知（粤人社发〔2022〕34号）"
+        },
+        {
+          "link": "http://bsy.sz.bendibao.com/bsyDetail/608251.html",
+          "description": "深圳住房公积金缴费基数"
+        }
+      ]
+    },
+    {
+      "effectiveDate": "2021-07",
+      "minimumWage": 2200,
+      "avgWage": 7647,
+      "localAvgWage": 11620,
+      "employee": {
+        "insuranceRate": {
+          "endowment": 0.08,
+          "health": 0.02,
+          "unemployment": 0.003
+        }
+      },
+      "employer": {
+        "insuranceRate": {
+          "endowment": 0.14,
+          "health": 0.052,
+          "unemployment": 0.007,
+          "birth": 0.0045,
+          "occupationalInjury": 0.007
+        }
+      },
+      "insuranceBaseRange": {
+        "endowment": [2200, 22941],
+        "health": [6972, 34860],
+        "birth": [2200, 34860],
+        "unemployment": [2200, 2200],
+        "occupationalInjury": [2200, 2200]
+      },
+      "housingFundBaseRange": [2200, 34860],
+      "references": [
+        {
+          "link": "https://hrss.sz.gov.cn/szsi/sbjxxgk/tzgg/simtgg/content/post_9016230.html",
+          "description": "深圳市职工社会保险缴费比例及缴费基数表（2021年7月起执行）"
+        },
+        {
+          "link": "https://www.sznews.com/news/content/2021-06/28/content_24337815.htm",
+          "description": "2020年深圳市在岗职工月平均工资11620元，医保缴费标准调整"
+        }
+      ]
+    },
+    {
+      "effectiveDate": "2020-07",
+      "minimumWage": 2200,
+      "avgWage": 6756,
+      "localAvgWage": 10646,
+      "employee": {
+        "insuranceRate": {
+          "endowment": 0.08,
+          "health": 0.02,
+          "unemployment": 0.003
+        }
+      },
+      "employer": {
+        "insuranceRate": {
+          "endowment": 0.14,
+          "health": 0.052,
+          "unemployment": 0.007,
+          "birth": 0.0045,
+          "occupationalInjury": 0.007
+        }
+      },
+      "insuranceBaseRange": {
+        "endowment": [2200, 20268],
+        "health": [6972, 31938],
+        "unemployment": [2200, 2200],
+        "birth": [2200, 31938],
+        "occupationalInjury": [2200, 2200]
+      },
+      "housingFundBaseRange": [2200, 31938],
+      "references": [
+        {
+          "link": "http://tjj.sz.gov.cn/zwgk/zfxxgkml/tjsj/tjgb/content/post_8844535.html",
+          "description": "深圳市统计局《2020年深圳市城镇单位就业人员年平均工资数据公报》"
+        },
+        {
+          "link": "https://guangdong.chinatax.gov.cn/gdsw/sffgjys/2020-07/07/content_53c13ba343f8481d87009f47f9e7742b.shtml",
+          "description": "关于公布2019年全省从业人员月平均工资和职工基本养老保险缴费基数上下限有关问题的通知（粤人社发〔2020〕118号）"
+        }
+      ]
+    }
+  ]
+}

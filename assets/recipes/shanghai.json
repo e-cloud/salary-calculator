@@ -1,0 +1,269 @@
+{
+  "id": 3,
+  "label": "标准(企业)",
+  "city": "上海",
+  "insuranceBaseOnLastMonth": true,
+  "policies": [
+    {
+      "effectiveDate": "2026-07",
+      "minimumWage": 2740,
+      "avgWage": 12577,
+      "employee": {
+        "insuranceRate": {
+          "endowment": 0.08,
+          "health": 0.02,
+          "unemployment": 0.005
+        }
+      },
+      "employer": {
+        "insuranceRate": {
+          "endowment": 0.16,
+          "health": 0.09,
+          "unemployment": 0.005,
+          "birth": 0,
+          "occupationalInjury": 0.002
+        }
+      },
+      "insuranceBaseRange": {
+        "endowment": [7546, 37731],
+        "health": [7546, 37731],
+        "birth": [7546, 37731],
+        "unemployment": [7546, 37731],
+        "occupationalInjury": [7546, 37731]
+      },
+      "housingFundBaseRange": [2740, 37731],
+      "references": [
+        {
+          "link": "https://rsj.sh.gov.cn/tgzfl_17732/20250714/t0035_1434097.html",
+          "description": "上海市人力资源和社会保障局关于调整本市最低工资标准的通知_工资福利_上海市人力资源和社会保障局"
+        },
+        {
+          "link": "https://ybj.sh.gov.cn/zcjd/20250225/6ad4b3deb233457298f65fbc287a125e.html",
+          "description": "继续阶段性调整本市职工基本医疗保险费费率政策解读"
+        }
+      ]
+    },
+    {
+      "effectiveDate": "2025-07",
+      "minimumWage": 2740,
+      "avgWage": 12434,
+      "employee": {
+        "insuranceRate": {
+          "endowment": 0.08,
+          "health": 0.02,
+          "unemployment": 0.005
+        }
+      },
+      "employer": {
+        "insuranceRate": {
+          "endowment": 0.16,
+          "health": 0.09,
+          "unemployment": 0.005,
+          "birth": 0,
+          "occupationalInjury": 0.002
+        }
+      },
+      "insuranceBaseRange": {
+        "endowment": [7460, 37302],
+        "health": [7460, 37302],
+        "birth": [7460, 37302],
+        "unemployment": [7460, 37302],
+        "occupationalInjury": [7460, 37302]
+      },
+      "housingFundBaseRange": [2690, 37302],
+      "references": [
+        {
+          "link": "https://rsj.sh.gov.cn/tgzfl_17732/20250714/t0035_1434097.html",
+          "description": "上海市人力资源和社会保障局关于调整本市最低工资标准的通知_工资福利_上海市人力资源和社会保障局"
+        },
+        {
+          "link": "https://rsj.sh.gov.cn/tzcjd_17352_17352/20250714/t0035_1434105.html",
+          "description": "2025年本市最低工资标准调整政策问答_政策解读_上海市人力资源和社会保障局"
+        },
+        {
+          "link": "https://ybj.sh.gov.cn/zcjd/20250225/6ad4b3deb233457298f65fbc287a125e.html",
+          "description": "继续阶段性调整本市职工基本医疗保险费费率政策解读"
+        }
+      ]
+    },
+    {
+      "effectiveDate": "2024-07",
+      "minimumWage": 2690,
+      "avgWage": 12307,
+      "employee": {
+        "insuranceRate": {
+          "endowment": 0.08,
+          "health": 0.02,
+          "unemployment": 0.005
+        }
+      },
+      "employer": {
+        "insuranceRate": {
+          "endowment": 0.16,
+          "health": 0.09,
+          "unemployment": 0.005,
+          "birth": 0,
+          "occupationalInjury": 0.0016
+        }
+      },
+      "insuranceBaseRange": {
+        "endowment": [7384, 36921],
+        "health": [7384, 36921],
+        "birth": [7384, 36921],
+        "unemployment": [7384, 36921],
+        "occupationalInjury": [7384, 36921]
+      },
+      "housingFundBaseRange": [2690, 36921],
+      "references": [
+        {
+          "link": "https://ybj.sh.gov.cn/zcjd/20250225/6ad4b3deb233457298f65fbc287a125e.html",
+          "description": "继续阶段性调整本市职工基本医疗保险费费率政策解读"
+        },
+        {
+          "link": "https://www.lingang.gov.cn/html/website/lg/rc/hotspot/redianxinwen/p1775421218479931393.html",
+          "description": "首页 - 临港新片区国际人才港_本市阶段性调整职工基本医疗保险单位缴费费率"
+        }
+      ]
+    },
+    {
+      "effectiveDate": "2023-07",
+      "minimumWage": 2690,
+      "avgWage": 12183,
+      "employee": {
+        "insuranceRate": {
+          "endowment": 0.08,
+          "health": 0.02,
+          "unemployment": 0.005
+        }
+      },
+      "employer": {
+        "insuranceRate": {
+          "endowment": 0.16,
+          "health": 0.1,
+          "unemployment": 0.005,
+          "birth": 0,
+          "occupationalInjury": 0.0016
+        }
+      },
+      "insuranceBaseRange": {
+        "endowment": [7310, 36549],
+        "health": [7310, 36549],
+        "birth": [7310, 36549],
+        "unemployment": [7310, 36549],
+        "occupationalInjury": [7310, 36549]
+      },
+      "housingFundBaseRange": [2590, 36549],
+      "references": [
+        {
+          "link": "https://rsj.sh.gov.cn/tgzfl_17732/20230707/t0035_1416836.html",
+          "description": "上海市人力资源和社会保障局关于调整本市最低工资标准的通知_工资福利_上海市人力资源和社会保障局"
+        }
+      ]
+    },
+    {
+      "effectiveDate": "2022-07",
+      "minimumWage": 2590,
+      "avgWage": 11396,
+      "employee": {
+        "insuranceRate": {
+          "endowment": 0.08,
+          "health": 0.02,
+          "unemployment": 0.005
+        }
+      },
+      "employer": {
+        "insuranceRate": {
+          "endowment": 0.16,
+          "health": 0.1,
+          "unemployment": 0.005,
+          "birth": 0,
+          "occupationalInjury": 0.0016
+        }
+      },
+      "insuranceBaseRange": {
+        "endowment": [6520, 34188],
+        "health": [6520, 34188],
+        "birth": [6520, 34188],
+        "unemployment": [6520, 34188],
+        "occupationalInjury": [6520, 34188]
+      },
+      "housingFundBaseRange": [2590, 34188],
+      "references": [
+        {
+          "link": "https://rsj.sh.gov.cn/tgzfl_17732/20210628/t0035_1400413.html",
+          "description": "关于调整本市最低工资标准的通知_工资福利_上海市人力资源和社会保障局"
+        }
+      ]
+    },
+    {
+      "effectiveDate": "2021-07",
+      "minimumWage": 2590,
+      "avgWage": 10338,
+      "employee": {
+        "insuranceRate": {
+          "endowment": 0.08,
+          "health": 0.02,
+          "unemployment": 0.005
+        }
+      },
+      "employer": {
+        "insuranceRate": {
+          "endowment": 0.16,
+          "health": 0.1,
+          "unemployment": 0.005,
+          "birth": 0,
+          "occupationalInjury": 0.0016
+        }
+      },
+      "insuranceBaseRange": {
+        "endowment": [5975, 31014],
+        "health": [5975, 31014],
+        "birth": [5975, 31014],
+        "unemployment": [5975, 31014],
+        "occupationalInjury": [5975, 31014]
+      },
+      "housingFundBaseRange": [2480, 31014],
+      "references": [
+        {
+          "link": "https://rsj.sh.gov.cn/tgzfl_17732/20210628/t0035_1400413.html",
+          "description": "关于调整本市最低工资标准的通知_工资福利_上海市人力资源和社会保障局"
+        }
+      ]
+    },
+    {
+      "effectiveDate": "2020-07",
+      "minimumWage": 2480,
+      "avgWage": 9339,
+      "employee": {
+        "insuranceRate": {
+          "endowment": 0.08,
+          "health": 0.02,
+          "unemployment": 0.005
+        }
+      },
+      "employer": {
+        "insuranceRate": {
+          "endowment": 0.16,
+          "health": 0.1,
+          "unemployment": 0.005,
+          "birth": 0,
+          "occupationalInjury": 0.0016
+        }
+      },
+      "insuranceBaseRange": {
+        "endowment": [4927, 28017],
+        "health": [4927, 28017],
+        "birth": [4927, 28017],
+        "unemployment": [4927, 28017],
+        "occupationalInjury": [4927, 28017]
+      },
+      "housingFundBaseRange": [2480, 28017],
+      "references": [
+        {
+          "link": "https://rsj.sh.gov.cn/tgzfl_17732/20200617/t0035_1389424.html",
+          "description": "上海市人力资源和社会保障局关于调整本市最低工资标准的通知_工资福利_上海市人力资源和社会保障局"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,248 @@
+{
+  "id": 4,
+  "label": "标准(企业)",
+  "city": "广州",
+  "insuranceBaseOnLastMonth": false,
+  "policies": [
+    {
+      "effectiveDate": "2026-07",
+      "minimumWage": 2680,
+      "avgWage": 9183,
+      "localAvgWage": 13899,
+      "employee": {
+        "insuranceRate": {
+          "endowment": 0.08,
+          "health": 0.02,
+          "unemployment": 0.002
+        }
+      },
+      "employer": {
+        "insuranceRate": {
+          "endowment": 0.15,
+          "health": 0.06,
+          "unemployment": 0.008,
+          "birth": 0.0085,
+          "occupationalInjury": 0.004
+        }
+      },
+      "insuranceBaseRange": {
+        "endowment": [5510, 27549],
+        "health": [6234, 31170],
+        "birth": [6234, 31170],
+        "unemployment": [2680, 41697],
+        "occupationalInjury": [2680, 41697]
+      },
+      "housingFundBaseRange": [2680, 41697],
+      "references": [
+        {
+          "link": "https://www.gz.gov.cn/zwfw/zxfw/zffw/content/post_10983586.html",
+          "description": "广州调整住房公积金最低缴存基数：9月1日起由2500元调整为2680元 - 广州市人民政府门户网站"
+        },
+        {
+          "link": "https://hrss.gd.gov.cn/zwgk/gsgg/content/post_4789648.html",
+          "description": "关于公布2025年职工基本养老保险缴费基数上下限和基本养老金计发基数有关问题的通知-广东省人力资源和社会保障厅"
+        },
+        {
+          "link": "https://www.gz.gov.cn/zwfw/zxfw/sbfw/content/post_10510453.html",
+          "description": "广东明确2025年职工养老缴费基数上下限 - 广州市人民政府门户网站"
+        }
+      ]
+    },
+    {
+      "effectiveDate": "2025-07",
+      "minimumWage": 2500,
+      "avgWage": 9183,
+      "localAvgWage": 13276,
+      "employee": {
+        "insuranceRate": {
+          "endowment": 0.08,
+          "health": 0.02,
+          "unemployment": 0.002
+        }
+      },
+      "employer": {
+        "insuranceRate": {
+          "endowment": 0.15,
+          "health": 0.045,
+          "unemployment": 0.008,
+          "birth": 0.0085,
+          "occupationalInjury": 0.004
+        }
+      },
+      "insuranceBaseRange": {
+        "endowment": [5510, 27549],
+        "health": [6236, 31179],
+        "birth": [6236, 31179],
+        "unemployment": [2500, 39828],
+        "occupationalInjury": [2500, 39828]
+      },
+      "housingFundBaseRange": [2500, 39828],
+      "references": [
+        {
+          "link": "https://hrss.gd.gov.cn/zwgk/gsgg/content/post_4789648.html",
+          "description": "关于公布2025年职工基本养老保险缴费基数上下限和基本养老金计发基数有关问题的通知-广东省人力资源和社会保障厅"
+        },
+        {
+          "link": "https://www.gz.gov.cn/zwfw/zxfw/sbfw/content/post_10510453.html",
+          "description": "广东明确2025年职工养老缴费基数上下限 - 广州市人民政府门户网站"
+        }
+      ]
+    },
+    {
+      "effectiveDate": "2024-07",
+      "minimumWage": 2300,
+      "avgWage": 9167,
+      "localAvgWage": 13193,
+      "employee": {
+        "insuranceRate": {
+          "endowment": 0.08,
+          "health": 0.02,
+          "unemployment": 0.002
+        }
+      },
+      "employer": {
+        "insuranceRate": {
+          "endowment": 0.15,
+          "health": 0.045,
+          "unemployment": 0.008,
+          "birth": 0.0085,
+          "occupationalInjury": 0.004
+        }
+      },
+      "insuranceBaseRange": {
+        "endowment": [5500, 27501],
+        "health": [5996, 29979],
+        "birth": [5996, 29979],
+        "unemployment": [2300, 39579],
+        "occupationalInjury": [2300, 39579]
+      },
+      "housingFundBaseRange": [2300, 39579],
+      "references": [
+        {
+          "link": "https://www.gz.gov.cn/gzybj/gkmlpt/content/9/9513/post_9513535.html",
+          "description": "【政策解读】《广州市医疗保障局 广州市财政局 国家税务总局广州市税务局关于阶段性降低职工基本医疗保险缴费率的通知》的解读"
+        },
+        {
+          "link": "https://www.gz.gov.cn/zwfw/zxfw/zffw/content/post_9721935.html",
+          "description": "广州2024年度住房公积金缴存基数调整 - 广州市人民政府门户网站"
+        }
+      ]
+    },
+    {
+      "effectiveDate": "2023-07",
+      "minimumWage": 2300,
+      "avgWage": 8807,
+      "localAvgWage": 12706,
+      "employee": {
+        "insuranceRate": {
+          "endowment": 0.08,
+          "health": 0.02,
+          "unemployment": 0.002
+        }
+      },
+      "employer": {
+        "insuranceRate": {
+          "endowment": 0.15,
+          "health": 0.06,
+          "unemployment": 0.008,
+          "birth": 0.0085,
+          "occupationalInjury": 0.004
+        }
+      },
+      "insuranceBaseRange": {
+        "endowment": [5284, 26421],
+        "health": [5309, 26544],
+        "birth": [5309, 26544],
+        "unemployment": [2300, 38118],
+        "occupationalInjury": [2300, 38118]
+      },
+      "housingFundBaseRange": [2300, 38118],
+      "references": [
+        {
+          "link": "https://guangdong.chinatax.gov.cn/gdsw/ssfggds/2023-07/03/content_91fdee38b92b4846b1367faec23da41a.shtml",
+          "description": "关于公布2022年全省全口径城镇单位就业人员月平均工资和2023年职工基本养老保险缴费基数上下限有关问题的通知"
+        }
+      ]
+    },
+    {
+      "effectiveDate": "2022-12",
+      "minimumWage": 2300,
+      "avgWage": 8310,
+      "localAvgWage": 12024,
+      "employee": {
+        "insuranceRate": {
+          "endowment": 0.08,
+          "health": 0.02,
+          "unemployment": 0.002
+        }
+      },
+      "employer": {
+        "insuranceRate": {
+          "endowment": 0.15,
+          "health": 0.06,
+          "unemployment": 0.008,
+          "birth": 0.0085,
+          "occupationalInjury": 0.004
+        }
+      },
+      "insuranceBaseRange": {
+        "endowment": [4588, 24930],
+        "health": [5309, 26544],
+        "birth": [5309, 26544],
+        "unemployment": [2300, 36072],
+        "occupationalInjury": [2300, 36072]
+      },
+      "housingFundBaseRange": [2300, 36072],
+      "references": [
+        {
+          "link": "https://www.gz.gov.cn/zwgk/fggw/wyzzc/content/post_8650101.html",
+          "description": "广州市社会医疗保险规定 - 广州市人民政府门户网站"
+        },
+        {
+          "link": "https://guangdong.chinatax.gov.cn/gdsw/ssfggds/2022-10/12/content_6113677738ad4935af9875d391bd60cd.shtml",
+          "description": "关于公布2021年全省全口径城镇单位就业人员月平均工资和2022年职工基本养老保险缴费基数上下限、基本养老金计发基数有关问题的通知"
+        }
+      ]
+    },
+    {
+      "effectiveDate": "2022-07",
+      "minimumWage": 2300,
+      "avgWage": 8310,
+      "localAvgWage": 12024,
+      "employee": {
+        "insuranceRate": {
+          "endowment": 0.08,
+          "health": 0.02,
+          "unemployment": 0.002
+        }
+      },
+      "employer": {
+        "insuranceRate": {
+          "endowment": 0.15,
+          "health": 0.0545,
+          "unemployment": 0.008,
+          "birth": 0.0085,
+          "occupationalInjury": 0.004
+        }
+      },
+      "insuranceBaseRange": {
+        "endowment": [4588, 24930],
+        "health": [7214, 36072],
+        "birth": [7214, 36072],
+        "unemployment": [2300, 36072],
+        "occupationalInjury": [2300, 36072]
+      },
+      "housingFundBaseRange": [2300, 36072],
+      "references": [
+        {
+          "link": "https://www.gz.gov.cn/zwgk/fggw/wyzzc/content/post_8650101.html",
+          "description": "广州市社会医疗保险规定 - 广州市人民政府门户网站"
+        },
+        {
+          "link": "https://guangdong.chinatax.gov.cn/gdsw/ssfggds/2022-10/12/content_6113677738ad4935af9875d391bd60cd.shtml",
+          "description": "关于公布2021年全省全口径城镇单位就业人员月平均工资和2022年职工基本养老保险缴费基数上下限、基本养老金计发基数有关问题的通知"
+        }
+      ]
+    }
+  ]
+}
