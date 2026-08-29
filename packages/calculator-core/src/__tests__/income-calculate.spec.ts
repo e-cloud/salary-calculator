@@ -8,8 +8,11 @@ import {
   buildMetaFromPolicy,
   buildMonthlyMetas,
   buildEmptyMetaList,
+  checkBonusTaxTrap,
+  optimizeAnnualBonusAllocation,
 } from '../income-calculate.service';
 import { CityRecipe, MonthlyIncomeMeta, Policy, RawMeta } from '../model';
+
 
 describe('calculator-core 核心算法与政策匹配单元测试', () => {
   const baseMeta: MonthlyIncomeMeta = {
@@ -62,7 +65,9 @@ describe('calculator-core 核心算法与政策匹配单元测试', () => {
     id: 1,
     label: '示例城市',
     city: '示例城市',
+    insuranceBaseOnLastMonth: false,
     policies: [
+
       {
         effectiveDate: '2024-07',
         minimumWage: 2500,
@@ -478,8 +483,10 @@ describe('calculator-core 核心算法与政策匹配单元测试', () => {
         id: 99,
         city: '未知城市',
         label: '未知城市',
+        insuranceBaseOnLastMonth: false,
         policies: [],
       };
+
 
       // Act & Assert
       expect(() => findPolicyForMonth(emptyRecipe, 2024, 1)).toThrow(
@@ -594,4 +601,169 @@ describe('calculator-core 核心算法与政策匹配单元测试', () => {
       expect(emptyList[1].salary).toBe(10000);
     });
   });
+
+  describe('10. 年终奖 6 大盲区精准检测与税损计算测试', () => {
+    it('36,000 元（临界点）不属于盲区，36,001 元准确命中第 1 盲区', () => {
+      const safe = checkBonusTaxTrap(36000);
+      expect(safe.isTrap).toBe(false);
+
+      const trap = checkBonusTaxTrap(36001);
+      expect(trap.isTrap).toBe(true);
+      expect(trap.lowerThreshold).toBe(36000);
+      expect(trap.upperThreshold).toBeCloseTo(38566.67, 2);
+      expect(trap.lostAmount).toBeCloseTo(2309.1, 1);
+      expect(trap.warningMessage).toContain('36,000');
+    });
+
+    it('144,001 元准确命中第 2 盲区 (144000 ~ 160500)', () => {
+      const trap = checkBonusTaxTrap(144001);
+      expect(trap.isTrap).toBe(true);
+      expect(trap.lowerThreshold).toBe(144000);
+      expect(trap.upperThreshold).toBe(160500);
+      expect(trap.lostAmount).toBeCloseTo(13199.2, 1);
+    });
+
+    it('500,000 元不在盲区内 (处于 447500 ~ 660000 安全区间)', () => {
+      const safe = checkBonusTaxTrap(500000);
+      expect(safe.isTrap).toBe(false);
+    });
+  });
+
+  describe('11. 年终奖冲抵综合所得扣除不足差额测试 (税总2018第61号)', () => {
+    it('当全年账面工资低于全年扣除总额时，年终奖应先冲抵扣除差额后再单独计税', () => {
+      // Arrange: 月薪 3000 元，全年账面 36,000，扣除额 60,000+社保公积金5580=65580（扣除不足 29,580 元），年终奖 30,000 元
+      const lowSalaryMeta: MonthlyIncomeMeta = {
+        ...baseMeta,
+        salary: 3000,
+        insuranceBase: 3000,
+        housingFundBase: 3000,
+      };
+      const metas = Array(12)
+        .fill(0)
+        .map(() => ({ ...lowSalaryMeta }));
+
+      // Act
+      const months = calculateMonthlyIncomes(metas);
+      const fullYear = calculateFullYearIncome(months, 30000);
+
+      // Assert:
+      // 全年扣除不足 = 60000 + 5580 - 36000 = 29580 元
+      // 应税年终奖 = 30000 - 29580 = 420 元 (按 3% 计税 12.6 元)
+      expect(fullYear.bonusTax).toBeCloseTo(12.6, 2);
+      expect(fullYear.theoreticalTax).toBeCloseTo(12.6, 2);
+    });
+  });
+
+
+  describe('12. 年终奖与月薪全局最优拆分筹划算法测试', () => {
+    it('针对年薪总包 300,000 元，自动求解最优年终奖与月薪拆分', () => {
+      // Act
+      const result = optimizeAnnualBonusAllocation(15000, 120000, 1550);
+
+      // Assert
+      expect(result.optimalTotalTax).toBeLessThanOrEqual(result.currentTotalTax);
+      expect(result.taxSaved).toBeGreaterThanOrEqual(0);
+      expect(result.optimalBonus).toBeGreaterThanOrEqual(0);
+    });
+  });
+
+  describe('13. 年度汇算清缴退/补税差额预测测试', () => {
+    it('年中第 7 个月跳槽开启 newPayCycle，汇算清缴卡片应准确预警应补税金额', () => {
+      // Arrange
+      const metas: MonthlyIncomeMeta[] = [];
+      for (let i = 1; i <= 12; i++) {
+        metas.push({
+          ...baseMeta,
+          salary: 20000,
+          insuranceBase: 20000,
+          housingFundBase: 20000,
+          newPayCycle: i === 7,
+        });
+      }
+
+      // Act
+      const months = calculateMonthlyIncomes(metas);
+      const fullYear = calculateFullYearIncome(months, 0);
+
+      // Assert:
+      expect(fullYear.annualTaxSettlement).toBeDefined();
+      expect(fullYear.annualTaxSettlement!.settlementType).toBe('supplement');
+      expect(fullYear.annualTaxSettlement!.amount).toBeGreaterThan(0);
+      expect(fullYear.annualTaxSettlement!.hint).toContain('需补税');
+    });
+
+    it('当年终奖并入综合所得总税额更低时，汇算清缴应提示自愿合并退税建议', () => {
+      // Arrange: 月薪 5,000（全年刚好 6 万免税），年终奖 40,000（单独计税税率跳至 10%，税额 3790 元；合并计税仅 1270 元，合并节税 2520 元）
+      const metas = Array(12).fill(0).map(() => ({
+        ...baseMeta,
+        salary: 5000,
+        insuranceBase: 0,
+        housingFundBase: 0,
+      }));
+
+      // Act
+      const months = calculateMonthlyIncomes(metas);
+      const fullYear = calculateFullYearIncome(months, 50000);
+
+      // Assert
+      expect(fullYear.annualTaxSettlement).toBeDefined();
+      expect(fullYear.annualTaxSettlement!.settlementType).toBe('refund');
+      expect(fullYear.annualTaxSettlement!.amount).toBe(2310);
+      expect(fullYear.annualTaxSettlement!.hint).toContain('退税');
+    });
+  });
+
+
+
+
+
+  describe('14. 当年首次入职应届生累计减除费用递增测试 (税总2020年13号)', () => {
+    it('应届生 7 月份首次入职，首月累计减除费用应自动按 7 * 5000 = 35,000 元计算', () => {
+      // Arrange: 7月首次入职，月薪 15,000
+      const graduateMeta: MonthlyIncomeMeta = {
+        ...baseMeta,
+        salary: 15000,
+        insuranceBase: 15000,
+        housingFundBase: 15000,
+        firstJobThisYear: true,
+        firstJobStartMonth: 7,
+        newPayCycle: true,
+      };
+
+      // Act
+      const month7 = calculateMonthIncome(graduateMeta, undefined);
+
+      // Assert:
+      // 首月减除费用直接为 35,000 元，应税所得额为 0，当月个税为 0
+      expect(month7.accumulatedDeduction).toBe(35000);
+      expect(month7.accumulatedTaxQuota).toBe(0);
+      expect(month7.tax).toBe(0);
+    });
+  });
+
+  describe('15. 副业劳务报酬与稿酬综合合并计税测试', () => {
+    it('副业劳务报酬按 80% 计入收入并预扣，年底并入综合所得', () => {
+      // Arrange
+      const metaWithSideIncome: MonthlyIncomeMeta = {
+        ...baseMeta,
+        salary: 10000,
+        sideIncome: {
+          laborIncome: 5000,
+          manuscriptIncome: 3000,
+        },
+      };
+      const metas = Array(12)
+        .fill(0)
+        .map(() => ({ ...metaWithSideIncome }));
+
+      // Act
+      const months = calculateMonthlyIncomes(metas);
+      const fullYear = calculateFullYearIncome(months, 0);
+
+      // Assert
+      expect(fullYear.sideIncomeTax).toBeDefined();
+      expect(fullYear.sideIncomeTax!.totalSideTax).toBeGreaterThan(0);
+    });
+  });
 });
+

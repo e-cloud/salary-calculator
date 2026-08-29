@@ -49,6 +49,12 @@ export interface InputModel {
     unemployment: number;
   };
   insuranceBaseOnLastMonth: boolean;
+  firstJobThisYear?: boolean;
+  firstJobStartMonth?: number;
+  sideIncome?: {
+    laborIncome: number;
+    manuscriptIncome: number;
+  };
   enterprisePensionEmployeeRateLimit?: number;
   privatePensionMonthlyQuota?: number;
 }

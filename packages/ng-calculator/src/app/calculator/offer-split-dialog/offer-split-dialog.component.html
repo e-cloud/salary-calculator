@@ -1,0 +1,109 @@
+<div class="dialog-header d-flex justify-content-between align-items-center">
+  <div class="header-title-wrapper">
+    <mat-icon color="primary">payments</mat-icon>
+    <h2
+      mat-dialog-title
+      class="m-0 font-weight-bold"
+      data-testid="offer-dialog-title"
+    >
+      Offer 年薪总包快速拆分
+    </h2>
+  </div>
+  <button
+    mat-icon-button
+    (click)="onClose()"
+    aria-label="关闭"
+    data-testid="btn-close-dialog"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+
+<mat-dialog-content class="dialog-content py-3">
+  <p class="text-muted small mb-3">
+    输入谈定的年度总包金额与年薪月数（如 15
+    薪），系统将自动拆分每月基础账面工资与年终奖，并一键填入计算器。
+  </p>
+
+  <form [formGroup]="splitForm" class="d-flex flex-column">
+    <mat-form-field appearance="outline" class="w-100 mb-2">
+      <mat-label>年度总税前薪酬 (Total Package)</mat-label>
+      <input
+        matInput
+        type="number"
+        formControlName="totalPackage"
+        placeholder="300000"
+        min="0"
+        data-testid="offer-total-package-input"
+      />
+      <span matTextSuffix>元</span>
+      <mat-hint>包含 12 个月月薪及年终奖金总额</mat-hint>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-100 mt-2 mb-2">
+      <mat-label>薪数结构</mat-label>
+      <mat-select
+        formControlName="salaryMonths"
+        data-testid="offer-months-select"
+      >
+        @for (opt of salaryMonthsOptions; track opt.value) {
+          <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+        }
+      </mat-select>
+      <mat-hint>例如 15 薪即 12 个月月薪 + 3 个月年终奖</mat-hint>
+    </mat-form-field>
+
+    <!-- 拆分预览卡片 -->
+    <div
+      class="preview-card p-3 rounded mt-2 border"
+      data-testid="offer-preview-card"
+    >
+      <div class="font-weight-bold text-dark mb-2">拆分预览结果</div>
+      <div class="d-flex justify-content-between mb-1 small text-muted">
+        <span>账面月薪 (12个月)：</span>
+        <strong
+          class="text-dark font-weight-bold"
+          data-testid="offer-calc-salary"
+        >
+          ¥{{ calculatedMonthSalary.toLocaleString() }} /月
+        </strong>
+      </div>
+      <div class="d-flex justify-content-between small text-muted">
+        <span>全年一次性奖金：</span>
+        <strong
+          class="text-dark font-weight-bold"
+          data-testid="offer-calc-bonus"
+        >
+          ¥{{ calculatedAnnualBonus.toLocaleString() }}
+        </strong>
+      </div>
+    </div>
+
+    <!-- 盲区警示 (若选定方案落在盲区) -->
+    @if (trapWarning) {
+      <div
+        class="alert alert-warning py-2 px-3 mt-2 mb-0 small"
+        data-testid="offer-trap-warning"
+      >
+        ⚠️ <strong>提示：</strong>当前
+        {{ splitForm.get("salaryMonths")?.value }} 薪结构下的年终奖 (¥{{
+          calculatedAnnualBonus.toLocaleString()
+        }}) 落在个税无效盲区，税后实际收益可能不如降低年终奖增加月薪。
+      </div>
+    }
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="dialog-actions p-3">
+  <button mat-button (click)="onClose()">取消</button>
+  <button
+    mat-flat-button
+    color="primary"
+    (click)="onApply()"
+    [disabled]="splitForm.invalid"
+    data-testid="offer-apply-btn"
+  >
+    <mat-icon class="mr-1">check</mat-icon>
+    <span>应用至表单</span>
+  </button>
+</mat-dialog-actions>

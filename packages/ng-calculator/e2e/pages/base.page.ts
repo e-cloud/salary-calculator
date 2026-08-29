@@ -16,8 +16,11 @@ export class BasePage {
         localStorage.setItem('salary_calculator_guide_shown', 'true');
       });
     }
-    await this.page.goto('/');
-    await this.page.waitForLoadState('networkidle');
+    await this.page.goto('/', { waitUntil: 'commit' });
+    await this.page.waitForSelector('app-calculator-form', {
+      state: 'visible',
+      timeout: 20000,
+    });
   }
 
   /**

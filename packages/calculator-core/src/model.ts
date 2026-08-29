@@ -82,8 +82,20 @@ export interface MonthlyIncomeInfo {
   actualMonth: number;
 
   /**
+   * 副业所得
+   */
+  sideIncome?: {
+    laborIncome: number;
+    manuscriptIncome: number;
+  };
+  /**
+   * 是否开启新计费周期（换工作）
+   */
+  newPayCycle?: boolean;
+  /**
    * 雇主成本
    */
+
   employerCosts: {
     full: number;
     insuranceFull: number;
@@ -97,6 +109,7 @@ export interface MonthlyIncomeInfo {
     enterprisePension: number;
   };
 }
+
 
 export interface MonthlyIncomeMeta {
   /**
@@ -198,6 +211,23 @@ export interface MonthlyIncomeMeta {
    */
   privatePensionMonthlyQuota?: number;
   /**
+   * 是否属于当年首次参加工作/应届生（税总2020年13号）
+   */
+  firstJobThisYear?: boolean;
+  /**
+   * 当年首次参加工作月份 (1-12)
+   */
+  firstJobStartMonth?: number;
+  /**
+   * 副业所得（劳务报酬与稿酬）
+   */
+  sideIncome?: {
+    // 劳务报酬（每次/每月）
+    laborIncome: number;
+    // 稿酬所得（每次/每月）
+    manuscriptIncome: number;
+  };
+  /**
    * 是否属于新的计薪周期，每年1月都为 true
    * 一般跳槽后第一月也是，因为新公司算税是从零开始的
    */
@@ -213,6 +243,7 @@ export interface MonthlyIncomeMeta {
     };
   };
 }
+
 
 export interface FullYearIncomeInfo {
   /**
@@ -284,6 +315,30 @@ export interface FullYearIncomeInfo {
    */
   totalSeparatedTax: number;
 
+  /**
+   * 年终奖税收盲区检测结果
+   */
+  bonusTaxTrap?: BonusTaxTrapResult;
+
+  /**
+   * 年薪与年终奖最优分配建议
+   */
+  bonusOptimization?: BonusOptimizationResult;
+
+  /**
+   * 年度汇算清缴退/补税测算结果
+   */
+  annualTaxSettlement?: AnnualTaxSettlement;
+
+  /**
+   * 副业所得综合税额
+   */
+  sideIncomeTax?: {
+    laborTax: number;
+    manuscriptTax: number;
+    totalSideTax: number;
+  };
+
   employee: {
     endowmentInsurance: number;
     healthInsurance: number;
@@ -311,6 +366,66 @@ export interface FullYearIncomeInfo {
 }
 
 /**
+ * 年终奖税收盲区分析模型
+ */
+export interface BonusTaxTrapResult {
+  /** 是否落在税收盲区内 */
+  isTrap: boolean;
+  /** 当前年终奖金额 */
+  currentBonus: number;
+  /** 盲区下限（开区间，大于此值开始进入盲区） */
+  lowerThreshold: number;
+  /** 盲区上限（闭区间，在此值内税后均不划算） */
+  upperThreshold: number;
+  /** 较临界点多纳税的额外税额（税损） */
+  lostAmount: number;
+  /** 盲区提示说明 */
+  warningMessage: string;
+}
+
+/**
+ * 年终奖与月薪最优分配筹划模型
+ */
+export interface BonusOptimizationResult {
+  /** 当前总税额 */
+  currentTotalTax: number;
+  /** 当前到手现金 */
+  currentCashIncome: number;
+  /** 最优年终奖金额 */
+  optimalBonus: number;
+  /** 最优月薪金额 */
+  optimalMonthlySalary: number;
+  /** 最优总税额 */
+  optimalTotalTax: number;
+  /** 最优到手现金 */
+  optimalCashIncome: number;
+  /** 预期节税金额 */
+  taxSaved: number;
+  /** 当前分配是否已是最优 */
+  isAlreadyOptimal: boolean;
+  /** 建议说明 */
+  recommendationSummary: string;
+}
+
+/**
+ * 年度汇算清缴退/补税测算模型
+ */
+export interface AnnualTaxSettlement {
+  /** 全年已预缴税款 */
+  prepaidTax: number;
+  /** 全年理论应纳税款 */
+  theoreticalTax: number;
+  /** 预缴与理论税款差额 (prepaidTax - theoreticalTax) */
+  taxDiff: number;
+  /** 结算类型：'refund'(退税) | 'supplement'(补税) | 'none'(无须退补) */
+  settlementType: 'refund' | 'supplement' | 'none';
+  /** 退税或补税金额（绝对值） */
+  amount: number;
+  /** 政策与测算提示 */
+  hint: string;
+}
+
+/**
  * [新增] Policy 接口
  * 用于封装在特定时间点生效的一整套缴费规则。
  */
@@ -318,6 +433,7 @@ export interface Reference {
   link: string;
   description: string;
 }
+
 
 export interface Policy {
   /**
@@ -415,4 +531,11 @@ export interface RawMeta {
     unemployment: number;
   };
   insuranceBaseOnLastMonth: boolean;
+  firstJobThisYear?: boolean;
+  firstJobStartMonth?: number;
+  sideIncome?: {
+    laborIncome: number;
+    manuscriptIncome: number;
+  };
 }
+

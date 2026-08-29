@@ -35,11 +35,18 @@ import {
   RawMeta,
   Policy,
   findLatestPolicyForYear,
+  checkBonusTaxTrap,
+  BonusTaxTrapResult,
+  nonMergeTaxCalculationEndDate,
 } from 'calculator-core';
 import { autocompleteTemplates } from '../template-metadata';
 import { Observable, Subscription } from 'rxjs';
 import { InputForm } from '../types';
 import { CityRecipeDialogComponent } from '../city-recipe-dialog/city-recipe-dialog.component';
+import {
+  OfferSplitDialogComponent,
+  OfferSplitResult,
+} from '../offer-split-dialog/offer-split-dialog.component';
 
 export interface CalculateParams extends RawMeta {
   year: number;
@@ -83,6 +90,7 @@ export class CalculatorFormComponent implements OnInit, OnChanges, OnDestroy {
 
   baseForm!: FormGroup<InputForm>;
   readonly templates = autocompleteTemplates;
+  readonly nonMergeTaxEndDate = nonMergeTaxCalculationEndDate;
 
   // 新增属性
   availableYears: number[] = [];
@@ -90,6 +98,8 @@ export class CalculatorFormComponent implements OnInit, OnChanges, OnDestroy {
   useUniformPolicy: boolean = false;
   latestPolicy: Policy | null = null;
   policyHint: string = '';
+  bonusTrapResult: BonusTaxTrapResult | null = null;
+
   private formSubscriptions: Subscription[] = [];
   private fb = inject(FormBuilder);
   private dialog = inject(MatDialog);
@@ -262,6 +272,22 @@ export class CalculatorFormComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
+  openOfferSplitDialog(): void {
+    const dialogRef = this.dialog.open(OfferSplitDialogComponent, {
+      width: '480px',
+      maxWidth: '95vw',
+    });
+    dialogRef.afterClosed().subscribe((res: OfferSplitResult | undefined) => {
+      if (res) {
+        this.baseForm.patchValue({
+          monthSalary: res.monthSalary,
+          annualBonus: res.annualBonus,
+        });
+        this.updateInsuranceBases();
+      }
+    });
+  }
+
   private setupFormValueChanges() {
     // 清除之前的订阅
     this.formSubscriptions.forEach((sub) => sub.unsubscribe());
@@ -288,6 +314,16 @@ export class CalculatorFormComponent implements OnInit, OnChanges, OnDestroy {
         this.updateInsuranceBases();
       });
     if (monthSalarySub) this.formSubscriptions.push(monthSalarySub);
+
+    // 监听年终奖变化实时进行盲区检测
+    const annualBonusControl = this.baseForm.get('annualBonus');
+    if (annualBonusControl) {
+      this.bonusTrapResult = checkBonusTaxTrap(annualBonusControl.value || 0);
+      const bonusSub = annualBonusControl.valueChanges.subscribe((val) => {
+        this.bonusTrapResult = checkBonusTaxTrap(val || 0);
+      });
+      this.formSubscriptions.push(bonusSub);
+    }
 
     // 企业年金个人缴纳部分变更时同步更新企业部分
     const enterprisePensionSub = this.baseForm
@@ -340,6 +376,12 @@ export class CalculatorFormComponent implements OnInit, OnChanges, OnDestroy {
       housingFundRate: [5, Validators.required],
       lastYearAvgSalary: [0],
       yearBeforeLastAvgSalary: [0],
+      firstJobThisYear: [false],
+      firstJobStartMonth: [7],
+      sideIncome: this.fb.group({
+        laborIncome: [0],
+        manuscriptIncome: [0],
+      }),
       extraDeduction: this.fb.group({
         infantCare: [0, Validators.required],
         childEducation: [0, Validators.required],

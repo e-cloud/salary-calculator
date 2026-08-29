@@ -1,10 +1,87 @@
 @if (!clear && (summary$ | async); as sum) {
   <mat-card
     appearance="outlined"
-    class="calc-result"
+    class="calc-result mb-3"
     #summary
     data-testid="summary-details-card"
   >
+    <!-- 操作工具栏：导出 CSV 报表 -->
+    <div
+      class="d-flex justify-content-between align-items-center p-3 border-bottom flex-wrap gap-2"
+    >
+      <h3 class="m-0 font-weight-bold text-dark d-flex align-items-center">
+        <mat-icon class="mr-2 text-primary">assessment</mat-icon>
+        <span>年度薪税综合汇总</span>
+      </h3>
+      <button
+        mat-flat-button
+        color="primary"
+        (click)="onExportCsv(sum)"
+        data-testid="btn-export-csv"
+      >
+        <mat-icon class="mr-1">download</mat-icon>
+        <span>导出 12 个月明细报表 (CSV)</span>
+      </button>
+    </div>
+
+    <!-- 年度汇算清缴退/补税精准预测卡片 -->
+    @if (
+      sum.annualTaxSettlement &&
+      sum.annualTaxSettlement.settlementType !== "none"
+    ) {
+      <div class="px-3 pt-3">
+        <div
+          class="alert mb-0 d-flex align-items-center rounded-lg p-3 border"
+          [ngClass]="{
+            'alert-success border-success':
+              sum.annualTaxSettlement.settlementType === 'refund',
+            'alert-warning border-warning':
+              sum.annualTaxSettlement.settlementType === 'supplement',
+          }"
+          data-testid="annual-tax-settlement-card"
+        >
+          <mat-icon
+            class="mr-3 flex-shrink-0"
+            [ngClass]="{
+              'text-success':
+                sum.annualTaxSettlement.settlementType === 'refund',
+              'text-warning':
+                sum.annualTaxSettlement.settlementType === 'supplement',
+            }"
+            style="font-size: 26px; width: 26px; height: 26px"
+          >
+            {{
+              sum.annualTaxSettlement.settlementType === "refund"
+                ? "savings"
+                : "warning_amber"
+            }}
+          </mat-icon>
+          <div>
+            <div class="font-weight-bold" style="font-size: 15px">
+              {{
+                sum.annualTaxSettlement.settlementType === "refund"
+                  ? "年度汇算预计可退税："
+                  : "年度汇算预计需补税："
+              }}
+              <span
+                class="font-weight-bold"
+                [ngClass]="
+                  sum.annualTaxSettlement.settlementType === 'refund'
+                    ? 'text-success'
+                    : 'text-danger'
+                "
+              >
+                {{ sum.annualTaxSettlement.amount | currency }}
+              </span>
+            </div>
+            <div class="small text-muted mt-1">
+              {{ sum.annualTaxSettlement.hint }}
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
     <mat-list class="summary">
       <mat-list-item>
         <mat-icon

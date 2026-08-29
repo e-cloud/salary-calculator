@@ -135,4 +135,37 @@ describe('CalculatorFormComponent 基础计算表单组件测试', () => {
       }),
     );
   });
+
+  it('用户输入处于盲区的年终奖（如 36,500 元）时，表单即时渲染盲区预警提示', async () => {
+    // Arrange
+    const user = userEvent.setup();
+    await setup();
+    const annualBonusInput = screen.getByTestId('input-annual-bonus');
+
+    // Act
+    await user.clear(annualBonusInput);
+    await user.type(annualBonusInput, '36500');
+
+    // Assert
+    const alert = screen.getByTestId('bonus-tax-trap-alert');
+    expect(alert).toBeDefined();
+    expect(alert.textContent).toContain('税收盲区预警');
+    expect(alert.textContent).toContain('36,000');
+  });
+
+  it('用户点击“Offer 总包拆分”按钮时应打开 OfferSplitDialogComponent', async () => {
+    // Arrange
+    const user = userEvent.setup();
+    mockDialog.open.mockReturnValue({
+      afterClosed: () => of(undefined),
+    });
+    await setup();
+    const offerSplitBtn = screen.getByTestId('btn-open-offer-split');
+
+    // Act
+    await user.click(offerSplitBtn);
+
+    // Assert
+    expect(mockDialog.open).toHaveBeenCalled();
+  });
 });

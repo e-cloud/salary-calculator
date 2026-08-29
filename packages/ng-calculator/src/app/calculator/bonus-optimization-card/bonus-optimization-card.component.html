@@ -1,0 +1,100 @@
+<mat-card
+  appearance="outlined"
+  class="bonus-opt-card mb-3"
+  data-testid="bonus-optimization-card"
+>
+  <mat-card-header class="d-flex align-items-center mb-2">
+    <div class="d-flex align-items-center">
+      <mat-icon color="primary" class="mr-2">analytics</mat-icon>
+      <mat-card-title
+        class="m-0 font-weight-bold text-dark"
+        style="font-size: 1.15rem"
+      >
+        年终奖临界点与税收盲区分析
+      </mat-card-title>
+    </div>
+  </mat-card-header>
+
+  <mat-card-content class="pt-2">
+    <!-- 当前年终奖临界点诊断 -->
+    @if (annualBonus > 0) {
+      <div
+        class="alert rounded p-3 mb-3 border"
+        [ngClass]="{
+          'alert-danger border-danger': trapResult?.isTrap,
+          'alert-success border-success': !trapResult?.isTrap,
+        }"
+        data-testid="bonus-optimization-status-alert"
+      >
+        <div class="d-flex align-items-center mb-1">
+          <mat-icon
+            class="mr-2 flex-shrink-0"
+            [ngClass]="trapResult?.isTrap ? 'text-danger' : 'text-success'"
+          >
+            {{ trapResult?.isTrap ? "warning" : "verified" }}
+          </mat-icon>
+          <div class="font-weight-bold" style="font-size: 15px">
+            当前年终奖：¥{{
+              annualBonus.toLocaleString("zh-CN", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })
+            }}
+            @if (trapResult?.isTrap) {
+              <span class="badge badge-danger ml-2">命中盲区</span>
+            } @else {
+              <span class="badge badge-success ml-2">正常区间</span>
+            }
+          </div>
+        </div>
+        <div class="small mt-1 text-muted">
+          @if (trapResult?.isTrap) {
+            {{ trapResult?.warningMessage }}
+          } @else {
+            当前年终奖处于安全计税区间，未触碰税率跃升盲区。
+          }
+        </div>
+      </div>
+    } @else {
+      <div
+        class="alert alert-light border rounded p-3 mb-3 text-muted small d-flex align-items-center"
+      >
+        <mat-icon class="mr-2 text-primary">info</mat-icon>
+        <span
+          >当前未录入年终奖。在上方表单中录入年终奖后，系统将自动检测临界点与盲区风险。</span
+        >
+      </div>
+    }
+
+    <!-- 6 大税收盲区参考图谱 -->
+    <div class="trap-ranges-section p-3 rounded bg-light border">
+      <h6
+        class="font-weight-bold text-secondary mb-2 d-flex align-items-center"
+      >
+        <mat-icon class="mr-1 extra-small-icon text-muted"
+          >table_chart</mat-icon
+        >
+        <span>全国个税 6 大无效盲区速查图谱（多发反而少得）</span>
+      </h6>
+      <div class="row mx-0">
+        @for (item of trapRangesDisplay; track item.range) {
+          <div class="col-12 col-sm-6 col-md-4 p-1">
+            <div class="trap-chip p-2 rounded border bg-white small h-100">
+              <div class="font-weight-bold text-danger">{{ item.range }}</div>
+              <div class="text-muted extra-small mt-1">
+                临界安全线: <strong>{{ item.threshold }}</strong> ({{
+                  item.taxJump
+                }})
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+      <div class="text-muted extra-small mt-2">
+        *
+        政策提示：根据财政部公告，全年一次性奖金每纳税年度限用一次，单独计税优惠暂延续至
+        2027 年 12 月 31 日。
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

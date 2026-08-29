@@ -141,7 +141,9 @@ export const SalaryCalculatorStore = signalStore(
             },
             extraDeduction: meta.extraDeduction,
             insuranceBaseOnLastMonth: meta.insuranceBaseOnLastMonth,
+            newPayCycle: meta.newPayCycle,
           };
+
           patchState(store, { monthlyMetas: updatedMetas, clear: false });
         }
       },

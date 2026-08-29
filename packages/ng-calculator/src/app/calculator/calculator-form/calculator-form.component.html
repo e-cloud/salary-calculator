@@ -93,7 +93,7 @@
 
   <mat-card-content class="pt-2">
     <form class="form-basic-data" [formGroup]="baseForm">
-      <div class="row">
+      <div class="row align-items-center">
         <mat-form-field class="col-12 col-md-3" appearance="outline">
           <mat-label>月薪</mat-label>
           <input
@@ -108,7 +108,7 @@
         </mat-form-field>
 
         <mat-form-field class="col-12 col-md-3" appearance="outline">
-          <mat-label>年终奖</mat-label>
+          <mat-label>年终奖 (全年一次性奖金)</mat-label>
           <input
             matInput
             type="number"
@@ -118,8 +118,41 @@
             min="0"
           />
           <span matTextSuffix>元</span>
+          <mat-hint
+            >每纳税年度限用一次 (单独计税至 {{ nonMergeTaxEndDate }})</mat-hint
+          >
         </mat-form-field>
+
+        <div class="col-12 col-md-3 mb-3 mb-md-0">
+          <button
+            mat-stroked-button
+            color="primary"
+            type="button"
+            data-testid="btn-open-offer-split"
+            (click)="openOfferSplitDialog()"
+          >
+            <mat-icon>payments</mat-icon>
+            <span>Offer 总包拆分</span>
+          </button>
+        </div>
       </div>
+
+      <!-- 年终奖盲区即时风险提示 -->
+      @if (bonusTrapResult?.isTrap) {
+        <div class="row mx-0 mb-3">
+          <div
+            class="alert alert-warning d-flex align-items-center w-100 p-2 rounded border border-warning"
+            data-testid="bonus-tax-trap-alert"
+            style="background-color: #fff3cd; color: #856404"
+          >
+            <mat-icon class="mr-2 text-warning">warning</mat-icon>
+            <div>
+              <strong>年终奖税收盲区预警：</strong>
+              <span>{{ bonusTrapResult?.warningMessage }}</span>
+            </div>
+          </div>
+        </div>
+      }
 
       <div class="row">
         <mat-form-field class="col-12 col-md-3" appearance="outline">
@@ -335,6 +368,8 @@
               data-testid="input-serious-medical-expense"
               formControlName="seriousMedicalExpense"
               min="0"
+              matTooltip="次年3-6月综合所得汇算清缴时据实申报（自付超1.5万部分，最高限额8万元/年）"
+              matTooltipPosition="above"
             />
             <span matTextSuffix>元</span>
           </mat-form-field>
@@ -513,6 +548,91 @@
           </mat-form-field>
         </div>
       </div>
+
+      <!-- 特殊身份政策与复合收入折叠区 -->
+      <mat-expansion-panel class="my-3 mx-0 shadow-none border">
+        <mat-expansion-panel-header>
+          <mat-panel-title
+            class="font-weight-bold text-secondary d-flex align-items-center"
+          >
+            <mat-icon class="mr-2 text-info">school</mat-icon>
+            <span>应届毕业生 / 首次入职 & 副业所得申报 (可选)</span>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <div class="py-2">
+          <div class="d-flex align-items-center flex-wrap mb-3">
+            <mat-slide-toggle
+              color="primary"
+              formControlName="firstJobThisYear"
+              data-testid="toggle-first-job"
+            >
+              当年首次参加工作 / 应届毕业生
+            </mat-slide-toggle>
+
+            @if (baseForm.get("firstJobThisYear")?.value) {
+              <mat-form-field
+                class="ml-sm-3 mt-2 mt-sm-0"
+                style="width: 150px"
+                appearance="outline"
+              >
+                <mat-label>首次入职月份</mat-label>
+                <mat-select
+                  formControlName="firstJobStartMonth"
+                  data-testid="select-first-job-month"
+                >
+                  @for (m of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]; track m) {
+                    <mat-option [value]="m">{{ m }} 月入职</mat-option>
+                  }
+                </mat-select>
+                <mat-hint
+                  >首月累计扣除
+                  {{ (baseForm.get("firstJobStartMonth")?.value || 1) * 5000 }}
+                  元 (税总2020第13号)</mat-hint
+                >
+              </mat-form-field>
+            }
+          </div>
+
+          <div formGroupName="sideIncome" class="row mx-0 pt-2 border-top">
+            <div class="col-12 text-muted small mb-2">
+              <mat-icon
+                class="align-middle mr-1"
+                style="font-size: 16px; width: 16px; height: 16px"
+                >info</mat-icon
+              >
+              副业劳务报酬与稿酬按税法并入年度综合所得合并清算
+            </div>
+            <mat-form-field class="col-12 col-md-4 pl-0" appearance="outline">
+              <mat-label>月均劳务报酬收入</mat-label>
+              <input
+                matInput
+                type="number"
+                placeholder="0"
+                formControlName="laborIncome"
+                data-testid="input-labor-income"
+                min="0"
+              />
+              <span matTextSuffix>元/月</span>
+              <mat-hint>以收入的 80% 计入应税所得</mat-hint>
+            </mat-form-field>
+
+            <mat-form-field class="col-12 col-md-4" appearance="outline">
+              <mat-label>月均稿酬所得收入</mat-label>
+              <input
+                matInput
+                type="number"
+                placeholder="0"
+                formControlName="manuscriptIncome"
+                data-testid="input-manuscript-income"
+                min="0"
+              />
+              <span matTextSuffix>元/月</span>
+              <mat-hint>以收入的 56% (80%×70%) 计入应税所得</mat-hint>
+            </mat-form-field>
+          </div>
+        </div>
+      </mat-expansion-panel>
 
       @if (!usePredefinedInsurancePercents) {
         <div class="row mx-0">

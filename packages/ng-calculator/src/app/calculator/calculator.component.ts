@@ -31,6 +31,7 @@ import {
 import { MonthlyResultsComponent } from './monthly-results/monthly-results.component';
 import { SummaryChartsComponent } from './summary-charts/summary-charts.component';
 import { SummaryDetailsComponent } from './summary-details/summary-details.component';
+import { BonusOptimizationCardComponent } from './bonus-optimization-card/bonus-optimization-card.component';
 import { SalaryCalculatorStore } from './salary-calculator.store';
 
 @Component({
@@ -42,7 +43,9 @@ import { SalaryCalculatorStore } from './salary-calculator.store';
     MonthlyResultsComponent,
     SummaryChartsComponent,
     SummaryDetailsComponent,
+    BonusOptimizationCardComponent,
   ],
+
   templateUrl: './calculator.component.html',
   styleUrls: ['./calculator.component.scss'],
 })
@@ -150,6 +153,7 @@ export class CalculatorComponent implements OnInit {
           },
           extraDeduction: meta.extraDeduction,
           insuranceBaseOnLastMonth: meta.insuranceBaseOnLastMonth,
+          newPayCycle: meta.newPayCycle,
         };
 
         // 更新月度数据，其他流会自动重新计算

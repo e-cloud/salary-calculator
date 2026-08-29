@@ -37,6 +37,16 @@
     <app-summary-details
       [clear]="clear()"
       [summary$]="summary$"
+      [monthlyIncomes]="(monthlyIncomes$ | async) || []"
+      [cityLabel]="cityRecipe()?.city || '全国'"
+      [year]="selectedYear"
     ></app-summary-details>
+
+    @if (!clear() && (summary$ | async); as sum) {
+      <app-bonus-optimization-card
+        [trapResult]="sum.bonusTaxTrap"
+        [annualBonus]="sum.bonus"
+      ></app-bonus-optimization-card>
+    }
   </div>
 </div>

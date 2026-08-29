@@ -9,8 +9,16 @@ import {
   sumBy,
   values,
 } from 'lodash-es';
-import { TaxRateModel, TaxRateTable, TaxRateTableForBonus } from './consts';
 import {
+  BonusTaxTrapRanges,
+  TaxRateModel,
+  TaxRateTable,
+  TaxRateTableForBonus,
+} from './consts';
+import {
+  AnnualTaxSettlement,
+  BonusOptimizationResult,
+  BonusTaxTrapResult,
   CityRecipe,
   FullYearIncomeInfo,
   MonthlyIncomeInfo,
@@ -31,8 +39,6 @@ export function calculateFullYearIncome(
     prepaidTax: sumBy(list, 'tax'),
     /** 年终奖 */
     bonus: annualBonus,
-    /** 年终奖应纳税额 */
-    bonusTax: calculateBonusTax(annualBonus),
     employee: {
       endowmentInsurance: 0,
       healthInsurance: 0,
@@ -52,8 +58,6 @@ export function calculateFullYearIncome(
 
   /** 全年总收入（含年终奖） */
   full.bookIncome = full.bookSalary + full.bonus;
-  /** 税后年终奖 */
-  full.postTaxBonus = full.bonus - full.bonusTax;
 
   /** 全年总扣除（免税额+专项附加扣除+社保+公积金） */
   const totalDeduction =
@@ -63,6 +67,14 @@ export function calculateFullYearIncome(
       x => x.fullExtraDeduction + x.insuranceFullCost + x.housingFund,
     );
 
+  /**
+   * 税法强制规定（税总公告2018年第61号）：
+   * 当全年工资扣除不足时，年终奖先冲抵综合所得扣除差额后再单独计税
+   */
+  const unusedDeduction = Math.max(0, totalDeduction - full.bookSalary);
+  full.bonusTax = calculateBonusTax(annualBonus, unusedDeduction);
+  full.postTaxBonus = full.bonus - full.bonusTax;
+
   /** 理论应纳税总额（合并计税） */
   full.theoreticalTax = calculateTax(
     Math.max(full.bookIncome - totalDeduction, 0),
@@ -70,6 +82,7 @@ export function calculateFullYearIncome(
   /** 分开计税应纳税总额 */
   full.totalSeparatedTax =
     calculateTax(Math.max(full.bookSalary - totalDeduction, 0)) + full.bonusTax;
+
 
   /** 全年税后工资 */
   full.postTaxSalary = sumBy(list, 'cashIncome');
@@ -150,8 +163,98 @@ export function calculateFullYearIncome(
     ),
   };
 
+  /** 1. 年终奖盲区检测 */
+  full.bonusTaxTrap = checkBonusTaxTrap(annualBonus);
+
+  /** 2. 年终奖与月薪最优分配筹划 */
+  const avgMonthlySalary = list.length > 0 ? full.bookSalary / list.length : 0;
+  const avgMonthlyDeduction =
+    list.length > 0
+      ? sumBy(
+          list,
+          x => x.fullExtraDeduction + x.insuranceFullCost + x.housingFund,
+        ) / list.length
+      : 0;
+  full.bonusOptimization = optimizeAnnualBonusAllocation(
+    avgMonthlySalary,
+    annualBonus,
+    avgMonthlyDeduction,
+  );
+
+  /** 3. 年度汇算清缴测算 (税总规范) */
+  const hasJobChange = list.slice(1).some(m => m.newPayCycle);
+  const canRefundIfCombined = full.theoreticalTax < full.totalSeparatedTax;
+  const refundAmountByCombining = canRefundIfCombined
+    ? Number((full.totalSeparatedTax - full.theoreticalTax).toFixed(2))
+    : 0;
+
+
+  let settlementType: 'refund' | 'supplement' | 'none' = 'none';
+  let settlementHint = '';
+  let taxDiff = 0;
+
+  if (hasJobChange) {
+    // 换工作导致预扣预缴税款由于分段起征点重置，少预缴了税款，需在汇算时补税
+    const prepaidSalaryTax = full.prepaidTax;
+    const totalDeductions =
+      sumBy(
+        list,
+        x => x.fullExtraDeduction + x.insuranceFullCost + x.housingFund,
+      ) +
+      list.length * 5000;
+    const theoreticalSalaryTax = calculateTax(
+      Math.max(full.bookSalary - totalDeductions, 0),
+    );
+    taxDiff = Number((prepaidSalaryTax - theoreticalSalaryTax).toFixed(2));
+
+    if (taxDiff < -0.01) {
+      settlementType = 'supplement';
+      settlementHint = `预计次年 3-6 月综合所得汇算清缴需补税 ¥${Math.abs(taxDiff).toFixed(2)} 元（多由年中换工作多段累计计税导致）。`;
+    } else if (taxDiff > 0.01) {
+      settlementType = 'refund';
+      settlementHint = `预计次年 3-6 月综合所得汇算清缴可申请退税 ¥${taxDiff.toFixed(2)} 元。`;
+    }
+  } else if (canRefundIfCombined && refundAmountByCombining >= 1) {
+    settlementType = 'refund';
+    taxDiff = refundAmountByCombining;
+    settlementHint = `次年汇算建议：若选择将全年一次性奖金并入综合所得申报，预计可申请退税 ¥${refundAmountByCombining.toFixed(2)} 元。`;
+  }
+
+  full.annualTaxSettlement = {
+    prepaidTax: full.prepaidTax + full.bonusTax,
+    theoreticalTax: full.theoreticalTax,
+    taxDiff,
+    settlementType,
+    amount: Math.abs(taxDiff),
+    hint: settlementHint,
+  };
+
+
+  /** 4. 副业所得（劳务报酬与稿酬）综合清缴 */
+  const firstMonthMeta = list[0] as unknown as { sideIncome?: MonthlyIncomeMeta['sideIncome'] };
+  if (firstMonthMeta?.sideIncome) {
+    const labor = (firstMonthMeta.sideIncome.laborIncome || 0) * list.length;
+    const manuscript = (firstMonthMeta.sideIncome.manuscriptIncome || 0) * list.length;
+    const laborTaxable = labor * 0.8;
+    const manuscriptTaxable = manuscript * 0.8 * 0.7;
+    const totalSideTaxable = laborTaxable + manuscriptTaxable;
+    const sideTax = calculateTax(totalSideTaxable);
+    full.sideIncomeTax = {
+      laborTax: calculateTax(laborTaxable),
+      manuscriptTax: calculateTax(manuscriptTaxable),
+      totalSideTax: sideTax,
+    };
+  } else {
+    full.sideIncomeTax = {
+      laborTax: 0,
+      manuscriptTax: 0,
+      totalSideTax: 0,
+    };
+  }
+
   return full;
 }
+
 
 export function calculateMonthIncome(
   current: MonthlyIncomeMeta,
@@ -177,8 +280,11 @@ export function calculateMonthIncome(
     insuranceFullCost: 0,
     extraDeduction: current.extraDeduction,
     fullExtraDeduction: 0,
+    newPayCycle: current.newPayCycle,
     month: 0,
+
     actualMonth: 0,
+    sideIncome: current.sideIncome,
     employerCosts: {
       full: 0,
       insuranceFull: 0,
@@ -193,6 +299,7 @@ export function calculateMonthIncome(
     },
     id: Math.random().toString(),
   };
+
 
   if (current.newPayCycle || !lastMonth) {
     newMonthInfo.month = 1;
@@ -249,7 +356,12 @@ export function calculateMonthIncome(
     deductibleEnterprisePension +
     deductiblePrivatePension;
 
-  const accumulatedDeduction = newMonthInfo.month * current.freeTaxQuota;
+  // 应届生/当年首次入职特殊政策（税总公告2020年第13号）
+  let accumulatedDeduction = newMonthInfo.month * current.freeTaxQuota;
+  if (current.firstJobThisYear) {
+    const startMonth = current.firstJobStartMonth || newMonthInfo.actualMonth || 1;
+    accumulatedDeduction = (startMonth + newMonthInfo.month - 1) * current.freeTaxQuota;
+  }
   const specialDeduction = insuranceFullCost + personalHousingFund;
   const accumulatedSpecialDeduction =
     (newPayCycle || !lastMonth ? 0 : lastMonth.accumulatedSpecialDeduction) +
@@ -260,6 +372,7 @@ export function calculateMonthIncome(
   const accumulatedSalary =
     (newPayCycle || !lastMonth ? 0 : lastMonth.accumulatedSalary) +
     current.salary;
+
   // 预扣预缴应纳税所得额
   const accumulatedTaxQuota = Math.max(
     accumulatedSalary -
@@ -339,11 +452,156 @@ function calculateTax(num: number): number {
   return num * taxRate.rate - taxRate.minus;
 }
 
-function calculateBonusTax(num: number): number {
-  const taxRate = findTaxRate(num / 12, TaxRateTableForBonus);
+export function calculateBonusTax(
+  num: number,
+  unusedDeduction: number = 0,
+): number {
+  if (num <= 0) return 0;
+  const taxableBonus = Math.max(0, num - Math.max(0, unusedDeduction));
+  if (taxableBonus === 0) return 0;
+  const taxRate = findTaxRate(taxableBonus / 12, TaxRateTableForBonus);
 
-  return num * taxRate.rate - taxRate.minus;
+  return taxableBonus * taxRate.rate - taxRate.minus;
 }
+
+/**
+ * 检测年终奖是否落在 6 大税收盲区之内
+ * @param bonus 年终奖金额
+ */
+export function checkBonusTaxTrap(bonus: number): BonusTaxTrapResult {
+  if (bonus <= 0) {
+    return {
+      isTrap: false,
+      currentBonus: 0,
+      lowerThreshold: 0,
+      upperThreshold: 0,
+      lostAmount: 0,
+      warningMessage: '',
+    };
+  }
+
+  for (const trap of BonusTaxTrapRanges) {
+    if (bonus > trap.start && bonus <= trap.end) {
+      const lowerTax = calculateBonusTax(trap.lowerThreshold);
+      const currentTax = calculateBonusTax(bonus);
+      const lowerNet = trap.lowerThreshold - lowerTax;
+      const currentNet = bonus - currentTax;
+      const lostAmount = Math.max(0, lowerNet - currentNet);
+
+      return {
+        isTrap: true,
+        currentBonus: bonus,
+        lowerThreshold: trap.lowerThreshold,
+        upperThreshold: trap.end,
+        lostAmount,
+        warningMessage: `⚠️ 年终奖 ¥${bonus.toLocaleString()} 落在税收无效盲区 [${(trap.start + 1).toLocaleString()} ~ ${trap.end.toLocaleString()}] 元。税后到手较发放 ¥${trap.lowerThreshold.toLocaleString()} 元反减少 ¥${lostAmount.toFixed(2)} 元。`,
+      };
+    }
+  }
+
+  return {
+    isTrap: false,
+    currentBonus: bonus,
+    lowerThreshold: 0,
+    upperThreshold: 0,
+    lostAmount: 0,
+    warningMessage: '',
+  };
+}
+
+/**
+ * 求解年薪总包在月薪与年终奖之间的全局最优分配
+ * @param monthlySalary 当前月薪
+ * @param annualBonus 当前年终奖
+ * @param monthlyDeductions 月度扣除项（社保+公积金+专项附加扣除）
+ */
+export function optimizeAnnualBonusAllocation(
+  monthlySalary: number,
+  annualBonus: number,
+  monthlyDeductions: number = 0,
+): BonusOptimizationResult {
+  const totalAnnualGross = monthlySalary * 12 + annualBonus;
+  const totalAnnualDeductions = 5000 * 12 + monthlyDeductions * 12;
+
+  // 1. 当前方案税额
+  const currentTaxableSalary = Math.max(
+    0,
+    monthlySalary * 12 - totalAnnualDeductions,
+  );
+  const currentSalaryTax = calculateTax(currentTaxableSalary);
+  const currentUnusedDeduction = Math.max(
+    0,
+    totalAnnualDeductions - monthlySalary * 12,
+  );
+  const currentBonusTax = calculateBonusTax(annualBonus, currentUnusedDeduction);
+  const currentTotalTax = currentSalaryTax + currentBonusTax;
+  const currentCashIncome =
+    totalAnnualGross - currentTotalTax - monthlyDeductions * 12;
+
+  // 2. 遍历搜索最优分配 (加入关键临界点候选值)
+  let bestBonus = annualBonus;
+  let minTax = currentTotalTax;
+
+  const candidateBonuses = new Set<number>([
+    0,
+    36000,
+    144000,
+    300000,
+    420000,
+    660000,
+    960000,
+    annualBonus,
+  ]);
+  const step = Math.max(1000, Math.floor(totalAnnualGross / 200));
+  for (let b = 0; b <= totalAnnualGross; b += step) {
+    candidateBonuses.add(b);
+  }
+
+  for (const b of candidateBonuses) {
+    if (b > totalAnnualGross) continue;
+    // 避开盲区
+    const trapCheck = checkBonusTaxTrap(b);
+    if (trapCheck.isTrap) continue;
+
+    const salaryPart = totalAnnualGross - b;
+    const taxableSalary = Math.max(0, salaryPart - totalAnnualDeductions);
+    const sTax = calculateTax(taxableSalary);
+    const unusedDed = Math.max(0, totalAnnualDeductions - salaryPart);
+    const bTax = calculateBonusTax(b, unusedDed);
+    const totalT = sTax + bTax;
+
+    if (totalT < minTax) {
+      minTax = totalT;
+      bestBonus = b;
+    }
+  }
+
+  const optimalMonthlySalary = Math.round((totalAnnualGross - bestBonus) / 12);
+  const taxSaved = Math.max(0, currentTotalTax - minTax);
+  const optimalCashIncome =
+    totalAnnualGross - minTax - monthlyDeductions * 12;
+  const isAlreadyOptimal = taxSaved < 1;
+
+  let recommendationSummary = '';
+  if (isAlreadyOptimal) {
+    recommendationSummary = '当前年终奖与月薪分配方案已是税负最优组合。';
+  } else {
+    recommendationSummary = `建议将年终奖规划为 ¥${bestBonus.toLocaleString()} 元，月薪规划为 ¥${optimalMonthlySalary.toLocaleString()} 元，全年可节税 ¥${taxSaved.toFixed(2)} 元。`;
+  }
+
+  return {
+    currentTotalTax,
+    currentCashIncome,
+    optimalBonus: bestBonus,
+    optimalMonthlySalary,
+    optimalTotalTax: minTax,
+    optimalCashIncome,
+    taxSaved,
+    isAlreadyOptimal,
+    recommendationSummary,
+  };
+}
+
 
 function insuranceCostsForEmployee(
   base: number,
@@ -502,12 +760,16 @@ export function buildMetaFromPolicy(
       policy.privatePensionMonthlyQuota ??
       1000,
     insuranceBaseOnLastMonth: data.insuranceBaseOnLastMonth,
+    firstJobThisYear: data.firstJobThisYear,
+    firstJobStartMonth: data.firstJobStartMonth,
+    sideIncome: data.sideIncome,
     newPayCycle: false,
     employer: {
       insuranceRate: policy.employer.insuranceRate,
     },
   };
 }
+
 
 /**
  * 标准化Policy中的社保基数范围

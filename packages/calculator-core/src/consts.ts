@@ -59,7 +59,8 @@ export const childEducationDeductionOptions = [
 
 export const continuousEducationDeductionOptions = [
   { value: 0, label: '不符合：0元' },
-  { value: 400, label: '接受学历教育中，扣除：400元' },
+  { value: 400, label: '接受学历教育中，扣除：400元/月' },
+  { value: 3600, label: '职业资格继续教育（取得证书当年），扣除：3600元' },
 ];
 
 export const housingLoanInterestDeductionOptions = [
@@ -85,3 +86,20 @@ export const elderlyCareDeductionOptions = [
 ];
 
 export const nonMergeTaxCalculationEndDate = '2027.12.31';
+
+export interface BonusTaxTrapRange {
+  start: number;
+  end: number;
+  taxDiffAtStart: number;
+  lowerThreshold: number;
+}
+
+export const BonusTaxTrapRanges: BonusTaxTrapRange[] = [
+  { start: 36000, end: 38566.67, taxDiffAtStart: 2309.1, lowerThreshold: 36000 },
+  { start: 144000, end: 160500, taxDiffAtStart: 13199.2, lowerThreshold: 144000 },
+  { start: 300000, end: 318333.33, taxDiffAtStart: 13749.25, lowerThreshold: 300000 },
+  { start: 420000, end: 447500, taxDiffAtStart: 19249.3, lowerThreshold: 420000 },
+  { start: 660000, end: 706538.46, taxDiffAtStart: 30249.35, lowerThreshold: 660000 },
+  { start: 960000, end: 1120000, taxDiffAtStart: 87999.45, lowerThreshold: 960000 },
+];
+
