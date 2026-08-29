@@ -1,7 +1,15 @@
 @if (!clear && (deductionChartOption$ | async); as chartOption) {
-  <mat-card #chart appearance="outlined" class="calc-result mb-4">
-    <mat-tab-group>
-      <mat-tab label="月薪扣除项分析">
+  <mat-card
+    #chart
+    appearance="outlined"
+    class="calc-result mb-4"
+    data-testid="summary-charts-card"
+  >
+    <mat-tab-group data-testid="charts-tab-group">
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <span data-testid="tab-monthly-deduction">月薪扣除项分析</span>
+        </ng-template>
         <mat-card-header
           class="d-flex justify-content-between align-items-center"
         >
@@ -13,11 +21,16 @@
           >
             <mat-label>月份</mat-label>
             <mat-select
+              data-testid="select-chart-month"
               (selectionChange)="onChangeChartMonth($event.value)"
               [value]="selectedMonth$ | async"
             >
               @for (month of months; track month) {
-                <mat-option [value]="month">{{ month }}</mat-option>
+                <mat-option
+                  [value]="month"
+                  [attr.data-testid]="'option-chart-month-' + month"
+                  >{{ month }}</mat-option
+                >
               }
             </mat-select>
           </mat-form-field>
@@ -25,12 +38,13 @@
         <mat-card-content>
           <div
             echarts
+            data-testid="echarts-monthly-deduction"
             [options]="chartOption"
             class="chart-container"
             style="height: 400px; width: 100%"
           ></div>
           @if (monthlyIncomes$ | async; as incomes) {
-            <div class="text-center mt-2">
+            <div class="text-center mt-2" data-testid="text-monthly-formula">
               @if (selectedMonth$ | async; as selectedIndex) {
                 {{ incomes[selectedIndex - 1].cashIncome | currency }} (税后) +
                 {{ incomes[selectedIndex - 1].tax | currency }} (个税) +
@@ -52,16 +66,23 @@
         </mat-card-content>
       </mat-tab>
       @if (annualDeductionChartOption$ | async; as annualDeductionChartOption) {
-        <mat-tab label="年度扣除项分析">
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <span data-testid="tab-annual-deduction">年度扣除项分析</span>
+          </ng-template>
           <mat-card-content>
             <div
               echarts
+              data-testid="echarts-annual-deduction"
               [options]="annualDeductionChartOption"
               class="chart-container"
               style="height: 400px; width: 100%"
             ></div>
             @if (summary$ | async; as sum) {
-              <div class="text-center mt-2">
+              <div
+                class="text-center mt-2"
+                data-testid="text-annual-deduction-formula"
+              >
                 {{ sum.cashIncomeDeprecated | currency }} (全年税后) +
                 {{ sum.totalSeparatedTax | currency }} (全年个税) +
                 {{ sum.fullInsurance | currency }} (全年社保) +
@@ -74,16 +95,23 @@
         </mat-tab>
       }
       @if (annualIncomeChartOption$ | async; as annualIncomeChartOption) {
-        <mat-tab label="年度收入分析">
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <span data-testid="tab-annual-income">年度收入分析</span>
+          </ng-template>
           <mat-card-content>
             <div
               echarts
+              data-testid="echarts-annual-income"
               [options]="annualIncomeChartOption"
               class="chart-container"
               style="height: 400px; width: 100%"
             ></div>
             @if (summary$ | async; as sum) {
-              <div class="text-center mt-2">
+              <div
+                class="text-center mt-2"
+                data-testid="text-annual-income-formula"
+              >
                 {{ sum.postTaxSalary | currency }} (全年工资现金收入) +
                 {{ sum.postTaxBonus | currency }} (全年税后奖金) +
                 {{ sum.fullHousingFund | currency }} (全年公积金) +

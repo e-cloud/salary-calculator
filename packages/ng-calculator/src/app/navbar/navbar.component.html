@@ -1,5 +1,5 @@
 <nav class="navbar-header" aria-label="Top Toolbar">
-  <a mat-button class="docs-button">
+  <a mat-button class="docs-button" data-testid="navbar-brand">
     <mat-icon size="large" svgIcon="calculator"></mat-icon>
     <span>Calculator</span>
   </a>
@@ -8,6 +8,7 @@
 
   <button
     mat-icon-button
+    data-testid="navbar-help-btn"
     aria-label="Help message for the tool"
     (click)="openHelpDialog()"
   >

@@ -1,6 +1,10 @@
-<h1 mat-dialog-title>使用指南</h1>
+<h1 mat-dialog-title data-testid="help-dialog-title">使用指南</h1>
 
-<article mat-dialog-content class="mat-typography">
+<article
+  mat-dialog-content
+  data-testid="help-dialog-content"
+  class="mat-typography"
+>
   <h2>基本声明</h2>
 
   <p>本计算器目前只针对普通工薪阶层的收入计算有效，其他报酬类暂不支持。</p>
@@ -31,5 +35,12 @@
 </article>
 
 <div mat-dialog-actions align="end">
-  <button mat-raised-button color="primary" mat-dialog-close>关闭</button>
+  <button
+    mat-raised-button
+    color="primary"
+    mat-dialog-close
+    data-testid="help-dialog-close-btn"
+  >
+    关闭
+  </button>
 </div>

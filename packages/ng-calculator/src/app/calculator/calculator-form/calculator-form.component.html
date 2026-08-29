@@ -9,6 +9,7 @@
         class="example-margin"
         color="primary"
         name="usePredefinedInsurancePercents"
+        data-testid="toggle-predefined-insurance"
         [(ngModel)]="usePredefinedInsurancePercents"
         (ngModelChange)="onChangePredefineCondition($event)"
       >
@@ -19,6 +20,7 @@
         class="example-margin ml-3"
         color="primary"
         name="useUniformPolicy"
+        data-testid="toggle-uniform-policy"
         [(ngModel)]="useUniformPolicy"
         (ngModelChange)="onUniformPolicyChange($event)"
         matTooltip="默认关闭：按政策实际生效月份分段核算（各地通常于7月调基，1~6月执行上期基数，7~12月执行新基数）；开启后：全年12个月均统一采用该年度最新公布的社保公积金基数上下限及费率进行测算。"
@@ -31,6 +33,7 @@
         class="ml-3 mt-1 mt-sm-0"
         mat-button
         color="primary"
+        data-testid="btn-select-city-recipe"
         [matMenuTriggerFor]="menu"
       >
         @if (cityRecipe) {
@@ -42,7 +45,11 @@
       </button>
       <mat-menu #menu="matMenu">
         @for (item of recipeIndex$ | async; track item.file) {
-          <button mat-menu-item (click)="onSelectRecipeItem(item)">
+          <button
+            mat-menu-item
+            [attr.data-testid]="'recipe-item-' + item.file.replace('.json', '')"
+            (click)="onSelectRecipeItem(item)"
+          >
             {{ item.city }}: {{ item.label }}
           </button>
         }
@@ -55,11 +62,15 @@
       >
         <mat-label>计算年份</mat-label>
         <mat-select
+          data-testid="select-calculation-year"
           [(value)]="selectedYear"
           (selectionChange)="onYearChange($event.value)"
         >
           @for (year of availableYears; track year) {
-            <mat-option [value]="year">
+            <mat-option
+              [value]="year"
+              [attr.data-testid]="'option-year-' + year"
+            >
               {{ year }}
             </mat-option>
           }
@@ -77,6 +88,7 @@
             matInput
             type="number"
             placeholder="10000"
+            data-testid="input-month-salary"
             formControlName="monthSalary"
             min="0"
           />
@@ -89,6 +101,7 @@
             matInput
             type="number"
             placeholder="0"
+            data-testid="input-annual-bonus"
             formControlName="annualBonus"
             min="0"
           />
@@ -103,6 +116,7 @@
             matInput
             type="number"
             placeholder="0"
+            data-testid="input-year-before-last-avg-salary"
             formControlName="yearBeforeLastAvgSalary"
             min="0"
           />
@@ -116,6 +130,7 @@
             matInput
             type="number"
             placeholder="0"
+            data-testid="input-last-year-avg-salary"
             formControlName="lastYearAvgSalary"
             min="0"
           />
@@ -126,7 +141,7 @@
 
       @if (policyHint) {
         <div class="row mx-0">
-          <div class="text-muted small my-1">
+          <div class="text-muted small my-1" data-testid="text-policy-hint">
             {{ policyHint }}
           </div>
         </div>
@@ -140,6 +155,7 @@
               matInput
               type="number"
               [placeholder]="templates.insuranceBase.placeholder"
+              data-testid="input-insurance-base"
               formControlName="insuranceBase"
               min="0"
               [matAutocomplete]="insuranceBase"
@@ -167,6 +183,7 @@
               matInput
               type="number"
               [placeholder]="templates.housingFundBase.placeholder"
+              data-testid="input-housing-fund-base"
               formControlName="housingFundBase"
               min="0"
               [matAutocomplete]="housingFundBase"
@@ -195,6 +212,7 @@
               matInput
               type="number"
               placeholder="5"
+              data-testid="input-housing-fund-rate"
               formControlName="housingFundRate"
               min="0"
             />
@@ -209,6 +227,7 @@
               matInput
               type="number"
               [placeholder]="templates.infantCare.placeholder"
+              data-testid="input-infant-care"
               formControlName="infantCare"
               min="0"
               [matAutocomplete]="infantCare"
@@ -216,8 +235,16 @@
             <span matTextSuffix>元</span>
 
             <mat-autocomplete #infantCare="matAutocomplete" panelWidth="200">
-              @for (item of infantCareDeductionOptions; track item.label) {
-                <mat-option [value]="item.value">{{ item.label }}</mat-option>
+              @for (
+                item of infantCareDeductionOptions;
+                track item.label;
+                let idx = $index
+              ) {
+                <mat-option
+                  [value]="item.value"
+                  [attr.data-testid]="'option-infant-care-' + idx"
+                  >{{ item.label }}</mat-option
+                >
               }
             </mat-autocomplete>
           </mat-form-field>
@@ -231,6 +258,7 @@
               matInput
               type="number"
               [placeholder]="templates.childEducation.placeholder"
+              data-testid="input-child-education"
               formControlName="childEducation"
               min="0"
               [matAutocomplete]="childEducation"
@@ -242,7 +270,11 @@
               panelWidth="200"
             >
               @for (item of childEducationDeductionOptions; track item.label) {
-                <mat-option [value]="item.value">{{ item.label }}</mat-option>
+                <mat-option
+                  [value]="item.value"
+                  [attr.data-testid]="'option-child-education-' + item.value"
+                  >{{ item.label }}</mat-option
+                >
               }
             </mat-autocomplete>
           </mat-form-field>
@@ -256,6 +288,7 @@
               matInput
               type="number"
               [placeholder]="templates.continuingEducation.placeholder"
+              data-testid="input-continuing-education"
               formControlName="continuingEducation"
               min="0"
               [matAutocomplete]="continuingEducation"
@@ -270,7 +303,13 @@
                 item of continuousEducationDeductionOptions;
                 track item.label
               ) {
-                <mat-option [value]="item.value">{{ item.label }}</mat-option>
+                <mat-option
+                  [value]="item.value"
+                  [attr.data-testid]="
+                    'option-continuing-education-' + item.value
+                  "
+                  >{{ item.label }}</mat-option
+                >
               }
             </mat-autocomplete>
           </mat-form-field>
@@ -281,6 +320,7 @@
               matInput
               type="number"
               placeholder="0"
+              data-testid="input-serious-medical-expense"
               formControlName="seriousMedicalExpense"
               min="0"
             />
@@ -296,6 +336,7 @@
               matInput
               type="number"
               [placeholder]="templates.housingLoanInterest.placeholder"
+              data-testid="input-housing-loan-interest"
               formControlName="housingLoanInterest"
               min="0"
               (ngModelChange)="
@@ -317,7 +358,13 @@
                 item of housingLoanInterestDeductionOptions;
                 track item.label
               ) {
-                <mat-option [value]="item.value">{{ item.label }}</mat-option>
+                <mat-option
+                  [value]="item.value"
+                  [attr.data-testid]="
+                    'option-housing-loan-interest-' + item.value
+                  "
+                  >{{ item.label }}</mat-option
+                >
               }
             </mat-autocomplete>
           </mat-form-field>
@@ -328,6 +375,7 @@
               matInput
               type="number"
               [placeholder]="templates.renting.placeholder"
+              data-testid="input-renting"
               formControlName="renting"
               min="0"
               (ngModelChange)="
@@ -343,7 +391,11 @@
 
             <mat-autocomplete #renting="matAutocomplete" panelWidth="200">
               @for (item of rentingDeductionOptions; track item.label) {
-                <mat-option [value]="item.value">{{ item.label }}</mat-option>
+                <mat-option
+                  [value]="item.value"
+                  [attr.data-testid]="'option-renting-' + item.value"
+                  >{{ item.label }}</mat-option
+                >
               }
             </mat-autocomplete>
           </mat-form-field>
@@ -357,6 +409,7 @@
               matInput
               type="number"
               [placeholder]="templates.elderlyCare.placeholder"
+              data-testid="input-elderly-care"
               formControlName="elderlyCare"
               min="0"
               [matAutocomplete]="elderlyCare"
@@ -365,7 +418,11 @@
 
             <mat-autocomplete #elderlyCare="matAutocomplete" panelWidth="200">
               @for (item of elderlyCareDeductionOptions; track item.label) {
-                <mat-option [value]="item.value">{{ item.label }}</mat-option>
+                <mat-option
+                  [value]="item.value"
+                  [attr.data-testid]="'option-elderly-care-' + item.value"
+                  >{{ item.label }}</mat-option
+                >
               }
             </mat-autocomplete>
           </mat-form-field>
@@ -376,6 +433,7 @@
               matInput
               type="number"
               placeholder="0"
+              data-testid="input-enterprise-pension-employee"
               formControlName="enterprisePensionFromEmployee"
               min="0"
               matTooltip="法定税前扣除限额为本人月薪4%且不超社平3倍"
@@ -390,6 +448,7 @@
               matInput
               type="number"
               placeholder="0"
+              data-testid="input-enterprise-pension-employer"
               formControlName="enterprisePensionFromEmployer"
               min="0"
             />
@@ -405,6 +464,7 @@
               matInput
               type="number"
               [placeholder]="templates.privatePension.placeholder"
+              data-testid="input-private-pension"
               formControlName="privatePension"
               min="0"
               matTooltip="每年限额12000元(每月1000元)税前据实扣除"
@@ -418,7 +478,11 @@
               panelWidth="200"
             >
               @for (item of privatePensionOptions; track item.label) {
-                <mat-option [value]="item.value">{{ item.label }}</mat-option>
+                <mat-option
+                  [value]="item.value"
+                  [attr.data-testid]="'option-private-pension-' + item.value"
+                  >{{ item.label }}</mat-option
+                >
               }
             </mat-autocomplete>
           </mat-form-field>
@@ -429,6 +493,7 @@
               matInput
               type="number"
               placeholder="0"
+              data-testid="input-other-deduction"
               formControlName="other"
               min="0"
             />
@@ -446,6 +511,7 @@
                 matInput
                 type="number"
                 placeholder="0"
+                data-testid="input-endowment-rate"
                 formControlName="endowment"
                 min="0"
               />
@@ -458,6 +524,7 @@
                 matInput
                 type="number"
                 placeholder="0"
+                data-testid="input-health-rate"
                 formControlName="health"
                 min="0"
               />
@@ -470,6 +537,7 @@
                 matInput
                 type="number"
                 placeholder="0"
+                data-testid="input-unemployment-rate"
                 formControlName="unemployment"
                 min="0"
               />
@@ -480,6 +548,7 @@
           <mat-slide-toggle
             class="ml-3 mb-2 mb-md-0"
             color="primary"
+            data-testid="toggle-insurance-base-last-month"
             formControlName="insuranceBaseOnLastMonth"
             style="align-self: center"
           >
@@ -495,6 +564,7 @@
       mat-raised-button
       color="primary"
       type="submit"
+      data-testid="btn-calculate"
       [disabled]="baseForm.disabled || baseForm.invalid"
       (click)="onCalculate()"
     >
@@ -503,12 +573,18 @@
     <button
       mat-raised-button
       class="ml-3"
+      data-testid="btn-reset"
       [disabled]="baseForm.disabled"
       (click)="onReset()"
     >
       重置
     </button>
-    <button mat-raised-button class="ml-3" (click)="onClearResult()">
+    <button
+      mat-raised-button
+      class="ml-3"
+      data-testid="btn-clear-result"
+      (click)="onClearResult()"
+    >
       清空结果
     </button>
   </mat-card-actions>

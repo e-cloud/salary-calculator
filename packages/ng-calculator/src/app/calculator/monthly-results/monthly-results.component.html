@@ -1,12 +1,19 @@
 @if (!clear && (monthlyIncomes$ | async); as incomeList) {
   <div>
     <mat-accordion
+      data-testid="monthly-results-accordion"
       [@listAnimation]="incomeList.length"
       (animationend)="scrollToChart()"
     >
       @for (item of incomeList; track item.id; let idx = $index) {
-        <mat-expansion-panel #panel (opened)="onChangeChartMonth(idx)">
-          <mat-expansion-panel-header>
+        <mat-expansion-panel
+          [attr.data-testid]="'month-panel-' + (idx + 1)"
+          #panel
+          (opened)="onChangeChartMonth(idx)"
+        >
+          <mat-expansion-panel-header
+            [attr.data-testid]="'month-panel-header-' + (idx + 1)"
+          >
             {{ item.actualMonth - 1 | month }} 实收：
             {{ item.cashIncome | currency }}，公积金：{{
               item.housingFund * 2 | currency
@@ -42,6 +49,7 @@
             matInput
             type="number"
             placeholder="10000"
+            [attr.data-testid]="'input-monthly-salary-' + (idx + 1)"
             formControlName="monthSalary"
             min="0"
           />
@@ -54,15 +62,20 @@
             matInput
             type="number"
             placeholder="0"
+            [attr.data-testid]="'input-monthly-bonus-' + (idx + 1)"
             formControlName="monthlyBonus"
             min="0"
           />
           <span matTextSuffix>元</span>
         </mat-form-field>
 
-        <mat-slide-toggle class="ml-3" formControlName="newPayCycle"
-          >入职新公司（新计费周期）？</mat-slide-toggle
+        <mat-slide-toggle
+          class="ml-3"
+          [attr.data-testid]="'toggle-new-pay-cycle-' + (idx + 1)"
+          formControlName="newPayCycle"
         >
+          入职新公司（新计费周期）？
+        </mat-slide-toggle>
       </div>
 
       <div class="ml-md-3 d-flex flex-wrap">
@@ -480,6 +493,7 @@
           mat-raised-button
           color="primary"
           type="submit"
+          [attr.data-testid]="'btn-update-month-' + (idx + 1)"
           [disabled]="form.invalid"
           (click)="onUpdateMeta(form.value, idx)"
         >

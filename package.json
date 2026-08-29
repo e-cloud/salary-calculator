@@ -7,6 +7,7 @@
     "lint": "pnpm -r run lint",
     "test": "pnpm -r run test",
     "test:coverage": "pnpm -r run test:coverage",
+    "test:e2e": "pnpm --filter ng-calculator e2e",
     "format": "prettier --config-precedence file-override --write",
     "format:all": "prettier --loglevel error --config-precedence file-override --write ./**/*.{ts,tsx,js,json,jsx,vue,scss,css,yml,yaml}",
     "release": "commit-and-tag-version -a",

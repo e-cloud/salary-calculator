@@ -18,7 +18,7 @@ export interface SyncConfirmationData {
   standalone: true,
   imports: [CommonModule, MatDialogModule, MatListModule, MatButtonModule],
   template: `
-    <h2 mat-dialog-title>同步确认</h2>
+    <h2 mat-dialog-title data-testid="sync-dialog-title">同步确认</h2>
     <mat-dialog-content>
       <p>
         您修改了第{{
@@ -39,8 +39,17 @@ export interface SyncConfirmationData {
       </mat-list>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
-      <button mat-button (click)="onCancel()">取消</button>
-      <button mat-button color="primary" (click)="onConfirm()">确认同步</button>
+      <button mat-button data-testid="btn-sync-cancel" (click)="onCancel()">
+        取消
+      </button>
+      <button
+        mat-button
+        color="primary"
+        data-testid="btn-sync-confirm"
+        (click)="onConfirm()"
+      >
+        确认同步
+      </button>
     </mat-dialog-actions>
   `,
   styles: [

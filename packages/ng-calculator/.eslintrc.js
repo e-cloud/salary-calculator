@@ -6,6 +6,7 @@ module.exports = {
     "dedupe-lodash-es.ts",
     "e2e",
     "vitest.config.ts",
+    "playwright.config.ts",
   ],
   overrides: [
     {

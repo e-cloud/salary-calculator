@@ -16,11 +16,28 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 
 ## Running unit tests
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Run `pnpm test` (or `pnpm --filter ng-calculator test`) to execute unit tests via [Vitest](https://vitest.dev/).
 
 ## Running end-to-end tests
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+This package uses [Playwright](https://playwright.dev/) for end-to-end (E2E) automated testing.
+
+- **Run all E2E tests in headless mode**:
+  ```bash
+  pnpm --filter ng-calculator e2e
+  ```
+- **Run E2E tests in interactive UI mode**:
+  ```bash
+  pnpm --filter ng-calculator e2e:ui
+  ```
+- **Run E2E tests in headed browser mode**:
+  ```bash
+  pnpm --filter ng-calculator e2e:headed
+  ```
+- **View HTML test report**:
+  ```bash
+  pnpm --filter ng-calculator e2e:report
+  ```
 
 ## Further help
 

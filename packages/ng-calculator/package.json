@@ -12,6 +12,10 @@
     "lint:style": "stylelint src/**/*.{scss,css} --fix",
     "format": "prettier --config-precedence file-override --write",
     "format:all": "prettier --loglevel error --config-precedence file-override --write ./src/**/**.{html,ts,js,json,scss,css}",
+    "e2e": "playwright test",
+    "e2e:ui": "playwright test --ui",
+    "e2e:headed": "playwright test --headed",
+    "e2e:report": "playwright show-report",
     "release": "npm run build -- --configuration production --base-href /salary-calculator/",
     "deploy": "gh-pages --dist dist/salary-calculator"
   },
@@ -46,6 +50,7 @@
     "@angular-eslint/template-parser": "^21.4.0",
     "@angular/cli": "^21.2.22",
     "@angular/compiler-cli": "^21.2.22",
+    "@playwright/test": "^1.50.1",
     "@testing-library/angular": "^19.4.2",
     "@testing-library/user-event": "^14.5.2",
     "@types/lodash": "^4.17.16",
