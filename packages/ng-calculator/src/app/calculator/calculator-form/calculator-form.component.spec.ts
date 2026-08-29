@@ -4,10 +4,16 @@ import { render, screen } from '@testing-library/angular';
 import userEvent from '@testing-library/user-event';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { of } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
 import { CityRecipe } from 'calculator-core';
 import { CalculatorFormComponent } from './calculator-form.component';
+import { CityRecipeDialogComponent } from '../city-recipe-dialog/city-recipe-dialog.component';
 
 describe('CalculatorFormComponent 基础计算表单组件测试', () => {
+  const mockDialog = {
+    open: vi.fn(),
+  };
+
   const mockRecipe: CityRecipe = {
     id: 1,
     label: '测试城市',
@@ -47,11 +53,13 @@ describe('CalculatorFormComponent 基础计算表单组件测试', () => {
   };
 
   async function setup() {
+    mockDialog.open.mockClear();
     const calculateSpy = vi.fn();
     const clearResultSpy = vi.fn();
 
     const result = await render(CalculatorFormComponent, {
       providers: [provideAnimationsAsync()],
+      componentProviders: [{ provide: MatDialog, useValue: mockDialog }],
       componentInputs: {
         usePredefinedInsurancePercents: true,
         cityRecipe: mockRecipe,
@@ -105,5 +113,26 @@ describe('CalculatorFormComponent 基础计算表单组件测试', () => {
 
     // Assert
     expect(screen.getByText('基础信息')).toBeDefined();
+  });
+
+  it('用户点击“政策参数”按钮时应通过 MatDialog 打开 CityRecipeDialogComponent', async () => {
+    // Arrange
+    const user = userEvent.setup();
+    await setup();
+    const policyParamsBtn = screen.getByTestId('btn-view-policy-params');
+
+    // Act
+    await user.click(policyParamsBtn);
+
+    // Assert
+    expect(mockDialog.open).toHaveBeenCalledTimes(1);
+    expect(mockDialog.open).toHaveBeenCalledWith(
+      CityRecipeDialogComponent,
+      expect.objectContaining({
+        data: expect.objectContaining({
+          currentRecipeId: 1,
+        }),
+      }),
+    );
   });
 });

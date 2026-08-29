@@ -27,6 +27,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import {
   CityRecipe,
   CityRecipeIndexItem,
@@ -37,6 +39,7 @@ import {
 import { autocompleteTemplates } from '../template-metadata';
 import { Observable, Subscription } from 'rxjs';
 import { InputForm } from '../types';
+import { CityRecipeDialogComponent } from '../city-recipe-dialog/city-recipe-dialog.component';
 
 export interface CalculateParams extends RawMeta {
   year: number;
@@ -60,6 +63,8 @@ export interface CalculateParams extends RawMeta {
     MatAutocompleteModule,
     MatExpansionModule,
     MatMenuModule,
+    MatTooltipModule,
+    MatDialogModule,
   ],
   templateUrl: './calculator-form.component.html',
   styleUrls: ['./calculator-form.component.scss'],
@@ -87,6 +92,7 @@ export class CalculatorFormComponent implements OnInit, OnChanges, OnDestroy {
   policyHint: string = '';
   private formSubscriptions: Subscription[] = [];
   private fb = inject(FormBuilder);
+  private dialog = inject(MatDialog);
 
   constructor() {
     this.initializeForm();
@@ -220,6 +226,17 @@ export class CalculatorFormComponent implements OnInit, OnChanges, OnDestroy {
 
   onSelectRecipeItem(item: CityRecipeIndexItem) {
     this.selectRecipeItem.emit(item);
+  }
+
+  openPolicyParamsDialog(): void {
+    this.dialog.open(CityRecipeDialogComponent, {
+      width: '880px',
+      maxWidth: '95vw',
+      data: {
+        currentRecipeId: this.cityRecipe?.id,
+        currentYear: this.selectedYear,
+      },
+    });
   }
 
   onYearChange(year: number) {

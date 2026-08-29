@@ -1,0 +1,365 @@
+<div
+  class="recipe-dialog-header d-flex justify-content-between align-items-center"
+>
+  <div class="d-flex align-items-center">
+    <mat-icon color="primary" class="mr-2">menu_book</mat-icon>
+    <h2 mat-dialog-title class="m-0" data-testid="recipe-dialog-title">
+      城市社保公积金计算参数与政策依据
+    </h2>
+  </div>
+  <button
+    mat-icon-button
+    aria-label="关闭弹窗"
+    data-testid="btn-close-dialog"
+    (click)="close()"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+
+<mat-dialog-content class="recipe-dialog-content p-0">
+  <div class="recipe-dialog-body d-flex flex-column flex-md-row">
+    <!-- 左侧竖向城市 Tab -->
+    <div class="city-sidebar" data-testid="city-sidebar">
+      <div class="sidebar-title px-3 py-2 text-muted small font-weight-bold">
+        选择城市与档位
+      </div>
+      <mat-nav-list class="pt-0 city-list">
+        @for (item of recipeIndex(); track item.file) {
+          <a
+            mat-list-item
+            [class.active-city]="selectedItem()?.file === item.file"
+            [attr.data-testid]="'city-tab-' + item.file.replace('.json', '')"
+            (click)="selectCity(item)"
+          >
+            <span matListItemTitle class="font-weight-bold">
+              {{ item.city }}
+            </span>
+            <span matListItemLine class="text-muted small">
+              {{ item.label }}
+            </span>
+          </a>
+        }
+      </mat-nav-list>
+    </div>
+
+    <!-- 右侧内容主区 -->
+    <div class="policy-main-content flex-grow-1 p-3">
+      @if (loading()) {
+        <div
+          class="d-flex justify-content-center align-items-center py-5"
+          data-testid="loading-spinner"
+        >
+          <mat-spinner diameter="40"></mat-spinner>
+          <span class="ml-3 text-muted">正在加载城市政策数据...</span>
+        </div>
+      } @else if (currentRecipe() && selectedPolicy()) {
+        <!-- 右侧横向年份 Tab -->
+        <mat-tab-group
+          class="year-tab-group mb-3"
+          [selectedIndex]="selectedYearIndex()"
+          (selectedIndexChange)="onYearTabChange($event)"
+        >
+          @for (year of availableYears(); track year) {
+            <mat-tab>
+              <ng-template mat-tab-label>
+                <span [attr.data-testid]="'year-tab-' + year">
+                  {{ year }} 年度
+                </span>
+              </ng-template>
+            </mat-tab>
+          }
+        </mat-tab-group>
+
+        <!-- 结构化 2x2 键值对面板 (Key-Value Grid) -->
+        <div class="metrics-kv-panel rounded mb-3">
+          <div class="kv-item">
+            <span class="kv-label">政策生效年月：</span>
+            <span class="kv-val text-primary font-weight-bold">
+              {{ selectedPolicy()!.effectiveDate }}
+            </span>
+          </div>
+
+          <div class="kv-item">
+            <span class="kv-label">最低工资标准：</span>
+            <span class="kv-val text-dark" data-testid="val-min-wage">
+              {{ formatMoney(selectedPolicy()!.minimumWage) }}
+            </span>
+          </div>
+
+          @if (selectedPolicy()!.localAvgWage) {
+            <div class="kv-item">
+              <span class="kv-label">本市在岗职工月均工资：</span>
+              <span class="kv-val text-dark" data-testid="val-local-avg-wage">
+                {{ formatMoney(selectedPolicy()!.localAvgWage) }}
+              </span>
+            </div>
+            <div class="kv-item">
+              <span class="kv-label">全省全口径社平月均：</span>
+              <span class="kv-val text-dark" data-testid="val-avg-wage">
+                {{ formatMoney(selectedPolicy()!.avgWage) }}
+              </span>
+            </div>
+          } @else {
+            <div class="kv-item">
+              <span class="kv-label">城镇在岗职工月平均工资：</span>
+              <span class="kv-val text-dark" data-testid="val-avg-wage">
+                {{ formatMoney(selectedPolicy()!.avgWage) }}
+              </span>
+            </div>
+            <div class="kv-item kv-item-empty"></div>
+          }
+        </div>
+
+        <!-- 独立规则条 1: 城市专属社保核算规则 (仅特定城市) -->
+        @if (currentRecipe()!.insuranceBaseOnLastMonth) {
+          <div
+            class="policy-quote-bar info-quote mb-2"
+            data-testid="badge-last-month-rule"
+          >
+            <mat-icon class="quote-icon">info</mat-icon>
+            <div class="quote-content">
+              <span class="quote-title">社保核算规则：</span>
+              <span
+                >该城市（如深圳）社保缴纳基数依据职工上月实际薪资核算。</span
+              >
+            </div>
+          </div>
+        }
+
+        <!-- 独立规则条 2: 个人养老金扣除标准 (Quote 提示条) -->
+        <div class="policy-quote-bar tip-quote mb-2">
+          <mat-icon class="quote-icon">savings</mat-icon>
+          <div class="quote-content">
+            <span class="quote-title">个人养老金：</span>
+            <span
+              >年度税前扣除限额 12,000 元 (1,000
+              元/月)，可在综合所得或经营所得中据实扣除。</span
+            >
+          </div>
+        </div>
+
+        <!-- 独立规则条 3: 企业年金免税扣除标准 (Quote 提示条) -->
+        <div class="policy-quote-bar tip-quote mb-3">
+          <mat-icon class="quote-icon">account_balance</mat-icon>
+          <div class="quote-content">
+            <span class="quote-title">企业年金：</span>
+            <span
+              >个人缴费在本人缴费工资 4%
+              以内的部分免税，超过部分并入当月工资薪金计税。</span
+            >
+          </div>
+        </div>
+
+        <!-- 基数范围与费率对照表 -->
+        <div class="card mb-3 border-light-subtle shadow-none">
+          <div class="card-header bg-light py-2 font-weight-bold small">
+            社保与公积金缴纳标准（基数范围 & 缴费比例）
+          </div>
+          <div class="table-responsive">
+            <table class="table table-sm table-bordered mb-0 param-table">
+              <thead class="thead-light">
+                <tr>
+                  <th>险种/项目</th>
+                  <th>基数上下限 (元)</th>
+                  <th>个人缴纳比例</th>
+                  <th>企业缴纳比例</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>养老保险</td>
+                  <td>
+                    {{
+                      formatBaseRange(
+                        selectedPolicy()!.insuranceBaseRange,
+                        "endowment"
+                      )
+                    }}
+                  </td>
+                  <td>
+                    {{
+                      formatPercent(
+                        selectedPolicy()!.employee.insuranceRate.endowment
+                      )
+                    }}
+                  </td>
+                  <td>
+                    {{
+                      formatPercent(
+                        selectedPolicy()!.employer.insuranceRate.endowment
+                      )
+                    }}
+                  </td>
+                </tr>
+                <tr>
+                  <td>医疗保险</td>
+                  <td>
+                    {{
+                      formatBaseRange(
+                        selectedPolicy()!.insuranceBaseRange,
+                        "health"
+                      )
+                    }}
+                  </td>
+                  <td>
+                    {{
+                      formatPercent(
+                        selectedPolicy()!.employee.insuranceRate.health
+                      )
+                    }}
+                  </td>
+                  <td>
+                    {{
+                      formatPercent(
+                        selectedPolicy()!.employer.insuranceRate.health
+                      )
+                    }}
+                  </td>
+                </tr>
+                <tr>
+                  <td>失业保险</td>
+                  <td>
+                    {{
+                      formatBaseRange(
+                        selectedPolicy()!.insuranceBaseRange,
+                        "unemployment"
+                      )
+                    }}
+                  </td>
+                  <td>
+                    {{
+                      formatPercent(
+                        selectedPolicy()!.employee.insuranceRate.unemployment
+                      )
+                    }}
+                  </td>
+                  <td>
+                    {{
+                      formatPercent(
+                        selectedPolicy()!.employer.insuranceRate.unemployment
+                      )
+                    }}
+                  </td>
+                </tr>
+                <tr>
+                  <td>工伤保险</td>
+                  <td>
+                    {{
+                      formatBaseRange(
+                        selectedPolicy()!.insuranceBaseRange,
+                        "occupationalInjury"
+                      )
+                    }}
+                  </td>
+                  <td class="text-muted">个人不缴纳</td>
+                  <td>
+                    {{
+                      formatPercent(
+                        selectedPolicy()!.employer.insuranceRate
+                          .occupationalInjury
+                      )
+                    }}
+                  </td>
+                </tr>
+                <tr>
+                  <td>生育保险</td>
+                  <td>
+                    {{
+                      formatBaseRange(
+                        selectedPolicy()!.insuranceBaseRange,
+                        "birth"
+                      )
+                    }}
+                  </td>
+                  <td class="text-muted">个人不缴纳</td>
+                  <td>
+                    {{
+                      formatPercent(
+                        selectedPolicy()!.employer.insuranceRate.birth
+                      )
+                    }}
+                  </td>
+                </tr>
+                <tr class="table-total-row font-weight-bold">
+                  <td>五险合计</td>
+                  <td class="text-muted font-weight-normal small">
+                    各险种分立基数测算
+                  </td>
+                  <td
+                    class="text-primary font-weight-bold"
+                    data-testid="total-employee-rate"
+                  >
+                    {{ formatPercent(totalEmployeeInsuranceRate()) }}
+                  </td>
+                  <td
+                    class="text-primary font-weight-bold"
+                    data-testid="total-employer-rate"
+                  >
+                    {{ formatPercent(totalEmployerInsuranceRate()) }}
+                  </td>
+                </tr>
+                <tr>
+                  <td>住房公积金</td>
+                  <td>
+                    {{
+                      formatBaseRange(selectedPolicy()!.housingFundBaseRange)
+                    }}
+                  </td>
+                  <td>5% ~ 12% (自主申报)</td>
+                  <td>5% ~ 12% (企业配比)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 官方政策依据与参考文件 -->
+        <div class="references-section">
+          <div class="section-title text-muted small font-weight-bold mb-2">
+            官方政策依据与权威来源 (政策文件 / 官方公文)
+          </div>
+          @if (
+            selectedPolicy()!.references &&
+            selectedPolicy()!.references!.length > 0
+          ) {
+            <div class="list-group list-group-flush">
+              @for (
+                refItem of selectedPolicy()!.references;
+                track $index;
+                let i = $index
+              ) {
+                @let ref = asReference(refItem);
+                <a
+                  [href]="ref.link"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-2 px-3 reference-link-item rounded mb-1"
+                  [attr.data-testid]="'ref-link-' + i"
+                >
+                  <div class="d-flex align-items-center text-truncate mr-2">
+                    <mat-icon color="primary" class="mr-2 flex-shrink-0">
+                      description
+                    </mat-icon>
+                    <span class="reference-desc text-truncate">
+                      {{ ref.description }}
+                    </span>
+                  </div>
+                  <mat-icon class="text-muted small-icon flex-shrink-0">
+                    open_in_new
+                  </mat-icon>
+                </a>
+              }
+            </div>
+          } @else {
+            <div class="text-muted small py-2">暂无外链参考记录</div>
+          }
+        </div>
+      } @else {
+        <div class="text-muted text-center py-5">
+          请选择城市与年份查看政策参数
+        </div>
+      }
+    </div>
+  </div>
+</mat-dialog-content>

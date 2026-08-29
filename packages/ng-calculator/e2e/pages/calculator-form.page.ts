@@ -41,6 +41,7 @@ export class CalculatorFormPage extends BasePage {
   readonly calculateButton: Locator;
   readonly resetButton: Locator;
   readonly clearResultButton: Locator;
+  readonly policyParamsButton: Locator;
 
   // 政策提示
   readonly policyHintText: Locator;
@@ -97,8 +98,19 @@ export class CalculatorFormPage extends BasePage {
     this.calculateButton = page.getByTestId('btn-calculate');
     this.resetButton = page.getByTestId('btn-reset');
     this.clearResultButton = page.getByTestId('btn-clear-result');
+    this.policyParamsButton = page.getByTestId('btn-view-policy-params');
 
-    this.policyHintText = page.getByTestId('text-policy-hint');
+    this.policyHintText = page.getByTestId('policy-hint-text');
+  }
+
+  /**
+   * 点击查看政策参数按钮打开弹窗
+   */
+  async openPolicyParamsDialog(): Promise<void> {
+    await this.policyParamsButton.click();
+    await this.page.waitForSelector('mat-dialog-container', {
+      state: 'visible',
+    });
   }
 
   /**

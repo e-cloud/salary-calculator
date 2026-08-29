@@ -76,6 +76,18 @@
           }
         </mat-select>
       </mat-form-field>
+
+      <button
+        class="ml-2 mt-1 mt-sm-0"
+        mat-icon-button
+        color="primary"
+        type="button"
+        matTooltip="查看城市社保公积金计算参数与政策依据"
+        data-testid="btn-view-policy-params"
+        (click)="openPolicyParamsDialog()"
+      >
+        <mat-icon>menu_book</mat-icon>
+      </button>
     </div>
   </mat-card-header>
 

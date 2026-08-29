@@ -1,0 +1,186 @@
+.recipe-dialog-header {
+  padding: 14px 20px;
+  border-bottom: 1px solid rgb(0 0 0 / 8%);
+
+  h2 {
+    font-size: 1.15rem;
+    font-weight: 600;
+  }
+}
+
+.recipe-dialog-content {
+  overflow: hidden;
+  max-width: 880px;
+  min-height: 460px;
+  max-height: 80vh;
+}
+
+.recipe-dialog-body {
+  min-height: 460px;
+  max-height: 75vh;
+}
+
+.city-sidebar {
+  overflow-y: auto;
+  flex-shrink: 0;
+  width: 200px;
+  border-right: 1px solid rgb(0 0 0 / 8%);
+  background-color: #fafafa;
+
+  .city-list a.mat-mdc-list-item {
+    cursor: pointer;
+    border-left: 3px solid transparent;
+
+    &:hover {
+      background-color: rgb(0 0 0 / 4%);
+    }
+
+    &.active-city {
+      border-left-color: #1976d2;
+      background-color: rgb(25 118 210 / 8%);
+
+      .font-weight-bold {
+        color: #1976d2;
+      }
+    }
+  }
+}
+
+.policy-main-content {
+  overflow-y: auto;
+  background-color: #fff;
+}
+
+.metrics-kv-panel {
+  display: grid;
+  padding: 10px 14px;
+  border: 1px solid rgb(0 0 0 / 6%);
+  background-color: #f8f9fa;
+  gap: 6px 20px;
+  grid-template-columns: repeat(2, 1fr);
+
+  .kv-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 3px 0;
+    border-bottom: 1px dashed rgb(0 0 0 / 5%);
+
+    .kv-label {
+      font-size: 0.85rem;
+      color: #555;
+    }
+
+    .kv-val {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+  }
+
+  .kv-item-empty {
+    border-bottom: none;
+  }
+}
+
+.policy-quote-bar {
+  font-size: 0.82rem;
+  line-height: 1.4;
+  display: flex;
+  align-items: flex-start;
+  padding: 7px 10px;
+  border-left: 3px solid;
+  border-radius: 4px;
+
+  .quote-icon {
+    font-size: 16px;
+    line-height: 16px;
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    margin-top: 1px;
+    margin-right: 6px;
+  }
+
+  .quote-content {
+    .quote-title {
+      font-weight: 600;
+      margin-right: 2px;
+    }
+  }
+
+  &.info-quote {
+    color: #0d47a1;
+    border-left-color: #1976d2;
+    background-color: #f0f7ff;
+
+    .quote-icon {
+      color: #1976d2;
+    }
+  }
+
+  &.tip-quote {
+    color: #455a64;
+    border-left-color: #78909c;
+    background-color: #f8f9fa;
+
+    .quote-icon {
+      color: #78909c;
+    }
+  }
+}
+
+.param-table {
+  font-size: 0.85rem;
+
+  th,
+  td {
+    padding: 0.4rem 0.6rem;
+    vertical-align: middle;
+  }
+
+  .table-total-row {
+    border-top: 2px solid rgb(0 0 0 / 10%);
+    background-color: rgb(25 118 210 / 4%);
+  }
+}
+
+.reference-link-item {
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid rgb(0 0 0 / 8%);
+
+  &:hover {
+    color: #1976d2;
+    border-color: #90caf9;
+    background-color: #f0f7ff;
+  }
+
+  .reference-desc {
+    font-size: 0.85rem;
+  }
+}
+
+.small-icon,
+.extra-small-icon {
+  font-size: 16px;
+  line-height: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+@media (max-width: 768px) {
+  .recipe-dialog-content {
+    width: 100%;
+  }
+
+  .recipe-dialog-body {
+    flex-direction: column !important;
+  }
+
+  .city-sidebar {
+    width: 100%;
+    max-height: 150px;
+    border-right: none;
+    border-bottom: 1px solid rgb(0 0 0 / 8%);
+  }
+}
