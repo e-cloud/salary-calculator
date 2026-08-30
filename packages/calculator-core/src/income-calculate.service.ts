@@ -23,8 +23,10 @@ import {
   FullYearIncomeInfo,
   MonthlyIncomeInfo,
   MonthlyIncomeMeta,
+  MonthlyTaxBracketAnalysis,
   Policy,
   RawMeta,
+  TaxBracketTimelineResult,
 } from './model';
 
 export function calculateFullYearIncome(
@@ -925,4 +927,135 @@ export function buildMonthlyMetas(
     metaList.push(meta);
   }
   return metaList;
+}
+
+/**
+ * 阶梯税率时序变化与跳档分析算法
+ * 精准分析 1~12 月各月月初与月底税率阶梯、跳档跃迁点、环比税费增幅与到手现金冲击
+ * @param monthlyIncomes 1~12 月月度明细列表
+ */
+export function analyzeTaxBracketTimeline(
+  monthlyIncomes: MonthlyIncomeInfo[],
+): TaxBracketTimelineResult {
+  if (!monthlyIncomes || monthlyIncomes.length === 0) {
+    return {
+      monthlyAnalyses: [],
+      transitionCount: 0,
+      transitionMonths: [],
+      highestBracketRate: 0,
+      maxTaxJumpMonth: 0,
+      maxTaxJumpAmount: 0,
+    };
+  }
+
+  const monthlyAnalyses: MonthlyTaxBracketAnalysis[] = [];
+  let maxTaxJumpMonth = 0;
+  let maxTaxJumpAmount = 0;
+
+  for (let i = 0; i < monthlyIncomes.length; i++) {
+    const current = monthlyIncomes[i];
+    const prev = i > 0 ? monthlyIncomes[i - 1] : undefined;
+
+    // 获取月初与月底累计应纳税所得额
+    const isNewCycle = current.newPayCycle || current.month === 1;
+    const previousAccumulatedQuota =
+      i === 0 || isNewCycle ? 0 : Math.max(0, prev!.accumulatedTaxQuota);
+    const accumulatedTaxQuota = Math.max(0, current.accumulatedTaxQuota);
+
+    // 月初与月底适用边际税率
+    const startRateModel = findTaxRate(previousAccumulatedQuota, TaxRateTable);
+    const endRateModel = findTaxRate(accumulatedTaxQuota, TaxRateTable);
+
+    const startRate = startRateModel.rate;
+    const endRate = endRateModel.rate;
+
+    // 是否当月发生税率跳档跃迁
+    const isTransition = endRate > startRate;
+    const thresholdCrossed = isTransition ? endRateModel.start : undefined;
+
+    // 计算阶梯档位信息
+    const bracketIndex = TaxRateTable.findIndex(t => t.rate === endRateModel.rate);
+    const bracketLevel = bracketIndex >= 0 ? bracketIndex + 1 : 1;
+    const lowerThreshold = endRateModel.start;
+    const upperThreshold = endRateModel.end;
+
+    // 距离下一个跳档门槛的剩余额度与当前档位消耗百分比
+    const distanceToNextThreshold = Number.isFinite(upperThreshold)
+      ? Math.max(0, upperThreshold - accumulatedTaxQuota)
+      : 0;
+
+    let rangeProgressPercent = 0;
+    if (Number.isFinite(upperThreshold) && upperThreshold > lowerThreshold) {
+      rangeProgressPercent = Math.min(
+        100,
+        Math.max(
+          0,
+          ((accumulatedTaxQuota - lowerThreshold) /
+            (upperThreshold - lowerThreshold)) *
+            100,
+        ),
+      );
+    } else if (!Number.isFinite(upperThreshold)) {
+      rangeProgressPercent = 100;
+    }
+
+    // 计算环比个税变动与到手现金变动
+    let taxDelta = 0;
+    let taxDeltaPercent = 0;
+    let cashDelta = 0;
+
+    if (prev) {
+      taxDelta = current.tax - prev.tax;
+      taxDeltaPercent = prev.tax > 0 ? taxDelta / prev.tax : 0;
+      cashDelta = current.cashIncome - prev.cashIncome;
+
+      if (taxDelta > maxTaxJumpAmount) {
+        maxTaxJumpAmount = taxDelta;
+        maxTaxJumpMonth = current.actualMonth;
+      }
+    }
+
+    const effectiveTaxRate =
+      current.salary > 0 ? current.tax / current.salary : 0;
+
+    monthlyAnalyses.push({
+      month: current.month,
+      actualMonth: current.actualMonth,
+      accumulatedTaxQuota,
+      previousAccumulatedQuota,
+      startRate,
+      endRate,
+      isTransition,
+      bracketLevel,
+      thresholdCrossed,
+      tax: current.tax,
+      taxDelta,
+      taxDeltaPercent,
+      cashIncome: current.cashIncome,
+      cashDelta,
+      effectiveTaxRate,
+      distanceToNextThreshold,
+      rangeProgressPercent,
+      lowerThreshold,
+      upperThreshold,
+    });
+  }
+
+  const transitionMonths = monthlyAnalyses
+    .filter(m => m.isTransition)
+    .map(m => m.actualMonth);
+  const transitionCount = transitionMonths.length;
+  const highestBracketRate = Math.max(
+    ...monthlyAnalyses.map(m => m.endRate),
+    0,
+  );
+
+  return {
+    monthlyAnalyses,
+    transitionCount,
+    transitionMonths,
+    highestBracketRate,
+    maxTaxJumpMonth,
+    maxTaxJumpAmount,
+  };
 }

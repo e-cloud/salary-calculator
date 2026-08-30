@@ -68,21 +68,35 @@
 
     <!-- 6 大税收盲区参考图谱 -->
     <div class="trap-ranges-section p-3 rounded bg-light border">
-      <h6
-        class="font-weight-bold text-secondary mb-2 d-flex align-items-center"
+      <div
+        class="font-weight-bold text-secondary mb-3 d-flex align-items-center flex-wrap"
+        style="font-size: 15px"
       >
-        <mat-icon class="mr-1 extra-small-icon text-muted"
+        <mat-icon
+          class="mr-1 text-primary"
+          style="font-size: 20px; width: 20px; height: 20px"
           >table_chart</mat-icon
         >
-        <span>全国个税 6 大无效盲区速查图谱（多发反而少得）</span>
-      </h6>
+        <span class="text-dark font-weight-bold"
+          >全国个税 6 大无效盲区速查图谱</span
+        >
+        <span class="text-muted font-weight-normal ml-2 small"
+          >（多发反而少得，年终奖应避开此区间）</span
+        >
+      </div>
       <div class="row mx-0">
         @for (item of trapRangesDisplay; track item.range) {
-          <div class="col-12 col-sm-6 col-md-4 p-1">
-            <div class="trap-chip p-2 rounded border bg-white small h-100">
-              <div class="font-weight-bold text-danger">{{ item.range }}</div>
-              <div class="text-muted extra-small mt-1">
-                临界安全线: <strong>{{ item.threshold }}</strong> ({{
+          <div class="col-12 col-sm-6 col-md-4 p-1 mb-1">
+            <div class="trap-chip p-2 rounded border bg-white h-100">
+              <div
+                class="font-weight-bold text-danger"
+                style="font-size: 14.5px"
+              >
+                {{ item.range }}
+              </div>
+              <div class="text-secondary mt-1" style="font-size: 13px">
+                临界安全线:
+                <strong class="text-dark">{{ item.threshold }}</strong> ({{
                   item.taxJump
                 }})
               </div>
@@ -90,7 +104,7 @@
           </div>
         }
       </div>
-      <div class="text-muted extra-small mt-2">
+      <div class="text-muted mt-2" style="font-size: 13px">
         *
         政策提示：根据财政部公告，全年一次性奖金每纳税年度限用一次，单独计税优惠暂延续至
         2027 年 12 月 31 日。

@@ -1,11 +1,14 @@
 ---
-"*.ts":
+"src/**/*.ts":
   - ng lint ng-calculator --fix --force --lint-file-patterns
   - node ../../node_modules/prettier/bin/prettier.cjs --write
   - ng lint ng-calculator --lint-file-patterns
+"e2e/**/*.ts":
+  - node ../../node_modules/prettier/bin/prettier.cjs --write
 "*.{scss,less,css}":
   - node ../../node_modules/prettier/bin/prettier.cjs --write
   - stylelint --fix
   - stylelint
 "*.json":
   - node ../../node_modules/prettier/bin/prettier.cjs --write
+

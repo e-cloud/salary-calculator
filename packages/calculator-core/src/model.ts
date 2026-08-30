@@ -567,3 +567,115 @@ export interface RawMeta {
   };
 }
 
+/**
+ * 单月税率阶梯与跳档分析
+ */
+export interface MonthlyTaxBracketAnalysis {
+  /**
+   * 计税月份 (1~12，换工作可能重置为 1)
+   */
+  month: number;
+  /**
+   * 实际自然月份 (1~12)
+   */
+  actualMonth: number;
+  /**
+   * 月底累计应纳税所得额
+   */
+  accumulatedTaxQuota: number;
+  /**
+   * 月初累计应纳税所得额
+   */
+  previousAccumulatedQuota: number;
+  /**
+   * 月初适用边际税率 (如 0.03)
+   */
+  startRate: number;
+  /**
+   * 月底适用边际税率 (如 0.10)
+   */
+  endRate: number;
+  /**
+   * 当月是否发生税率跳档跃迁 (startRate !== endRate)
+   */
+  isTransition: boolean;
+  /**
+   * 处于第几档税率 (1~7)
+   */
+  bracketLevel: number;
+  /**
+   * 当月跨越的临界门槛值 (如 36000, 144000, 300000 等)
+   */
+  thresholdCrossed?: number;
+  /**
+   * 当月个税金额
+   */
+  tax: number;
+  /**
+   * 相比上月的个税变动金额 (+/- 元)
+   */
+  taxDelta: number;
+  /**
+   * 相比上月的个税变动比例 (如 0.5 表示增长 50%)
+   */
+  taxDeltaPercent: number;
+  /**
+   * 当月税后到手现金
+   */
+  cashIncome: number;
+  /**
+   * 相比上月的到手现金变动金额 (+/- 元)
+   */
+  cashDelta: number;
+  /**
+   * 当月个税占当月应发薪资的有效税率 (tax / salary)
+   */
+  effectiveTaxRate: number;
+  /**
+   * 距离下一个跳档门槛的剩余额度 (若在最高档则为 0)
+   */
+  distanceToNextThreshold: number;
+  /**
+   * 当前在所处税率档位区间内的消耗进度 (0~100)
+   */
+  rangeProgressPercent: number;
+  /**
+   * 当前档位起始金额 (如 36000)
+   */
+  lowerThreshold: number;
+  /**
+   * 当前档位上限金额 (如 144000)
+   */
+  upperThreshold: number;
+}
+
+/**
+ * 全年税率阶梯跳档综合分析结果
+ */
+export interface TaxBracketTimelineResult {
+  /**
+   * 各月份阶梯税率分析明细列表 (1~12月)
+   */
+  monthlyAnalyses: MonthlyTaxBracketAnalysis[];
+  /**
+   * 全年跳档次数
+   */
+  transitionCount: number;
+  /**
+   * 发生跳档的自然月份列表 (如 [4, 7])
+   */
+  transitionMonths: number[];
+  /**
+   * 全年达到的最高边际税率 (如 0.20)
+   */
+  highestBracketRate: number;
+  /**
+   * 全年个税激增最多的月份
+   */
+  maxTaxJumpMonth: number;
+  /**
+   * 最大个税激增金额
+   */
+  maxTaxJumpAmount: number;
+}
+

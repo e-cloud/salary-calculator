@@ -48,5 +48,12 @@
         [annualBonus]="sum.bonus"
       ></app-bonus-optimization-card>
     }
+
+    <app-tax-bracket-timeline
+      [clear]="clear()"
+      [monthlyIncomes]="(monthlyIncomes$ | async) || []"
+      [selectedMonth]="(selectedMonth$ | async) || 1"
+      (changeSelectedMonth)="changeChartMonth($event)"
+    ></app-tax-bracket-timeline>
   </div>
 </div>

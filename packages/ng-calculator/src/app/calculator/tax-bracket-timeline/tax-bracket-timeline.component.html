@@ -1,0 +1,398 @@
+@if (!clear && timelineResult) {
+  <mat-card
+    appearance="outlined"
+    class="calc-result mb-3"
+    data-testid="tax-bracket-timeline-card"
+  >
+    <mat-card-header class="d-flex align-items-center mb-2">
+      <div class="d-flex align-items-center flex-wrap">
+        <mat-icon color="primary" class="mr-2">timeline</mat-icon>
+        <mat-card-title
+          class="m-0 font-weight-bold text-dark"
+          style="font-size: 1.15rem"
+        >
+          阶梯税率时序分析
+        </mat-card-title>
+        <span class="small text-muted ml-2 font-weight-normal">
+          （累计预扣法税率演变与跳档冲击）
+        </span>
+      </div>
+    </mat-card-header>
+
+    <mat-card-content class="pt-2">
+      <mat-tab-group
+        mat-stretch-tabs="false"
+        mat-align-tabs="start"
+        animationDuration="0ms"
+      >
+        <!-- Tab 1: 自定义时间轴分析 -->
+        <mat-tab label="时间轴分析">
+          <ng-template matTabContent>
+            <div class="timeline-tab-content pt-3">
+              <!-- 1. 全年时间轴轨道 -->
+              <div
+                class="timeline-track-container"
+                data-testid="timeline-track"
+              >
+                <div class="timeline-track">
+                  @for (
+                    item of timelineResult.monthlyAnalyses;
+                    track item.actualMonth
+                  ) {
+                    <div
+                      class="timeline-node"
+                      [class.selected]="item.actualMonth === selectedMonth"
+                      [class.transition-node]="item.isTransition"
+                      [attr.data-testid]="'timeline-node-' + item.actualMonth"
+                      (click)="onSelectMonth(item.actualMonth)"
+                    >
+                      <!-- 跳档跃迁标识（固定在顶部，不被截断） -->
+                      @if (item.isTransition) {
+                        <div
+                          class="transition-badge"
+                          [matTooltip]="
+                            '本月触发税率跳档：' +
+                            formatRate(item.startRate) +
+                            ' → ' +
+                            formatRate(item.endRate)
+                          "
+                        >
+                          ⚡ 跳档
+                        </div>
+                      }
+
+                      <!-- 月份圆形节点 -->
+                      <div
+                        class="node-circle"
+                        [ngClass]="getRateColorClass(item.endRate)"
+                      >
+                        <span class="node-month">{{ item.actualMonth }}月</span>
+                      </div>
+
+                      <!-- 税率徽章 -->
+                      <div
+                        class="node-rate-pill"
+                        [ngClass]="getRateColorClass(item.endRate)"
+                      >
+                        @if (item.isTransition) {
+                          <span
+                            >{{ formatRate(item.startRate) }}→{{
+                              formatRate(item.endRate)
+                            }}</span
+                          >
+                        } @else {
+                          <span>{{ formatRate(item.endRate) }}</span>
+                        }
+                      </div>
+
+                      <!-- 累计应税简标 -->
+                      <div class="node-quota text-muted extra-small">
+                        ¥{{ (item.accumulatedTaxQuota / 10000).toFixed(1) }}w
+                      </div>
+                    </div>
+                  }
+                </div>
+              </div>
+
+              <!-- 2. 关键跳档转折点冲击洞察 -->
+              <div class="transition-insights mt-4">
+                <div
+                  class="font-weight-bold text-secondary mb-3 d-flex align-items-center flex-wrap"
+                  style="font-size: 15px"
+                >
+                  <mat-icon
+                    class="mr-1 text-warning"
+                    style="font-size: 20px; width: 20px; height: 20px"
+                    >flash_on</mat-icon
+                  >
+                  <span class="text-dark">关键跳档转折点冲击洞察</span>
+                  <span class="text-muted font-weight-normal ml-2 small"
+                    >(全年共发生
+                    {{ timelineResult.transitionCount }} 次税率跳档，最高达到
+                    {{ formatRate(timelineResult.highestBracketRate) }}
+                    档位)</span
+                  >
+                </div>
+
+                @if (timelineResult.transitionCount > 0) {
+                  <div class="row g-3">
+                    @for (
+                      item of timelineResult.monthlyAnalyses;
+                      track item.actualMonth
+                    ) {
+                      @if (item.isTransition) {
+                        <div class="col-12 col-md-6 mb-2">
+                          <div
+                            class="insight-card p-3 rounded bg-light border"
+                            [attr.data-testid]="
+                              'insight-card-' + item.actualMonth
+                            "
+                          >
+                            <div
+                              class="d-flex justify-content-between align-items-center mb-2"
+                            >
+                              <span
+                                class="font-weight-bold text-primary"
+                                style="font-size: 15px"
+                              >
+                                🚀 {{ item.actualMonth }}月份 · 税率跳档 ({{
+                                  formatRate(item.startRate)
+                                }}
+                                → {{ formatRate(item.endRate) }})
+                              </span>
+                              <span
+                                class="badge badge-warning text-dark px-2 py-1"
+                                style="font-size: 13px"
+                              >
+                                门槛突破 ¥{{
+                                  item.thresholdCrossed?.toLocaleString()
+                                }}
+                              </span>
+                            </div>
+                            <ul class="insight-list mb-0 ps-3">
+                              <li class="mb-1" style="font-size: 14px">
+                                当月个税：<b class="text-dark"
+                                  >¥{{ item.tax.toFixed(2) }}</b
+                                >
+                                @if (item.taxDelta > 0) {
+                                  <span
+                                    class="text-danger font-weight-bold ml-1"
+                                  >
+                                    (环比增加 +¥{{
+                                      item.taxDelta.toFixed(2)
+                                    }}，增幅
+                                    {{
+                                      (item.taxDeltaPercent * 100).toFixed(0)
+                                    }}%)
+                                  </span>
+                                }
+                              </li>
+                              <li class="mb-1" style="font-size: 14px">
+                                到手现金：<b class="text-dark"
+                                  >¥{{ item.cashIncome.toFixed(2) }}</b
+                                >
+                                @if (item.cashDelta < 0) {
+                                  <span class="text-danger ml-1">
+                                    (较上月减少 ¥{{
+                                      Math.abs(item.cashDelta).toFixed(2)
+                                    }})
+                                  </span>
+                                }
+                              </li>
+                              <li
+                                class="text-secondary"
+                                style="font-size: 13.5px"
+                              >
+                                影响评估：累计应纳税所得额突破 ¥{{
+                                  item.thresholdCrossed?.toLocaleString()
+                                }}，进入
+                                <span class="font-weight-bold text-dark">{{
+                                  formatRate(item.endRate)
+                                }}</span>
+                                边际税率档位。
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      }
+                    }
+                  </div>
+                } @else {
+                  <div
+                    class="alert alert-info py-2 mb-0"
+                    style="font-size: 14px"
+                  >
+                    💡 当前薪资水平在全年各月份始终处于同一档阶梯税率 ({{
+                      formatRate(timelineResult.highestBracketRate)
+                    }})，未发生税率跳档跃迁。
+                  </div>
+                }
+              </div>
+
+              <!-- 3. 当前选中月份阶梯详情与安全余量进度条 -->
+              @if (selectedAnalysis) {
+                <div
+                  class="month-detail-panel mt-4 p-3 bg-light rounded border"
+                  data-testid="selected-month-detail"
+                >
+                  <div
+                    class="d-flex justify-content-between align-items-center mb-3"
+                  >
+                    <span
+                      class="font-weight-bold text-dark"
+                      style="font-size: 15px"
+                    >
+                      🔍 {{ selectedAnalysis.actualMonth }}月份 ·
+                      阶梯所得与门槛安全余量
+                    </span>
+                    <span class="badge badge-primary px-2 py-1">
+                      第 {{ selectedAnalysis.bracketLevel }} 档 ({{
+                        formatRate(selectedAnalysis.endRate)
+                      }})
+                    </span>
+                  </div>
+
+                  <div class="row mx-0 mb-3 bg-white p-3 rounded border">
+                    <div class="col-12 col-sm-6 col-md-3 mb-2 mb-md-0 px-2">
+                      <div class="text-muted extra-small mb-1">
+                        月底累计应纳税所得额
+                      </div>
+                      <div
+                        class="font-weight-bold text-dark"
+                        style="font-size: 15px"
+                      >
+                        ¥{{
+                          selectedAnalysis.accumulatedTaxQuota.toLocaleString(
+                            "zh-CN",
+                            {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                            }
+                          )
+                        }}
+                      </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-3 mb-2 mb-md-0 px-2">
+                      <div class="text-muted extra-small mb-1">
+                        当月应纳个税
+                      </div>
+                      <div
+                        class="font-weight-bold text-danger"
+                        style="font-size: 15px"
+                      >
+                        ¥{{
+                          selectedAnalysis.tax.toLocaleString("zh-CN", {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })
+                        }}
+                        @if (selectedAnalysis.taxDelta > 0) {
+                          <span
+                            class="extra-small font-weight-normal text-danger"
+                            >(+¥{{
+                              selectedAnalysis.taxDelta.toFixed(2)
+                            }})</span
+                          >
+                        }
+                      </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-3 mb-2 mb-md-0 px-2">
+                      <div class="text-muted extra-small mb-1">
+                        当月税后到手现金
+                      </div>
+                      <div
+                        class="font-weight-bold text-primary"
+                        style="font-size: 15px"
+                      >
+                        ¥{{
+                          selectedAnalysis.cashIncome.toLocaleString("zh-CN", {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })
+                        }}
+                        @if (selectedAnalysis.cashDelta < 0) {
+                          <span
+                            class="extra-small text-danger font-weight-normal"
+                            >({{ selectedAnalysis.cashDelta.toFixed(2) }})</span
+                          >
+                        }
+                      </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-3 px-2">
+                      <div class="text-muted extra-small mb-1">
+                        当月有效税率 (个税/薪资)
+                      </div>
+                      <div
+                        class="font-weight-bold text-dark"
+                        style="font-size: 15px"
+                      >
+                        {{
+                          (selectedAnalysis.effectiveTaxRate * 100).toFixed(2)
+                        }}%
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- 进度条 -->
+                  <div class="progress-section">
+                    <div
+                      class="d-flex justify-content-between small text-muted mb-1"
+                    >
+                      <span
+                        >当前档位下限: ¥{{
+                          selectedAnalysis.lowerThreshold.toLocaleString()
+                        }}</span
+                      >
+                      <span class="font-weight-bold text-dark">
+                        当前档位消耗进度:
+                        {{ selectedAnalysis.rangeProgressPercent.toFixed(1) }}%
+                      </span>
+                      <span>
+                        @if (selectedAnalysis.upperThreshold < 10000000) {
+                          下一档门槛: ¥{{
+                            selectedAnalysis.upperThreshold.toLocaleString()
+                          }}
+                        } @else {
+                          最高档 (45%)
+                        }
+                      </span>
+                    </div>
+                    <mat-progress-bar
+                      mode="determinate"
+                      [value]="selectedAnalysis.rangeProgressPercent"
+                      class="rounded"
+                    ></mat-progress-bar>
+                    <div
+                      class="mt-2 small text-muted d-flex align-items-center"
+                    >
+                      <mat-icon class="mr-1 extra-small-icon text-warning"
+                        >lightbulb</mat-icon
+                      >
+                      @if (selectedAnalysis.distanceToNextThreshold > 0) {
+                        <span>
+                          距离下一个跳档门槛 (¥{{
+                            selectedAnalysis.upperThreshold.toLocaleString()
+                          }}) 剩余安全额度：
+                          <b class="text-success" style="font-size: 14px"
+                            >¥{{
+                              selectedAnalysis.distanceToNextThreshold.toLocaleString(
+                                "zh-CN",
+                                {
+                                  minimumFractionDigits: 2,
+                                  maximumFractionDigits: 2,
+                                }
+                              )
+                            }}</b
+                          >
+                        </span>
+                      } @else {
+                        <span class="text-warning">已达当前最高税率档位。</span>
+                      }
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          </ng-template>
+        </mat-tab>
+
+        <!-- Tab 2: 基于 ECharts 的趋势图分析 -->
+        <mat-tab label="趋势图分析">
+          <div
+            class="trend-chart-tab-content pt-3"
+            data-testid="trend-chart-container"
+          >
+            @if (trendChartOption) {
+              <div
+                echarts
+                [options]="trendChartOption"
+                class="trend-echarts"
+                style="height: 380px; width: 100%"
+              ></div>
+            }
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </mat-card-content>
+  </mat-card>
+}

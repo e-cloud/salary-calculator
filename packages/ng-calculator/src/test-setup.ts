@@ -1,4 +1,5 @@
 import '@angular/compiler';
+import 'vitest-canvas-mock';
 import { getTestBed } from '@angular/core/testing';
 import {
   BrowserDynamicTestingModule,

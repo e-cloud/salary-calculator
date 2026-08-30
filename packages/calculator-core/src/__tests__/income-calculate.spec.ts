@@ -10,6 +10,7 @@ import {
   buildEmptyMetaList,
   checkBonusTaxTrap,
   optimizeAnnualBonusAllocation,
+  analyzeTaxBracketTimeline,
 } from '../income-calculate.service';
 import { CityRecipe, MonthlyIncomeMeta, Policy, RawMeta } from '../model';
 
@@ -887,6 +888,115 @@ describe('calculator-core 核心算法与政策匹配单元测试', () => {
       expect(meta.supplementaryHousingFundEmployerRate).toBe(0.05);
     });
   });
+
+  describe('17. 阶梯税率时序变化与跳档分析算法测试 (analyzeTaxBracketTimeline)', () => {
+    it('常规月薪 25000 元场景下，准确识别 3 月首次跳档 (3%->10%) 与 10 月二次跳档 (10%->20%)', () => {
+      // Arrange: 月薪 25000，免税额 5000，五险一金 4000，每月应纳税所得额 = 16000 元
+      const meta: MonthlyIncomeMeta = {
+        ...baseMeta,
+        salary: 25000,
+        insuranceBase: 25000,
+        housingFundBase: 25000,
+        freeTaxQuota: 5000,
+        housingFundRate: 0.05, // 公积金 1250
+        insuranceRate: {
+          endowment: 0.08,     // 2000
+          health: 0.02,        // 500
+          unemployment: 0.005, // 125
+        }, // 五险一金合计 = 3875
+        extraDeduction: {
+          infantCare: 0,
+          childEducation: 0,
+          continuingEducation: 0,
+          seriousMedicalExpense: 0,
+          housingLoanInterest: 0,
+          renting: 0,
+          elderlyCare: 0,
+          enterprisePensionFromEmployee: 0,
+          enterprisePensionFromEmployer: 0,
+          privatePension: 0,
+          other: 0,
+        },
+      };
+      // 每月应税所得 = 25000 - 5000 - 3875 = 16125 元
+      // 1月累计: 16125 (3%)
+      // 2月累计: 32250 (3%)
+      // 3月累计: 48375 (月初 32250 <= 36000, 月底 48375 > 36000 -> 跨 3% 到 10% 档)
+      // 9月累计: 145125 (月初 129000 <= 144000, 月底 145125 > 144000 -> 跨 10% 到 20% 档)
+      const metas = Array(12)
+        .fill(0)
+        .map(() => ({ ...meta }));
+      const months = calculateMonthlyIncomes(metas);
+
+      // Act
+      const timeline = analyzeTaxBracketTimeline(months);
+
+      // Assert
+      expect(timeline.monthlyAnalyses.length).toBe(12);
+      expect(timeline.transitionCount).toBe(2);
+      expect(timeline.transitionMonths).toEqual([3, 9]);
+      expect(timeline.highestBracketRate).toBe(0.20);
+
+      // 验证 1 月详情
+      const m1 = timeline.monthlyAnalyses[0];
+      expect(m1.startRate).toBe(0.03);
+      expect(m1.endRate).toBe(0.03);
+      expect(m1.isTransition).toBe(false);
+      expect(m1.lowerThreshold).toBe(0);
+      expect(m1.upperThreshold).toBe(36000);
+      expect(m1.distanceToNextThreshold).toBeCloseTo(36000 - 16125, 1);
+
+      // 验证 3 月首次跳档详情
+      const m3 = timeline.monthlyAnalyses[2];
+      expect(m3.startRate).toBe(0.03);
+      expect(m3.endRate).toBe(0.10);
+      expect(m3.isTransition).toBe(true);
+      expect(m3.thresholdCrossed).toBe(36000);
+      expect(m3.taxDelta).toBeGreaterThan(0); // 个税环比增加
+      expect(m3.cashDelta).toBeLessThan(0);   // 到手现金环比减少
+
+      // 验证 9 月二次跳档详情
+      const m9 = timeline.monthlyAnalyses[8];
+      expect(m9.startRate).toBe(0.10);
+      expect(m9.endRate).toBe(0.20);
+      expect(m9.isTransition).toBe(true);
+      expect(m9.thresholdCrossed).toBe(144000);
+    });
+
+    it('年中跳槽开启新计费周期 (newPayCycle) 时，税率阶梯重置并准确识别重置后的再次跳档', () => {
+      // Arrange: 前 6 个月月薪 30000，第 7 个月跳槽开启 newPayCycle 月薪 30000
+      const metas: MonthlyIncomeMeta[] = [];
+      for (let i = 1; i <= 12; i++) {
+        metas.push({
+          ...baseMeta,
+          salary: 30000,
+          insuranceBase: 30000,
+          housingFundBase: 30000,
+          newPayCycle: i === 7,
+        });
+      }
+      const months = calculateMonthlyIncomes(metas);
+
+      // Act
+      const timeline = analyzeTaxBracketTimeline(months);
+
+      // Assert
+      expect(timeline.monthlyAnalyses.length).toBe(12);
+      // 第 7 个月由于累计应税清零重置，月初与月底均回落至 3%
+      const m7 = timeline.monthlyAnalyses[6];
+      expect(m7.startRate).toBe(0.03);
+      expect(m7.endRate).toBe(0.03);
+    });
+
+    it('输入空列表时应安全返回空结果', () => {
+      const emptyResult = analyzeTaxBracketTimeline([]);
+      expect(emptyResult.monthlyAnalyses).toEqual([]);
+      expect(emptyResult.transitionCount).toBe(0);
+      expect(emptyResult.transitionMonths).toEqual([]);
+      expect(emptyResult.highestBracketRate).toBe(0);
+    });
+  });
 });
+
 
 

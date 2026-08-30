@@ -32,6 +32,7 @@ import { MonthlyResultsComponent } from './monthly-results/monthly-results.compo
 import { SummaryChartsComponent } from './summary-charts/summary-charts.component';
 import { SummaryDetailsComponent } from './summary-details/summary-details.component';
 import { BonusOptimizationCardComponent } from './bonus-optimization-card/bonus-optimization-card.component';
+import { TaxBracketTimelineComponent } from './tax-bracket-timeline/tax-bracket-timeline.component';
 import { SalaryCalculatorStore } from './salary-calculator.store';
 
 @Component({
@@ -44,6 +45,7 @@ import { SalaryCalculatorStore } from './salary-calculator.store';
     SummaryChartsComponent,
     SummaryDetailsComponent,
     BonusOptimizationCardComponent,
+    TaxBracketTimelineComponent,
   ],
 
   templateUrl: './calculator.component.html',
