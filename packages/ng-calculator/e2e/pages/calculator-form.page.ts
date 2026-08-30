@@ -35,7 +35,11 @@ export class CalculatorFormPage extends BasePage {
   // 自定义费率
   readonly endowmentRateInput: Locator;
   readonly healthRateInput: Locator;
-  readonly unemploymentRateInput: Locator;
+  // 公积金与补充公积金
+  readonly housingFundBaseInput: Locator;
+  readonly housingFundRateInput: Locator;
+  readonly supplementaryHousingFundRateInput: Locator;
+  readonly supplementaryHousingFundEmployerRateInput: Locator;
 
   // 操作按钮
   readonly calculateButton: Locator;
@@ -94,6 +98,16 @@ export class CalculatorFormPage extends BasePage {
     this.healthRateInput = page.getByTestId('input-health-rate');
     this.unemploymentRateInput = page.getByTestId('input-unemployment-rate');
 
+    // 公积金与补充公积金
+    this.housingFundBaseInput = page.getByTestId('input-housing-fund-base');
+    this.housingFundRateInput = page.getByTestId('input-housing-fund-rate');
+    this.supplementaryHousingFundRateInput = page.getByTestId(
+      'input-supplementary-housing-fund-rate',
+    );
+    this.supplementaryHousingFundEmployerRateInput = page.getByTestId(
+      'input-supplementary-housing-fund-employer-rate',
+    );
+
     // 操作按钮
     this.calculateButton = page.getByTestId('btn-calculate');
     this.resetButton = page.getByTestId('btn-reset');
@@ -121,6 +135,19 @@ export class CalculatorFormPage extends BasePage {
     if (annualBonus > 0) {
       await this.annualBonusInput.fill(String(annualBonus));
     }
+  }
+
+  /**
+   * 填写补充公积金个人与企业比例
+   */
+  async fillSupplementaryHousingFund(
+    employeeRate: number,
+    employerRate: number,
+  ): Promise<void> {
+    await this.supplementaryHousingFundRateInput.fill(String(employeeRate));
+    await this.supplementaryHousingFundEmployerRateInput.fill(
+      String(employerRate),
+    );
   }
 
   /**

@@ -94,4 +94,27 @@ test.describe('Suite 1: 基础流程与常规计算 (Basic Calculation & Smoke)'
     // Assert: 计算按钮恢复启用
     await expect(formPage.calculateButton).toBeEnabled();
   });
+
+  test('TC-105: 设置个人补充公积金与企业补充公积金比例，正确联动到手现金、公积金总额与雇主成本', async () => {
+    // Arrange: 输入月薪 10,000 元，个人补充公积金 3%，企业补充公积金 5%
+    await formPage.fillSalary(10000);
+    await formPage.fillSupplementaryHousingFund(3, 5);
+
+    // Act: 点击计算
+    await formPage.calculate();
+
+    // Assert: 验证渲染出 12 个月的折叠面板
+    await expect(resultsPage.panels).toHaveCount(12);
+
+    // 验证年度汇总卡片展示
+    const isSummaryVisible = await summaryPage.isSummaryVisible();
+    expect(isSummaryVisible).toBe(true);
+
+    // 验证全年公积金缴纳金额（包含个人 5%+3% 与企业 5%+5%，深圳默认基本公积金 5%）
+    // 个人公积金 = 10000 * 8% = 800/月；企业公积金 = 10000 * 10% = 1000/月；全年总额 = (800 + 1000) * 12 = 21600
+    const housingFundText = await summaryPage.getSummaryValue(
+      'summary-full-housing-fund',
+    );
+    expect(summaryPage.parseAmount(housingFundText)).toBe(21600);
+  });
 });

@@ -765,5 +765,128 @@ describe('calculator-core 核心算法与政策匹配单元测试', () => {
       expect(fullYear.sideIncomeTax!.totalSideTax).toBeGreaterThan(0);
     });
   });
+
+  describe('16. 个人与企业补充公积金计算与限额测试', () => {
+    it('个人基本公积金 5% + 个人补充公积金 3%（合计 8% <= 12%），税前全额扣除 800 元，现金扣除 800 元', () => {
+      // Arrange: 月薪 10,000，社保五险 1050 元，基本公积金 5% (500元)，个人补充公积金 3% (300元)
+      const meta: MonthlyIncomeMeta = {
+        ...baseMeta,
+        salary: 10000,
+        housingFundBase: 10000,
+        housingFundRate: 0.05,
+        supplementaryHousingFundRate: 0.03,
+        supplementaryHousingFundEmployerRate: 0.03,
+      };
+
+      // Act
+      const month1 = calculateMonthIncome(meta, undefined);
+
+      // Assert
+      expect(month1.housingFund).toBe(500);
+      expect(month1.supplementaryHousingFund).toBe(300);
+      // 累计扣除 = 5000(免征) + 1050(社保) + 800(公积金8%) = 6850
+      // 应税所得 = 10000 - 6850 = 3150
+      expect(month1.accumulatedTaxQuota).toBe(3150);
+      expect(month1.tax).toBeCloseTo(3150 * 0.03, 2);
+      // 现金收入 = 10000 - 1050 - 500 - 300 - 94.5 = 8055.5
+      expect(month1.cashIncome).toBeCloseTo(10000 - 1050 - 800 - 94.5, 2);
+      // 雇主成本: 工资 10000 + 社保成本 + 企业基本公积金 500 + 企业补充公积金 300
+      expect(month1.employerCosts.housingFund).toBe(500);
+      expect(month1.employerCosts.supplementaryHousingFund).toBe(300);
+    });
+
+    it('个人基本 10% + 个人补充 5%（合计 15% > 12%），仅按 12% 限额进行税前扣除，超额 3% 计税', () => {
+      // Arrange: 月薪 10,000，基本 10% (1000元)，个人补充 5% (500元)
+      const meta: MonthlyIncomeMeta = {
+        ...baseMeta,
+        salary: 10000,
+        housingFundBase: 10000,
+        housingFundRate: 0.1,
+        supplementaryHousingFundRate: 0.05,
+      };
+
+      // Act
+      const month1 = calculateMonthIncome(meta, undefined);
+
+      // Assert
+      expect(month1.housingFund).toBe(1000);
+      expect(month1.supplementaryHousingFund).toBe(500);
+      // 税前扣除公积金上限为 12% = 1200 元（而不是 1500 元）
+      // 累计免税扣除 = 5000 + 1050 + 1200 = 7250
+      // 应税所得 = 10000 - 7250 = 2750
+      expect(month1.accumulatedTaxQuota).toBe(2750);
+      expect(month1.tax).toBeCloseTo(2750 * 0.03, 2);
+      // 到手现金实扣 1500 元公积金
+      expect(month1.cashIncome).toBeCloseTo(10000 - 1050 - 1500 - 82.5, 2);
+    });
+
+    it('全年汇总验证：个人与企业补充公积金完整计入全年公积金总额与雇主总成本', () => {
+      // Arrange
+      const meta: MonthlyIncomeMeta = {
+        ...baseMeta,
+        salary: 10000,
+        housingFundBase: 10000,
+        housingFundRate: 0.07,
+        supplementaryHousingFundRate: 0.03,
+        supplementaryHousingFundEmployerRate: 0.05,
+      };
+      const metas = Array(12)
+        .fill(0)
+        .map(() => ({ ...meta }));
+
+      // Act
+      const months = calculateMonthlyIncomes(metas);
+      const fullYear = calculateFullYearIncome(months, 0);
+
+      // Assert
+      // 个人基本公积金 700 * 12 = 8400
+      expect(fullYear.employee.housingFund).toBeCloseTo(8400, 2);
+      // 个人补充公积金 300 * 12 = 3600
+      expect(fullYear.employee.supplementaryHousingFund).toBeCloseTo(3600, 2);
+      // 企业基本公积金 700 * 12 = 8400
+      expect(fullYear.employerCosts.housingFund).toBeCloseTo(8400, 2);
+      // 企业补充公积金 500 * 12 = 6000
+      expect(fullYear.employerCosts.supplementaryHousingFund).toBeCloseTo(6000, 2);
+      // 全年公积金总额 = 8400 + 3600 + 8400 + 6000 = 26400
+      expect(fullYear.fullHousingFund).toBeCloseTo(26400, 2);
+    });
+
+    it('buildMetaFromPolicy 正确将用户输入的补充公积金百分比转换为比率', () => {
+      // Arrange
+      const rawInput: RawMeta = {
+        monthSalary: 10000,
+        annualBonus: 0,
+        insuranceBase: 10000,
+        housingFundBase: 10000,
+        housingFundRate: 7,
+        supplementaryHousingFundRate: 3,
+        supplementaryHousingFundEmployerRate: 5,
+        insuranceRate: { endowment: 8, health: 2, unemployment: 0.5 },
+        insuranceBaseOnLastMonth: false,
+        extraDeduction: {
+          infantCare: 0,
+          childEducation: 0,
+          continuingEducation: 0,
+          seriousMedicalExpense: 0,
+          housingLoanInterest: 0,
+          renting: 0,
+          elderlyCare: 0,
+          enterprisePensionFromEmployee: 0,
+          enterprisePensionFromEmployer: 0,
+          privatePension: 0,
+          other: 0,
+        },
+      };
+
+      // Act
+      const meta = buildMetaFromPolicy(rawInput, sampleRecipe.policies[0]);
+
+      // Assert
+      expect(meta.housingFundRate).toBe(0.07);
+      expect(meta.supplementaryHousingFundRate).toBe(0.03);
+      expect(meta.supplementaryHousingFundEmployerRate).toBe(0.05);
+    });
+  });
 });
+
 

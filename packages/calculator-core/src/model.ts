@@ -5,9 +5,13 @@ export interface MonthlyIncomeInfo {
    */
   salary: number;
   /**
-   * 公积金
+   * 个人公积金（基本）
    */
   housingFund: number;
+  /**
+   * 个人补充公积金
+   */
+  supplementaryHousingFund: number;
   /**
    * 个人所得税金额
    */
@@ -106,12 +110,18 @@ export interface MonthlyIncomeInfo {
       birth: number;
       occupationalInjury: number;
     };
+    housingFund: number;
+    supplementaryHousingFund: number;
     enterprisePension: number;
   };
 }
 
 
 export interface MonthlyIncomeMeta {
+  /**
+   * 唯一标识
+   */
+  id?: string | number;
   /**
    * 月薪
    */
@@ -147,6 +157,18 @@ export interface MonthlyIncomeMeta {
    * 住房公积金缴纳比例
    */
   housingFundRate: number;
+  /**
+   * 个人补充公积金缴纳比例
+   */
+  supplementaryHousingFundRate?: number;
+  /**
+   * 企业补充公积金缴纳比例
+   */
+  supplementaryHousingFundEmployerRate?: number;
+  /**
+   * 住房公积金个人税前扣除比例上限（默认 0.12，即 12%）
+   */
+  housingFundRateLimit?: number;
   /**
    * 上年度月平均工资（7-12月使用）
    */
@@ -343,6 +365,7 @@ export interface FullYearIncomeInfo {
     endowmentInsurance: number;
     healthInsurance: number;
     housingFund: number;
+    supplementaryHousingFund: number;
     enterprisePension: number;
     enterprisePensionFull: number;
     // 全年个人养老金
@@ -361,6 +384,8 @@ export interface FullYearIncomeInfo {
       birth: number;
       occupationalInjury: number;
     };
+    housingFund: number;
+    supplementaryHousingFund: number;
     enterprisePension: number;
   };
 }
@@ -504,6 +529,9 @@ export interface RawMeta {
   insuranceBase: number;
   housingFundBase: number;
   housingFundRate: number;
+  supplementaryHousingFundRate?: number;
+  supplementaryHousingFundEmployerRate?: number;
+  housingFundRateLimit?: number;
   // 上年度月平均工资（用于7-12月缴费基数）
   lastYearAvgSalary?: number;
   // 上上年度月平均工资（用于1-6月缴费基数）

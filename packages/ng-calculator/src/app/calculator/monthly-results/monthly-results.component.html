@@ -5,18 +5,27 @@
       [@listAnimation]="incomeList.length"
       (animationend)="scrollToChart()"
     >
-      @for (item of incomeList; track item.id; let idx = $index) {
+      @for (
+        item of incomeList;
+        track item.actualMonth || item.id || idx;
+        let idx = $index
+      ) {
         <mat-expansion-panel
           [attr.data-testid]="'month-panel-' + (idx + 1)"
+          [expanded]="expandedMonths.has(idx)"
           #panel
-          (opened)="onChangeChartMonth(idx)"
+          (opened)="onPanelOpened(idx)"
+          (closed)="onPanelClosed(idx)"
         >
           <mat-expansion-panel-header
             [attr.data-testid]="'month-panel-header-' + (idx + 1)"
           >
             {{ item.actualMonth - 1 | month }} 实收：
             {{ item.cashIncome | currency }}，公积金：{{
-              item.housingFund * 2 | currency
+              item.housingFund +
+                item.supplementaryHousingFund +
+                item.employerCosts.housingFund +
+                item.employerCosts.supplementaryHousingFund | currency
             }}
             ，个税：{{ item.tax | currency }}，公司成本：{{
               item.employerCosts.full | currency
@@ -207,6 +216,36 @@
             type="number"
             placeholder="0"
             formControlName="housingFundRate"
+            min="0"
+          />
+          <span matTextSuffix>%</span>
+        </mat-form-field>
+
+        <mat-form-field class="ml-3" style="width: 140px">
+          <mat-label>个人补充公积金比例</mat-label>
+          <input
+            matInput
+            type="number"
+            placeholder="0"
+            [attr.data-testid]="
+              'input-supplementary-housing-fund-rate-' + (idx + 1)
+            "
+            formControlName="supplementaryHousingFundRate"
+            min="0"
+          />
+          <span matTextSuffix>%</span>
+        </mat-form-field>
+
+        <mat-form-field class="ml-3" style="width: 140px">
+          <mat-label>企业补充公积金比例</mat-label>
+          <input
+            matInput
+            type="number"
+            placeholder="0"
+            [attr.data-testid]="
+              'input-supplementary-housing-fund-employer-rate-' + (idx + 1)
+            "
+            formControlName="supplementaryHousingFundEmployerRate"
             min="0"
           />
           <span matTextSuffix>%</span>

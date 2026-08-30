@@ -20,6 +20,7 @@ describe('ExportDataService', () => {
         insuranceCosts: { endowment: 800, health: 200, unemployment: 50 },
         insuranceFullCost: 1050,
         housingFund: 500,
+        supplementaryHousingFund: 300,
         extraDeduction: {
           infantCare: 0,
           childEducation: 0,
@@ -53,6 +54,8 @@ describe('ExportDataService', () => {
             birth: 100,
             occupationalInjury: 100,
           },
+          housingFund: 500,
+          supplementaryHousingFund: 300,
           enterprisePension: 0,
         },
       },
@@ -75,6 +78,7 @@ describe('ExportDataService', () => {
         endowmentInsurance: 9600,
         healthInsurance: 2400,
         housingFund: 6000,
+        supplementaryHousingFund: 3600,
         enterprisePension: 0,
         enterprisePensionFull: 0,
         privatePension: 0,
@@ -88,6 +92,8 @@ describe('ExportDataService', () => {
           birth: 1200,
           occupationalInjury: 1200,
         },
+        housingFund: 6000,
+        supplementaryHousingFund: 3600,
         enterprisePension: 0,
       },
       annualTaxSettlement: {
@@ -112,6 +118,8 @@ describe('ExportDataService', () => {
     // 验证标题与列头
     expect(csv).toContain('2025年薪税明细测算表 - 北京市');
     expect(csv).toContain('税前账面工资(元)');
+    expect(csv).toContain('个人补充公积金(元)');
+    expect(csv).toContain('企业补充公积金(元)');
     expect(csv).toContain('税后到手现金(元)');
     expect(csv).toContain('10000.00');
     expect(csv).toContain('8376.50');
@@ -155,6 +163,7 @@ describe('ExportDataService', () => {
         endowmentInsurance: 9600,
         healthInsurance: 2400,
         housingFund: 6000,
+        supplementaryHousingFund: 3600,
         enterprisePension: 0,
         enterprisePensionFull: 0,
         privatePension: 0,
@@ -168,6 +177,8 @@ describe('ExportDataService', () => {
           birth: 1200,
           occupationalInjury: 1200,
         },
+        housingFund: 6000,
+        supplementaryHousingFund: 3600,
         enterprisePension: 0,
       },
       annualTaxSettlement: {

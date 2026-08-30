@@ -83,4 +83,33 @@ test.describe('Suite 4: 月度明细调整与级联同步弹窗 (Monthly Adjustm
     // Assert: 7 月份面板正常渲染且可见
     await expect(page.getByTestId('month-panel-header-7')).toBeVisible();
   });
+
+  test('TC-404: 单月调整个人与企业补充公积金比例，级联同步生效并准确核算', async ({
+    page,
+  }) => {
+    // Arrange: 基础月薪 15,000 计算
+    await formPage.fillSalary(15000);
+    await formPage.calculate();
+    await expect(resultsPage.panels).toHaveCount(12);
+
+    // Act: 展开 6 月份面板，调整个人补充公积金为 4%，企业补充公积金为 6%
+    await resultsPage.setSupplementaryHousingFund(6, 4, 6);
+    await resultsPage.clickUpdateMonth(6);
+
+    // 确认级联同步
+    await resultsPage.confirmSync();
+    await page.waitForTimeout(500);
+
+    // Assert: 6 月份与 7 月份补充公积金输入控件均更新为 4% 与 6%
+    const month6EmpInput = page.getByTestId(
+      'input-supplementary-housing-fund-rate-6',
+    );
+    await expect(month6EmpInput).toHaveValue('4');
+
+    await resultsPage.expandMonth(7);
+    const month7EmpInput = page.getByTestId(
+      'input-supplementary-housing-fund-rate-7',
+    );
+    await expect(month7EmpInput).toHaveValue('4');
+  });
 });

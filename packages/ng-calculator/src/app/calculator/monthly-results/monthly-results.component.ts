@@ -108,6 +108,8 @@ export class MonthlyResultsComponent implements OnInit {
   private fb = inject(FormBuilder);
   private dialog = inject(MatDialog);
 
+  expandedMonths = new Set<number>();
+
   ngOnInit() {
     this.monthlyMetas$.subscribe((metaList) => {
       if (metaList && metaList.length > 0) {
@@ -119,6 +121,15 @@ export class MonthlyResultsComponent implements OnInit {
   }
 
   trackIncome = (_: number, x: MonthlyIncomeInfo) => x.actualMonth;
+
+  onPanelOpened(index: number) {
+    this.expandedMonths.add(index);
+    this.onChangeChartMonth(index);
+  }
+
+  onPanelClosed(index: number) {
+    this.expandedMonths.delete(index);
+  }
 
   getInsuranceTopForMonth(month: number): number {
     if (this.cityRecipe?.policies && this.calculationYear) {
@@ -165,15 +176,9 @@ export class MonthlyResultsComponent implements OnInit {
   }
 
   onUpdateMeta(value: MonthlyInputModel, index: number) {
-    // 检测变更并询问是否同步到后续月份
-    this.detectChangesAndSync(this.detailForms[index], index);
-
-    this.updateMeta.emit({ meta: value, index });
-  }
-
-  private detectChangesAndSync(form: FormGroup, monthIndex: number) {
+    const form = this.detailForms[index];
     const currentValues = form.value;
-    const previousValues = this.previousValues[monthIndex] || {};
+    const previousValues = this.previousValues[index] || {};
 
     // 检查哪些字段发生了变化
     const changedFieldPaths = this.getChangedFields(
@@ -181,22 +186,59 @@ export class MonthlyResultsComponent implements OnInit {
       previousValues,
     );
 
-    if (
-      changedFieldPaths.length > 0 &&
-      monthIndex < this.detailForms.length - 1
-    ) {
-      // 构建包含字段路径和值的对象数组
+    // 如果有发生变化的字段，且不是最后一个月，先弹出确认对话框
+    if (changedFieldPaths.length > 0 && index < this.detailForms.length - 1) {
       const changedFields = changedFieldPaths.map((fieldPath) => ({
         fieldPath,
         value: this.getNestedValue(currentValues, fieldPath),
       }));
 
-      // 如果有变化且不是最后一个月，收集所有变更并一次性询问是否同步
-      this.showBatchSyncConfirmation(monthIndex, changedFields);
-    }
+      const dialogRef = this.dialog.open(SyncConfirmationDialogComponent, {
+        width: '500px',
+        data: {
+          monthIndex: index,
+          changedFields,
+        } as SyncConfirmationData,
+      });
 
-    // 更新缓存的值
-    this.previousValues[monthIndex] = JSON.parse(JSON.stringify(currentValues));
+      dialogRef.afterClosed().subscribe((result) => {
+        // 更新当前月份缓存
+        this.previousValues[index] = JSON.parse(JSON.stringify(currentValues));
+
+        if (result) {
+          // 用户确认同步：同步所有变更字段到后续月份
+          for (let i = index + 1; i < this.detailForms.length; i++) {
+            const nextForm = this.detailForms[i];
+            changedFields.forEach(({ fieldPath, value: changedVal }) => {
+              const control = this.getFormControl(nextForm, fieldPath);
+              if (control) {
+                control.setValue(changedVal, { emitEvent: false });
+                if (!this.previousValues[i]) {
+                  this.previousValues[i] = {};
+                }
+                this.setNestedValue(
+                  this.previousValues[i],
+                  fieldPath,
+                  changedVal,
+                );
+              }
+            });
+            // 发出后续月份的更新
+            this.updateMeta.emit({
+              meta: nextForm.value as MonthlyInputModel,
+              index: i,
+            });
+          }
+        }
+
+        // 发出当前月份的更新（确保在用户确认或取消之后触发计算）
+        this.updateMeta.emit({ meta: value, index });
+      });
+    } else {
+      // 无需同步弹窗（无变更或是最后一个月），直接更新缓存与计算
+      this.previousValues[index] = JSON.parse(JSON.stringify(currentValues));
+      this.updateMeta.emit({ meta: value, index });
+    }
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -252,53 +294,6 @@ export class MonthlyResultsComponent implements OnInit {
       return current[key];
     }, obj);
     target[lastKey] = value;
-  }
-
-  private showBatchSyncConfirmation(
-    monthIndex: number,
-    changedFields: { fieldPath: string; value: unknown }[],
-  ): void {
-    const dialogRef = this.dialog.open(SyncConfirmationDialogComponent, {
-      width: '500px',
-      data: {
-        monthIndex,
-        changedFields,
-      } as SyncConfirmationData,
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        // 同步所有变更字段到后续月份
-        changedFields.forEach(({ fieldPath, value }) => {
-          this.syncToSubsequentMonths(monthIndex, fieldPath, value);
-        });
-      }
-    });
-  }
-
-  private syncToSubsequentMonths(
-    fromIndex: number,
-    fieldPath: string,
-    value: unknown,
-  ) {
-    // 从下一个月开始同步到所有后续月份
-    for (let i = fromIndex + 1; i < this.detailForms.length; i++) {
-      const form = this.detailForms[i];
-      const control = this.getFormControl(form, fieldPath);
-
-      if (control) {
-        control.setValue(value, { emitEvent: false });
-        // 更新对应的缓存值
-        if (!this.previousValues[i]) {
-          this.previousValues[i] = {};
-        }
-        this.setNestedValue(this.previousValues[i], fieldPath, value);
-
-        // 触发表单更新
-        const formValue = form.value as MonthlyInputModel;
-        this.onUpdateMeta(formValue, i);
-      }
-    }
   }
 
   private getFormControl(form: FormGroup, path: string) {
@@ -366,6 +361,14 @@ export class MonthlyResultsComponent implements OnInit {
         }),
         housingFundBase: [meta.housingFundBase, Validators.required],
         housingFundRate: [meta.housingFundRate * 100, Validators.required],
+        supplementaryHousingFundRate: [
+          (meta.supplementaryHousingFundRate || 0) * 100,
+          Validators.required,
+        ],
+        supplementaryHousingFundEmployerRate: [
+          (meta.supplementaryHousingFundEmployerRate || 0) * 100,
+          Validators.required,
+        ],
         extraDeduction: this.fb.group({
           infantCare: [
             meta.extraDeduction.infantCare || 0,

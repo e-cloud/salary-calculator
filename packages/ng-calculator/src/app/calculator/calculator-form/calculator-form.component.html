@@ -263,6 +263,36 @@
             />
             <span matTextSuffix>%</span>
           </mat-form-field>
+
+          <mat-form-field class="ml-3" style="width: 160px">
+            <mat-label>个人补充公积金比例</mat-label>
+            <input
+              matInput
+              type="number"
+              placeholder="0"
+              data-testid="input-supplementary-housing-fund-rate"
+              formControlName="supplementaryHousingFundRate"
+              min="0"
+              matTooltip="个人自愿补充缴存公积金比例，法定税前扣除上限合计为12%"
+              matTooltipPosition="above"
+            />
+            <span matTextSuffix>%</span>
+          </mat-form-field>
+
+          <mat-form-field class="ml-3" style="width: 160px">
+            <mat-label>企业补充公积金比例</mat-label>
+            <input
+              matInput
+              type="number"
+              placeholder="0"
+              data-testid="input-supplementary-housing-fund-employer-rate"
+              formControlName="supplementaryHousingFundEmployerRate"
+              min="0"
+              matTooltip="企业为员工补充缴存公积金比例，计入企业用工成本"
+              matTooltipPosition="above"
+            />
+            <span matTextSuffix>%</span>
+          </mat-form-field>
         </div>
 
         <div class="ml-md-4" formGroupName="extraDeduction">

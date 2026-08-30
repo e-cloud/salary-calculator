@@ -168,4 +168,30 @@ describe('CalculatorFormComponent 基础计算表单组件测试', () => {
     // Assert
     expect(mockDialog.open).toHaveBeenCalled();
   });
+
+  it('用户输入个人补充公积金比例和企业补充公积金比例并点击计算，参数应正确输出', async () => {
+    // Arrange
+    const user = userEvent.setup();
+    const { calculateSpy } = await setup();
+    const suppEmpInput = screen.getByTestId(
+      'input-supplementary-housing-fund-rate',
+    );
+    const suppEmployerInput = screen.getByTestId(
+      'input-supplementary-housing-fund-employer-rate',
+    );
+    const calculateButton = screen.getByText('计算');
+
+    // Act
+    await user.clear(suppEmpInput);
+    await user.type(suppEmpInput, '3');
+    await user.clear(suppEmployerInput);
+    await user.type(suppEmployerInput, '5');
+    await user.click(calculateButton);
+
+    // Assert
+    expect(calculateSpy).toHaveBeenCalledTimes(1);
+    const params = calculateSpy.mock.calls[0][0];
+    expect(params.supplementaryHousingFundRate).toBe(3);
+    expect(params.supplementaryHousingFundEmployerRate).toBe(5);
+  });
 });

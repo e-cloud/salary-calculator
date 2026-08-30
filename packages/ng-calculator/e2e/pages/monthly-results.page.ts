@@ -73,6 +73,25 @@ export class MonthlyResultsPage extends BasePage {
   }
 
   /**
+   * 修改指定月份的个人与企业补充公积金比例
+   */
+  async setSupplementaryHousingFund(
+    month: number,
+    employeeRate: number,
+    employerRate: number,
+  ): Promise<void> {
+    await this.expandMonth(month);
+    const empInput = this.page.getByTestId(
+      `input-supplementary-housing-fund-rate-${month}`,
+    );
+    const employerInput = this.page.getByTestId(
+      `input-supplementary-housing-fund-employer-rate-${month}`,
+    );
+    await empInput.fill(String(employeeRate));
+    await employerInput.fill(String(employerRate));
+  }
+
+  /**
    * 设置“入职新公司（新计费周期）”开关
    */
   async setNewPayCycle(month: number, enable: boolean): Promise<void> {

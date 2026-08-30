@@ -75,12 +75,18 @@ export class SyncConfirmationDialogComponent {
   getFieldDisplayName(fieldName: string): string {
     const fieldNames: { [key: string]: string } = {
       monthSalary: '月薪',
+      monthlyBonus: '月度奖金',
       insuranceBase: '社保基数',
       housingFundBase: '公积金基数',
       housingFundRate: '公积金缴纳比例',
+      supplementaryHousingFundRate: '个人补充公积金比例',
+      supplementaryHousingFundEmployerRate: '企业补充公积金比例',
+      lastYearAvgSalary: '上年度月平均工资',
+      yearBeforeLastAvgSalary: '上上年度月平均工资',
       'insuranceRate.endowment': '养老保险缴纳比例',
       'insuranceRate.health': '医疗保险缴纳比例',
       'insuranceRate.unemployment': '失业保险缴纳比例',
+      'extraDeduction.infantCare': '3岁以下婴幼儿照护专项扣除',
       'extraDeduction.childEducation': '子女教育专项扣除',
       'extraDeduction.continuingEducation': '继续教育专项扣除',
       'extraDeduction.seriousMedicalExpense': '大病医疗专项扣除',
@@ -89,6 +95,7 @@ export class SyncConfirmationDialogComponent {
       'extraDeduction.elderlyCare': '赡养老人专项扣除',
       'extraDeduction.enterprisePensionFromEmployee': '企业年金个人缴纳',
       'extraDeduction.enterprisePensionFromEmployer': '企业年金企业缴纳',
+      'extraDeduction.privatePension': '个人养老金',
       'extraDeduction.other': '其他扣除项',
     };
     return fieldNames[fieldName] || fieldName;

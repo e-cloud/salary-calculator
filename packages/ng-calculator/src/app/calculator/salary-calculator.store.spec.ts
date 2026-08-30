@@ -177,6 +177,10 @@ describe('SalaryCalculatorStore 集中状态管理测试', () => {
         insuranceBase: 12000,
         housingFundBase: 12000,
         housingFundRate: 7,
+        supplementaryHousingFundRate: 4,
+        supplementaryHousingFundEmployerRate: 6,
+        newPayCycle: false,
+        insuranceBaseOnLastMonth: false,
         insuranceRate: { endowment: 8, health: 2, unemployment: 0.5 },
         extraDeduction: {
           infantCare: 0,
@@ -199,6 +203,8 @@ describe('SalaryCalculatorStore 集中状态管理测试', () => {
     const metas = store.monthlyMetas();
     expect(metas[0].salary).toBe(15000);
     expect(metas[0].insuranceBase).toBe(12000);
+    expect(metas[0].supplementaryHousingFundRate).toBe(0.04);
+    expect(metas[0].supplementaryHousingFundEmployerRate).toBe(0.06);
   });
 
   it('调用 loadRecipeIndex 应通过 HTTP 获取配方索引与首个配方数据', () => {

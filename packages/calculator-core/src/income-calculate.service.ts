@@ -42,6 +42,11 @@ export function calculateFullYearIncome(
     employee: {
       endowmentInsurance: 0,
       healthInsurance: 0,
+      housingFund: 0,
+      supplementaryHousingFund: 0,
+      enterprisePension: 0,
+      enterprisePensionFull: 0,
+      privatePension: 0,
     },
     employerCosts: {
       full: 0,
@@ -52,6 +57,8 @@ export function calculateFullYearIncome(
         birth: 0,
         occupationalInjury: 0,
       },
+      housingFund: 0,
+      supplementaryHousingFund: 0,
       enterprisePension: 0,
     },
   } as FullYearIncomeInfo;
@@ -59,12 +66,15 @@ export function calculateFullYearIncome(
   /** 全年总收入（含年终奖） */
   full.bookIncome = full.bookSalary + full.bonus;
 
-  /** 全年总扣除（免税额+专项附加扣除+社保+公积金） */
+  /** 全年总扣除（免税额+专项附加扣除+社保+公积金法定税前扣除额） */
   const totalDeduction =
     5000 * 12 +
     sumBy(
       list,
-      x => x.fullExtraDeduction + x.insuranceFullCost + x.housingFund,
+      x =>
+        x.fullExtraDeduction +
+        x.insuranceFullCost +
+        (x.housingFund + (x.supplementaryHousingFund || 0)),
     );
 
   /**
@@ -90,14 +100,35 @@ export function calculateFullYearIncome(
   full.taxedIncome = full.bookIncome - full.theoreticalTax;
   /** 全年税后总收入（分开计税） */
   full.taxedIncomeDeprecated = full.bookIncome - full.totalSeparatedTax;
-  /** 全年公积金总额（个人+公司） */
-  full.fullHousingFund = sumBy(list, 'housingFund') * 2;
+
+  /** 全年个人公积金（基本） */
+  full.employee.housingFund = sumBy(list, 'housingFund');
+  /** 全年个人补充公积金 */
+  full.employee.supplementaryHousingFund = sumBy(
+    list,
+    'supplementaryHousingFund',
+  );
+  /** 全年企业公积金（基本） */
+  full.employerCosts.housingFund = sumBy(list, 'employerCosts.housingFund');
+  /** 全年企业补充公积金 */
+  full.employerCosts.supplementaryHousingFund = sumBy(
+    list,
+    'employerCosts.supplementaryHousingFund',
+  );
+
+  /** 全年公积金总额（个人基本 + 个人补充 + 企业基本 + 企业补充） */
+  full.fullHousingFund =
+    full.employee.housingFund +
+    full.employee.supplementaryHousingFund +
+    full.employerCosts.housingFund +
+    full.employerCosts.supplementaryHousingFund;
 
   /** 全年到手现金收入（合并计税） */
   full.cashIncome =
     full.taxedIncome -
     sumBy(list, 'insuranceFullCost') -
     sumBy(list, 'housingFund') -
+    sumBy(list, 'supplementaryHousingFund') -
     sumBy(list, 'extraDeduction.enterprisePensionFromEmployee') -
     sumBy(list, 'extraDeduction.privatePension');
   /** 全年到手现金收入（分开计税） */
@@ -106,6 +137,7 @@ export function calculateFullYearIncome(
     full.taxedIncomeDeprecated -
     sumBy(list, 'insuranceFullCost') -
     sumBy(list, 'housingFund') -
+    sumBy(list, 'supplementaryHousingFund') -
     sumBy(list, 'extraDeduction.enterprisePensionFromEmployee') -
     sumBy(list, 'extraDeduction.privatePension');
 
@@ -121,8 +153,6 @@ export function calculateFullYearIncome(
     list,
     'extraDeduction.enterprisePensionFromEmployee',
   );
-  /** 全年个人公积金 */
-  full.employee.housingFund = sumBy(list, 'housingFund');
   /** 全年个人养老金 */
   full.employee.privatePension = sumBy(list, 'extraDeduction.privatePension');
 
@@ -263,6 +293,7 @@ export function calculateMonthIncome(
   const newMonthInfo: MonthlyIncomeInfo = {
     salary: current.salary,
     housingFund: 0,
+    supplementaryHousingFund: 0,
     tax: 0,
     taxedIncome: 0,
     cashIncome: 0,
@@ -295,9 +326,11 @@ export function calculateMonthIncome(
         birth: 0,
         occupationalInjury: 0,
       },
+      housingFund: 0,
+      supplementaryHousingFund: 0,
       enterprisePension: 0,
     },
-    id: Math.random().toString(),
+    id: current.id !== undefined ? String(current.id) : '1',
   };
 
 
@@ -307,13 +340,33 @@ export function calculateMonthIncome(
     newMonthInfo.month = lastMonth.month + 1;
   }
   newMonthInfo.actualMonth = lastMonth ? lastMonth.actualMonth + 1 : 1;
+  newMonthInfo.id =
+    current.id !== undefined
+      ? String(current.id)
+      : String(newMonthInfo.actualMonth);
 
   const newPayCycle = current.newPayCycle;
 
-  // 个人缴纳公积金金额
+  // 个人缴纳公积金金额（基本与补充）
+  const validHousingFundBase = getValidBase(
+    current.housingFundBase,
+    current.housingFundBaseRange,
+  );
   const personalHousingFund =
-    getValidBase(current.housingFundBase, current.housingFundBaseRange) *
-    current.housingFundRate;
+    validHousingFundBase * current.housingFundRate;
+  const suppRate = current.supplementaryHousingFundRate || 0;
+  const personalSupplementaryHousingFund =
+    validHousingFundBase * suppRate;
+  const totalPersonalHousingFund =
+    personalHousingFund + personalSupplementaryHousingFund;
+
+  // 公积金税前扣除限额（国家税法规定：单位和个人分别在不超12%限额内免税）
+  const housingFundRateLimit = current.housingFundRateLimit ?? 0.12;
+  const deductibleHousingFundRate = Math.min(
+    current.housingFundRate + suppRate,
+    housingFundRateLimit,
+  );
+  const deductibleHousingFund = validHousingFundBase * deductibleHousingFundRate;
 
   // 社保缴纳明细
   const insuranceDeducted = insuranceCostsForEmployee(
@@ -362,7 +415,7 @@ export function calculateMonthIncome(
     const startMonth = current.firstJobStartMonth || newMonthInfo.actualMonth || 1;
     accumulatedDeduction = (startMonth + newMonthInfo.month - 1) * current.freeTaxQuota;
   }
-  const specialDeduction = insuranceFullCost + personalHousingFund;
+  const specialDeduction = insuranceFullCost + deductibleHousingFund;
   const accumulatedSpecialDeduction =
     (newPayCycle || !lastMonth ? 0 : lastMonth.accumulatedSpecialDeduction) +
     specialDeduction;
@@ -391,12 +444,13 @@ export function calculateMonthIncome(
   newMonthInfo.insuranceCosts = insuranceDeducted;
   newMonthInfo.insuranceFullCost = insuranceFullCost;
   newMonthInfo.housingFund = personalHousingFund;
+  newMonthInfo.supplementaryHousingFund = personalSupplementaryHousingFund;
   newMonthInfo.tax = tax;
   newMonthInfo.taxedIncome = newMonthInfo.salary - tax;
   newMonthInfo.cashIncome =
     newMonthInfo.salary -
     insuranceFullCost -
-    personalHousingFund -
+    totalPersonalHousingFund -
     tax -
     enterprisePension -
     privatePension;
@@ -408,7 +462,18 @@ export function calculateMonthIncome(
   newMonthInfo.accumulatedTax =
     tax + (newPayCycle || !lastMonth ? 0 : lastMonth.accumulatedTax);
 
+  // 雇主公积金成本（基本与补充）
+  const employerSuppRate =
+    current.supplementaryHousingFundEmployerRate || 0;
+  const employerHousingFund =
+    validHousingFundBase * current.housingFundRate;
+  const employerSupplementaryHousingFund =
+    validHousingFundBase * employerSuppRate;
+
   // 雇主成本
+  newMonthInfo.employerCosts.housingFund = employerHousingFund;
+  newMonthInfo.employerCosts.supplementaryHousingFund =
+    employerSupplementaryHousingFund;
   newMonthInfo.employerCosts.enterprisePension =
     current.extraDeduction.enterprisePensionFromEmployer;
   newMonthInfo.employerCosts.insurance = insuranceCostsForEmployer(
@@ -423,7 +488,8 @@ export function calculateMonthIncome(
   );
   newMonthInfo.employerCosts.full =
     newMonthInfo.salary +
-    personalHousingFund +
+    employerHousingFund +
+    employerSupplementaryHousingFund +
     newMonthInfo.employerCosts.insuranceFull +
     newMonthInfo.employerCosts.enterprisePension;
 
@@ -745,6 +811,15 @@ export function buildMetaFromPolicy(
     insuranceBase: data.insuranceBase,
     housingFundBase: data.housingFundBase,
     housingFundRate: data.housingFundRate / 100,
+    supplementaryHousingFundRate:
+      data.supplementaryHousingFundRate !== undefined
+        ? data.supplementaryHousingFundRate / 100
+        : 0,
+    supplementaryHousingFundEmployerRate:
+      data.supplementaryHousingFundEmployerRate !== undefined
+        ? data.supplementaryHousingFundEmployerRate / 100
+        : 0,
+    housingFundRateLimit: data.housingFundRateLimit ?? 0.12,
     insuranceRate: policy.employee.insuranceRate,
     freeTaxQuota: 5000,
     extraDeduction: data.extraDeduction,

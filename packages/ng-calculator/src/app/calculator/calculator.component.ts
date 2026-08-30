@@ -146,6 +146,14 @@ export class CalculatorComponent implements OnInit {
           insuranceBase: meta.insuranceBase,
           housingFundBase: meta.housingFundBase,
           housingFundRate: meta.housingFundRate / 100,
+          supplementaryHousingFundRate:
+            meta.supplementaryHousingFundRate !== undefined
+              ? meta.supplementaryHousingFundRate / 100
+              : 0,
+          supplementaryHousingFundEmployerRate:
+            meta.supplementaryHousingFundEmployerRate !== undefined
+              ? meta.supplementaryHousingFundEmployerRate / 100
+              : 0,
           insuranceRate: {
             endowment: meta.insuranceRate.endowment / 100,
             health: meta.insuranceRate.health / 100,

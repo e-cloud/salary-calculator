@@ -24,6 +24,8 @@ describe('SyncConfirmationDialogComponent 同步确认对话框测试', () => {
       { fieldPath: 'monthSalary', value: 15000 },
       { fieldPath: 'insuranceBase', value: 12000 },
       { fieldPath: 'housingFundRate', value: 7 },
+      { fieldPath: 'supplementaryHousingFundRate', value: 3 },
+      { fieldPath: 'supplementaryHousingFundEmployerRate', value: 5 },
     ],
   };
 
@@ -52,6 +54,10 @@ describe('SyncConfirmationDialogComponent 同步确认对话框测试', () => {
     expect(screen.getByText(/新值：12000元/i)).toBeDefined();
     expect(screen.getByText('公积金缴纳比例')).toBeDefined();
     expect(screen.getByText(/新值：7%/i)).toBeDefined();
+    expect(screen.getByText('个人补充公积金比例')).toBeDefined();
+    expect(screen.getByText(/新值：3%/i)).toBeDefined();
+    expect(screen.getByText('企业补充公积金比例')).toBeDefined();
+    expect(screen.getByText(/新值：5%/i)).toBeDefined();
   });
 
   it('用户点击“确认同步”按钮时，dialogRef 应以 true 参数关闭 (符合契约)', async () => {

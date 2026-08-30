@@ -198,6 +198,8 @@ export class CalculatorFormComponent implements OnInit, OnChanges, OnDestroy {
       insuranceBase: 10000,
       housingFundBase: 10000,
       housingFundRate: 5,
+      supplementaryHousingFundRate: 0,
+      supplementaryHousingFundEmployerRate: 0,
       lastYearAvgSalary: 0,
       yearBeforeLastAvgSalary: 0,
       extraDeduction: {
@@ -374,6 +376,8 @@ export class CalculatorFormComponent implements OnInit, OnChanges, OnDestroy {
       insuranceBase: [10000, Validators.required],
       housingFundBase: [10000, Validators.required],
       housingFundRate: [5, Validators.required],
+      supplementaryHousingFundRate: [0, Validators.required],
+      supplementaryHousingFundEmployerRate: [0, Validators.required],
       lastYearAvgSalary: [0],
       yearBeforeLastAvgSalary: [0],
       firstJobThisYear: [false],
@@ -449,6 +453,12 @@ export class CalculatorFormComponent implements OnInit, OnChanges, OnDestroy {
         if (cache.extraDeduction.privatePension === undefined) {
           cache.extraDeduction.privatePension = 0;
         }
+      }
+      if (cache.supplementaryHousingFundRate === undefined) {
+        cache.supplementaryHousingFundRate = 0;
+      }
+      if (cache.supplementaryHousingFundEmployerRate === undefined) {
+        cache.supplementaryHousingFundEmployerRate = 0;
       }
       this.baseForm.patchValue(cache);
     }

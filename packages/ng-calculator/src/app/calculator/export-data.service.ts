@@ -19,6 +19,8 @@ export class ExportDataService {
       '税前账面工资(元)',
       '五险个人缴费(元)',
       '公积金个人缴费(元)',
+      '个人补充公积金(元)',
+      '企业补充公积金(元)',
       '专项附加扣除(元)',
       '应税所得额(元)',
       '当月预缴个税(元)',
@@ -36,6 +38,8 @@ export class ExportDataService {
         item.salary.toFixed(2),
         item.insuranceFullCost.toFixed(2),
         item.housingFund.toFixed(2),
+        (item.supplementaryHousingFund || 0).toFixed(2),
+        (item.employerCosts.supplementaryHousingFund || 0).toFixed(2),
         item.fullExtraDeduction.toFixed(2),
         item.accumulatedTaxQuota.toFixed(2),
         item.tax.toFixed(2),
@@ -57,6 +61,8 @@ export class ExportDataService {
         summary.employee.endowmentInsurance + summary.employee.healthInsurance
       ).toFixed(2),
       summary.employee.housingFund.toFixed(2),
+      (summary.employee.supplementaryHousingFund || 0).toFixed(2),
+      (summary.employerCosts.supplementaryHousingFund || 0).toFixed(2),
       totalExtraDeduction.toFixed(2),
       '-',
       summary.prepaidTax.toFixed(2),
@@ -70,6 +76,8 @@ export class ExportDataService {
       rows.push([
         '全年一次性奖金',
         summary.bonus.toFixed(2),
+        '0.00',
+        '0.00',
         '0.00',
         '0.00',
         '0.00',
@@ -89,7 +97,20 @@ export class ExportDataService {
           : summary.annualTaxSettlement.settlementType === 'supplement'
             ? `预计汇算补税: ¥${summary.annualTaxSettlement.amount.toFixed(2)}`
             : '汇算无需退补';
-      rows.push(['汇算清缴预测', typeText, '', '', '', '', '', '', '', '']);
+      rows.push([
+        '汇算清缴预测',
+        typeText,
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+      ]);
     }
 
     const csvLines = [
